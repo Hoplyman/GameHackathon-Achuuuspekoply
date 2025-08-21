@@ -2,6 +2,7 @@ extends Area2D
 
 var pit_index: int = -1
 var associated_pit: Node2D
+var original_color: Color = Color.WHITE  # Store the original color
 
 func _ready():
 	# Connect the input event signal
@@ -23,15 +24,17 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 			game_manager.handle_pit_click(pit_index)
 
 func _on_mouse_entered():
-	# Optional: Add visual feedback when hovering
+	# Store the current color before changing it
 	if associated_pit:
 		var sprite = associated_pit.get_node("Sprite2D")
 		if sprite:
-			sprite.modulate = Color(1.2, 1.2, 1.2)  # Slightly brighter
+			original_color = sprite.modulate
+			# Make it brighter by multiplying the current color
+			sprite.modulate = original_color * 1.3  # 30% brighter
 
 func _on_mouse_exited():
-	# Reset visual feedback
+	# Restore the original color (which could be the player highlight color)
 	if associated_pit:
 		var sprite = associated_pit.get_node("Sprite2D")
 		if sprite:
-			sprite.modulate = Color.WHITE
+			sprite.modulate = original_color
