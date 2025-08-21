@@ -1,8 +1,14 @@
 [gd_scene load_steps=4 format=3 uid="uid://ckefdced2oe5c"]
 
+<<<<<<< HEAD
 [ext_resource type="Script" uid="uid://cjwsyvlbfgd0s" path="res://objects/Pit.gd" id="1_yhywh"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_gvsfr"]
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
+=======
+[ext_resource type="Script" path="res://objects/Pit.gd" id="1_yhywh"]
+[ext_resource type="Texture2D" uid="uid://cvi7xcuocyix7" path="res://Main Menu/icon.svg" id="2_gvsfr"]
+[ext_resource type="PackedScene" uid="uid://dul2u4plgebux" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
+>>>>>>> 97bc56202b1d4a151208bd26c87386bea185899d
 
 [node name="Pit" type="Sprite2D"]
 texture = ExtResource("2_gvsfr")
