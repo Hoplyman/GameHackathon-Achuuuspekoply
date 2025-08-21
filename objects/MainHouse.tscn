@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6sjqtnwnp0gx"]
+[gd_scene load_steps=4 format=3 uid="uid://c6sjqtnwnp0gx"]
 
-[ext_resource type="Script" path="res://objects/MainHouse.gd" id="1_cpixq"]
+[ext_resource type="Script" uid="uid://blhkihyn7nhvt" path="res://objects/MainHouse.gd" id="1_cpixq"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_cpixq"]
+[ext_resource type="PackedScene" uid="uid://ddb2cc8rptbwo" path="res://objects/Shell.tscn" id="3_8frl5"]
 
 [node name="MainHouse" type="Node2D"]
 script = ExtResource("1_cpixq")
@@ -17,3 +18,150 @@ offset_top = -117.0
 offset_right = -73.0
 offset_bottom = -94.0
 text = "0"
+
+[node name="Shell1" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+
+[node name="Shell2" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(6, 6)
+
+[node name="Shell3" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(6, -6)
+
+[node name="Shell4" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-6, -6)
+
+[node name="Shell5" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-6, 6)
+
+[node name="Shell6" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, 12)
+
+[node name="Shell7" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(12, 0)
+
+[node name="Shell8" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, -12)
+
+[node name="Shell9" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-12, 0)
+
+[node name="Shell10" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-12, 12)
+
+[node name="Shell11" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(12, 12)
+
+[node name="Shell12" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(12, -12)
+
+[node name="Shell13" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-12, -12)
+
+[node name="Shell14" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, -6)
+
+[node name="Shell15" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, 6)
+
+[node name="Shell16" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-6, 18)
+
+[node name="Shell17" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(6, 18)
+
+[node name="Shell18" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, 6)
+
+[node name="Shell19" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, -6)
+
+[node name="Shell20" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(6, -18)
+
+[node name="Shell21" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-6, -18)
+
+[node name="Shell22" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-24, 0)
+
+[node name="Shell23" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, 24)
+
+[node name="Shell24" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(24, 0)
+
+[node name="Shell25" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, -23)
+
+[node name="Shell26" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, -18)
+
+[node name="Shell27" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, 18)
+
+[node name="Shell28" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, 18)
+
+[node name="Shell29" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, -18)
+
+[node name="Shell30" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-24, -12)
+
+[node name="Shell31" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-24, 12)
+
+[node name="Shell32" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-12, 24)
+
+[node name="Shell33" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(12, 24)
+
+[node name="Shell34" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(24, 12)
+
+[node name="Shell35" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(24, -12)
+
+[node name="Shell36" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(12, -24)
+
+[node name="Shell37" parent="." instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-12, -24)

@@ -5,3 +5,5 @@
 [node name="Shell" type="Sprite2D"]
 texture = ExtResource("1_r6mts")
 hframes = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

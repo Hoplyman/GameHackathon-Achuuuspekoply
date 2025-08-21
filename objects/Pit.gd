@@ -5,13 +5,12 @@ var shells: int = 0
 
 func _ready():
 	update_label()
+	update_shell_visibility()
 	setup_click_area()
 
 func setup_click_area():
-	# Look for ClickArea child node
 	var click_area = get_node_or_null("ClickArea")
 	if click_area and click_area.has_method("setup"):
-		# Find our index in the pits array
 		var pits = get_tree().get_nodes_in_group("pits")
 		var pit_index = pits.find(self)
 		if pit_index >= 0:
@@ -23,13 +22,22 @@ func setup_click_area():
 func add_shells(amount: int):
 	shells += amount
 	update_label()
+	update_shell_visibility()
 
 func set_shells(amount: int):
 	shells = amount
 	update_label()
+	update_shell_visibility()
 
 func update_label():
 	if label:
 		label.text = str(shells)
 	else:
 		print("Warning: ShellLabel not found in Pit")
+
+func update_shell_visibility():
+	for i in range(1, 37):  # Shell1 to Shell37
+		var shell_name = "Shell%d" % i
+		var shell = get_node_or_null(shell_name)
+		if shell:
+			shell.visible = i <= shells
