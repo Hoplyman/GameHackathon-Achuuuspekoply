@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://68e1oli6ivek" path="res://objects/gui.tscn" id="1_qc6i3"]
 
-[node name="Game_level" type="Node2D"]
+[node name="MainGame" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
