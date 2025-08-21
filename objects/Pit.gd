@@ -36,8 +36,9 @@ func update_label():
 		print("Warning: ShellLabel not found in Pit")
 
 func update_shell_visibility():
+	var shells_container = get_node("Shells")
 	for i in range(1, 37):  # Shell1 to Shell37
 		var shell_name = "Shell%d" % i
-		var shell = get_node_or_null(shell_name)
+		var shell = shells_container.get_node_or_null(shell_name)
 		if shell:
 			shell.visible = i <= shells
