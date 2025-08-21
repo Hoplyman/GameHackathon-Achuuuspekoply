@@ -11,9 +11,11 @@ config_version=5
 [application]
 
 config/name="Sungka"
+
 run/main_scene="uid://5gfo7bqx7y0u"
+
 config/features=PackedStringArray("4.4", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://Main Menu/icon.svg"
 
 [autoload]
 
@@ -28,5 +30,6 @@ window/stretch/aspect="expand"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
