@@ -1,0 +1,139 @@
+[gd_scene load_steps=13 format=3 uid="uid://c7ycxw704aoix"]
+
+[ext_resource type="Script" uid="uid://ckvqu10j4uyqw" path="res://main_menu.gd" id="1_06t4h"]
+[ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="2_fu7sn"]
+[ext_resource type="Texture2D" uid="uid://b6uuta54yl4u" path="res://assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/Untitled design (2).png" id="2_jix8l"]
+[ext_resource type="Texture2D" uid="uid://y2l8wwy744h4" path="res://assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/Setting menu.png" id="3_glbon"]
+[ext_resource type="Texture2D" uid="uid://dr8sfk5sgfdl6" path="res://assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/UI Big Play Button.png" id="3_jix8l"]
+[ext_resource type="Texture2D" uid="uid://bp04w0mmq5mpw" path="res://assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/buttons/Square Buttons 26x26.png" id="4_nlkkf"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qe12f"]
+texture = ExtResource("2_jix8l")
+region_rect = Rect2(0, 16, 1984, 1312)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8qtwp"]
+texture = ExtResource("3_glbon")
+region_rect = Rect2(137, 10, 110, 126)
+modulate_color = Color(1, 1, 1, 0.994)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_glbon"]
+texture = ExtResource("3_jix8l")
+region_rect = Rect2(98.5, 4, 91, 25)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nlkkf"]
+texture = ExtResource("3_jix8l")
+region_rect = Rect2(2.5, 1, 91, 28)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dy7ct"]
+texture = ExtResource("4_nlkkf")
+region_rect = Rect2(59, 109, 26, 26)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0o4t1"]
+texture = ExtResource("4_nlkkf")
+region_rect = Rect2(11, 107, 26, 28)
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_06t4h")
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qe12f")
+
+[node name="Panel2" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 37.0
+offset_right = 549.0
+offset_bottom = 596.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_8qtwp")
+
+[node name="Button_Container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.516493
+anchor_top = 0.487654
+anchor_right = 0.516493
+anchor_bottom = 0.487654
+offset_left = -479.0
+offset_top = -182.0
+offset_right = -122.0
+offset_bottom = 196.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 13
+
+[node name="Start" type="Button" parent="Button_Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_outline_color = Color(0.376658, 0.376658, 0.376658, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/hover = SubResource("StyleBoxTexture_glbon")
+theme_override_styles/normal = SubResource("StyleBoxTexture_nlkkf")
+text = "Start Game"
+metadata/_edit_use_anchors_ = true
+
+[node name="Versus" type="Button" parent="Button_Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_outline_color = Color(0.376658, 0.376658, 0.376658, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/hover = SubResource("StyleBoxTexture_glbon")
+theme_override_styles/normal = SubResource("StyleBoxTexture_nlkkf")
+text = "Versus"
+metadata/_edit_use_anchors_ = true
+
+[node name="Settings" type="Button" parent="Button_Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_outline_color = Color(0.376471, 0.376471, 0.376471, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/hover = SubResource("StyleBoxTexture_glbon")
+theme_override_styles/normal = SubResource("StyleBoxTexture_nlkkf")
+text = "Settings"
+
+[node name="Quit" type="Button" parent="Button_Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_outline_color = Color(0.376471, 0.376471, 0.376471, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/hover = SubResource("StyleBoxTexture_glbon")
+theme_override_styles/normal = SubResource("StyleBoxTexture_nlkkf")
+text = "Quit"
+
+[node name="About" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1076.0
+offset_top = 561.0
+offset_right = 1125.0
+offset_bottom = 610.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/hover = SubResource("StyleBoxTexture_dy7ct")
+theme_override_styles/normal = SubResource("StyleBoxTexture_0o4t1")
+text = "?"
+
+[connection signal="pressed" from="Button_Container/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Button_Container/Versus" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Button_Container/Settings" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Button_Container/Quit" to="." method="_on_start_pressed"]
