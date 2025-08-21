@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfftml402mmdo"]
-
-[ext_resource type="PackedScene" uid="uid://68e1oli6ivek" path="res://objects/gui.tscn" id="1_qc6i3"]
-
-[node name="Game_level" type="Node2D"]
-
-[node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="Gui" parent="." instance=ExtResource("1_qc6i3")]
