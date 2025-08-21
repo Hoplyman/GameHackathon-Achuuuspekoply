@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://cbhuu874h1vo8"]
+[gd_scene load_steps=3 format=3 uid="uid://c6sjqtnwnp0gx"]
 
 [ext_resource type="Script" path="res://objects/MainHouse.gd" id="1_cpixq"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_cpixq"]

@@ -47,42 +47,58 @@ func create_ui_elements():
 	turn_indicator = Label.new()
 	turn_indicator.text = "Player 1's Turn"
 	turn_indicator.position = scaled_position(Vector2(50, 50))
-	turn_indicator.add_theme_font_size_override("font_size", scaled_font_size(24))
-	get_parent().call_deferred("add_child", turn_indicator)
+	turn_indicator.add_theme_font_size_override("font_size", scaled_font_size(28))
+	turn_indicator.add_theme_color_override("font_color", Color.WHITE)
+	# Add black outline for better visibility
+	turn_indicator.add_theme_color_override("font_shadow_color", Color.BLACK)
+	turn_indicator.add_theme_constant_override("shadow_offset_x", 2)
+	turn_indicator.add_theme_constant_override("shadow_offset_y", 2)
+	get_parent().add_child(turn_indicator)
 	
-	# Create Player 1 label (bottom side) with scaling
+	# Create Player 1 label (bottom side) - positioned near bottom pits
 	player1_label = Label.new()
-	player1_label.text = "PLAYER 1"
-	player1_label.position = scaled_position(Vector2(800, 200))  # Adjust based on your board
-	player1_label.add_theme_font_size_override("font_size", scaled_font_size(20))
-	player1_label.add_theme_color_override("font_color", Color.BLUE)
-	get_parent().call_deferred("add_child", player1_label)
+	player1_label.text = "PLAYER 1 (BLUE)"
+	player1_label.position = Vector2(600, 520)  # Positioned above bottom row of pits
+	player1_label.add_theme_font_size_override("font_size", scaled_font_size(24))
+	player1_label.add_theme_color_override("font_color", Color.CYAN)
+	# Add black outline for better visibility
+	player1_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	player1_label.add_theme_constant_override("shadow_offset_x", 2)
+	player1_label.add_theme_constant_override("shadow_offset_y", 2)
+	get_parent().add_child(player1_label)
 	
-	# Create Player 2 label (top side) with scaling
+	# Create Player 2 label (top side) - positioned near top pits
 	player2_label = Label.new()
-	player2_label.text = "PLAYER 2"
-	player2_label.position = scaled_position(Vector2(800, 900))  # Adjust based on your board
-	player2_label.add_theme_font_size_override("font_size", scaled_font_size(20))
-	player2_label.add_theme_color_override("font_color", Color.RED)
-	get_parent().call_deferred("add_child", player2_label)
+	player2_label.text = "PLAYER 2 (RED)"
+	player2_label.position = Vector2(600, 800)  # Positioned below top row of pits
+	player2_label.add_theme_font_size_override("font_size", scaled_font_size(24))
+	player2_label.add_theme_color_override("font_color", Color.LIGHT_CORAL)
+	# Add black outline for better visibility
+	player2_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	player2_label.add_theme_constant_override("shadow_offset_x", 2)
+	player2_label.add_theme_constant_override("shadow_offset_y", 2)
+	get_parent().add_child(player2_label)
 	
 	# Wait a frame then update display
 	await get_tree().process_frame
 	update_turn_display()
+	
+	print("UI Elements created successfully!")
 
 func update_turn_display():
 	# Check if UI elements exist before trying to use them
 	if not turn_indicator:
+		print("Turn indicator not found!")
 		return
 		
 	if current_turn == 0:
-		turn_indicator.text = "PLAYER 1's Turn"
-		turn_indicator.add_theme_color_override("font_color", Color.BLUE)
+		turn_indicator.text = "PLAYER 1's Turn (BLUE)"
+		turn_indicator.add_theme_color_override("font_color", Color.CYAN)
 		# Highlight player 1's pits
 		highlight_player_pits(0)
 	else:
-		turn_indicator.text = "PLAYER 2's Turn"
-		turn_indicator.add_theme_color_override("font_color", Color.RED)
+		turn_indicator.text = "PLAYER 2's Turn (RED)"
+		turn_indicator.add_theme_color_override("font_color", Color.LIGHT_CORAL)
 		# Highlight player 2's pits
 		highlight_player_pits(1)
 
@@ -90,22 +106,20 @@ func highlight_player_pits(player: int):
 	# Reset all pit colors first
 	for i in range(pits.size()):
 		var pit = pits[i]
-		var sprite = pit.get_node_or_null("Sprite2D")
-		if sprite:
-			sprite.modulate = Color.WHITE
+		# The pit itself is a Sprite2D, so we modify it directly
+		if pit:
+			pit.modulate = Color.WHITE
 	
 	# Highlight current player's pits
 	var player_range = get_player_pit_range(player)
-	var highlight_color = Color.LIGHT_BLUE if player == 0 else Color.LIGHT_CORAL
+	var highlight_color = Color.CYAN if player == 0 else Color.LIGHT_CORAL
 	
 	for i in range(player_range[0], player_range[1] + 1):
 		var pit = get_pit(i)
 		if pit:
-			var sprite = pit.get_node_or_null("Sprite2D")
-			if sprite:
-				sprite.modulate = highlight_color
-
-# ... (rest of your existing GameManager code stays the same)
+			# The pit itself is a Sprite2D, so we modify it directly
+			pit.modulate = highlight_color
+			print("Highlighted pit ", i, " for player ", player + 1, " with color ", highlight_color)
 
 func handle_pit_click(pit_index: int):
 	if not game_active or is_distributing:
@@ -126,8 +140,8 @@ func handle_pit_click(pit_index: int):
 	distribute_shells(pit_index)
 
 func get_player_pit_range(player: int) -> Array:
-	# Player 0 (Player 1): pits 0-6
-	# Player 1 (Player 2): pits 7-13
+	# Player 0 (Player 1): pits 0-6 (bottom row)
+	# Player 1 (Player 2): pits 7-13 (top row)
 	if player == 0:
 		return [0, 6]
 	else:
@@ -340,8 +354,11 @@ func end_game():
 	var player2_score = get_main_house_shells(1)
 	
 	if player1_score > player2_score:
-		print("Player 1 wins with ", player1_score, " shells!")
+		turn_indicator.text = "PLAYER 1 WINS! (" + str(player1_score) + " shells)"
+		turn_indicator.add_theme_color_override("font_color", Color.CYAN)
 	elif player2_score > player1_score:
-		print("Player 2 wins with ", player2_score, " shells!")
+		turn_indicator.text = "PLAYER 2 WINS! (" + str(player2_score) + " shells)"
+		turn_indicator.add_theme_color_override("font_color", Color.LIGHT_CORAL)
 	else:
-		print("It's a tie! Both players have ", player1_score, " shells!")
+		turn_indicator.text = "IT'S A TIE! (" + str(player1_score) + " shells each)"
+		turn_indicator.add_theme_color_override("font_color", Color.YELLOW)

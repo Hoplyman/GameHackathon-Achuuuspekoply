@@ -26,15 +26,13 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 func _on_mouse_entered():
 	# Store the current color before changing it
 	if associated_pit:
-		var sprite = associated_pit.get_node("Sprite2D")
-		if sprite:
-			original_color = sprite.modulate
-			# Make it brighter by multiplying the current color
-			sprite.modulate = original_color * 1.3  # 30% brighter
+		# The pit itself is a Sprite2D, so we modify it directly
+		original_color = associated_pit.modulate
+		# Make it brighter by multiplying the current color
+		associated_pit.modulate = original_color * 1.4  # 40% brighter
 
 func _on_mouse_exited():
 	# Restore the original color (which could be the player highlight color)
 	if associated_pit:
-		var sprite = associated_pit.get_node("Sprite2D")
-		if sprite:
-			sprite.modulate = original_color
+		# The pit itself is a Sprite2D, so we modify it directly
+		associated_pit.modulate = original_color
