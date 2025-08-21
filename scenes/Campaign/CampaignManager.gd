@@ -132,7 +132,7 @@ func create_campaign_ui():
 	# Create UI container
 	campaign_ui = Control.new()
 	campaign_ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	get_tree().current_scene.add_child(campaign_ui)
+	get_tree().current_scene.add_child.call_deferred(campaign_ui)
 	
 	# Stage label
 	stage_label = Label.new()
@@ -183,7 +183,7 @@ func start_stage(stage_number: int):
 	player_score = 0
 	
 	# Calculate target score based on stage
-	target_score = 200 + (stage_number * 50)  # Increases each stage
+	target_score = 10 + (stage_number * 10)  # Increases each stage
 	
 	# Reset game state
 	current_state = GameState.PLAYING
