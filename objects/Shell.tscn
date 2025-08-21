@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ddb2cc8rptbwo"]
+
+[ext_resource type="Texture2D" uid="uid://cacstupdpj3bt" path="res://assets/Sprites/ShellSprites.png" id="1_r6mts"]
+
+[node name="Shell" type="Sprite2D"]
+texture = ExtResource("1_r6mts")
+hframes = 12
