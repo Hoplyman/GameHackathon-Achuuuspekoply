@@ -1,14 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://c6sjqtnwnp0gx"]
+[gd_scene load_steps=3 format=3 uid="uid://cbhuu874h1vo8"]
 
-[ext_resource type="Script" uid="uid://blhkihyn7nhvt" path="res://objects/MainHouse.gd" id="1_cpixq"]
-[ext_resource type="Texture2D" uid="uid://cvi7xcuocyix7" path="res://icon.svg" id="1_o3qwh"]
+[ext_resource type="Script" path="res://objects/MainHouse.gd" id="1_cpixq"]
+[ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_cpixq"]
 
 [node name="MainHouse" type="Node2D"]
 script = ExtResource("1_cpixq")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
-texture = ExtResource("1_o3qwh")
+texture = ExtResource("2_cpixq")
+hframes = 11
 
 [node name="StoneLabel" type="Label" parent="."]
 offset_left = -113.0

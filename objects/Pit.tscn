@@ -1,19 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://crgh76dqr0wvu"]
+[gd_scene load_steps=4 format=3 uid="uid://ckefdced2oe5c"]
 
 [ext_resource type="Script" uid="uid://cjwsyvlbfgd0s" path="res://objects/Pit.gd" id="1_yhywh"]
-[ext_resource type="Texture2D" uid="uid://cvi7xcuocyix7" path="res://icon.svg" id="2_gvsfr"]
-[ext_resource type="PackedScene" uid="uid://dul2u4plgebux" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
+[ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_gvsfr"]
+[ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
 
-[node name="Pit" type="Node2D"]
+[node name="Pit" type="Sprite2D"]
+texture = ExtResource("2_gvsfr")
+hframes = 11
 script = ExtResource("1_yhywh")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(65, 65)
 texture = ExtResource("2_gvsfr")
+hframes = 11
 
 [node name="ShellLabel" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = -10.0
+offset_bottom = -27.0
 
 [node name="ClickArea" parent="." instance=ExtResource("3_gvsfr")]
-position = Vector2(65, 65)
+show_behind_parent = true
