@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://voekxix6x3pp"
-path="res://.godot/imported/12.FreezeShell.png-5c1db3f2a7cc06898461ca87a626f702.ctex"
+uid="uid://dcbbtr00enb0f"
+path="res://.godot/imported/House.png-352fae5e0feefd67393418619840603f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/12.FreezeShell.png"
-dest_files=["res://.godot/imported/12.FreezeShell.png-5c1db3f2a7cc06898461ca87a626f702.ctex"]
+source_file="res://assets/House.png"
+dest_files=["res://.godot/imported/House.png-352fae5e0feefd67393418619840603f.ctex"]
 
 [params]
 
