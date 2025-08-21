@@ -27,10 +27,10 @@ func take_all_shells() -> int:
 func update_label():
 	shell_label.text = str(shells)
 
-# Show Shell1–Shell37 based on current shell count
 func update_shell_visibility():
-	for i in range(1, 38):  # Shell1 to Shell37
+	var shells_container = get_node("Shells")
+	for i in range(1, 115):
 		var shell_name = "Shell%d" % i
-		var shell = get_node_or_null(shell_name)
+		var shell = shells_container.get_node_or_null(shell_name)
 		if shell:
 			shell.visible = i <= shells

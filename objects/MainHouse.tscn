@@ -19,149 +19,423 @@ offset_right = -73.0
 offset_bottom = -94.0
 text = "0"
 
-[node name="Shell1" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shells" type="Node2D" parent="."]
+
+[node name="Shell1" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
 
-[node name="Shell2" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell2" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(6, 6)
+position = Vector2(9, 9)
 
-[node name="Shell3" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell3" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(6, -6)
+position = Vector2(9, -9)
 
-[node name="Shell4" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell4" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-6, -6)
+position = Vector2(-9, -9)
 
-[node name="Shell5" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell5" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-6, 6)
+position = Vector2(-9, 9)
 
-[node name="Shell6" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell6" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(0, 12)
+position = Vector2(18, 0)
 
-[node name="Shell7" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell7" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(12, 0)
+position = Vector2(0, -18)
 
-[node name="Shell8" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell8" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(0, -12)
+position = Vector2(-18, 0)
 
-[node name="Shell9" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell9" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-12, 0)
+position = Vector2(0, 18)
 
-[node name="Shell10" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-12, 12)
-
-[node name="Shell11" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(12, 12)
-
-[node name="Shell12" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(12, -12)
-
-[node name="Shell13" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-12, -12)
-
-[node name="Shell14" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-18, -6)
-
-[node name="Shell15" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-18, 6)
-
-[node name="Shell16" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-6, 18)
-
-[node name="Shell17" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(6, 18)
-
-[node name="Shell18" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(18, 6)
-
-[node name="Shell19" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(18, -6)
-
-[node name="Shell20" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(6, -18)
-
-[node name="Shell21" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-6, -18)
-
-[node name="Shell22" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-24, 0)
-
-[node name="Shell23" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(0, 24)
-
-[node name="Shell24" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(24, 0)
-
-[node name="Shell25" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(0, -23)
-
-[node name="Shell26" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-18, -18)
-
-[node name="Shell27" parent="." instance=ExtResource("3_8frl5")]
-visible = false
-position = Vector2(-18, 18)
-
-[node name="Shell28" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell10" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
 position = Vector2(18, 18)
 
-[node name="Shell29" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell11" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
 position = Vector2(18, -18)
 
-[node name="Shell30" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell12" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-24, -12)
+position = Vector2(-18, -18)
 
-[node name="Shell31" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell13" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-24, 12)
+position = Vector2(-18, 18)
 
-[node name="Shell32" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell14" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-12, 24)
+position = Vector2(-9, 27)
 
-[node name="Shell33" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell15" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(12, 24)
+position = Vector2(9, 27)
 
-[node name="Shell34" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell16" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(24, 12)
+position = Vector2(27, 9)
 
-[node name="Shell35" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell17" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(24, -12)
+position = Vector2(27, -9)
 
-[node name="Shell36" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell18" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(12, -24)
+position = Vector2(9, -27)
 
-[node name="Shell37" parent="." instance=ExtResource("3_8frl5")]
+[node name="Shell19" parent="Shells" instance=ExtResource("3_8frl5")]
 visible = false
-position = Vector2(-12, -24)
+position = Vector2(-9, -27)
+
+[node name="Shell20" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, -9)
+
+[node name="Shell21" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, 9)
+
+[node name="Shell22" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, 36)
+
+[node name="Shell23" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, 0)
+
+[node name="Shell24" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, -36)
+
+[node name="Shell25" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, 0)
+
+[node name="Shell26" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, 27)
+
+[node name="Shell27" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(27, 27)
+
+[node name="Shell28" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(27, -27)
+
+[node name="Shell29" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, -27)
+
+[node name="Shell30" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, -18)
+
+[node name="Shell31" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, 18)
+
+[node name="Shell32" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, 36)
+
+[node name="Shell33" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, 36)
+
+[node name="Shell34" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, 18)
+
+[node name="Shell35" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, -18)
+
+[node name="Shell36" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, -36)
+
+[node name="Shell37" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, -36)
+
+[node name="Shell38" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-45, -9)
+
+[node name="Shell39" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-45, 9)
+
+[node name="Shell40" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, 45)
+
+[node name="Shell41" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, 45)
+
+[node name="Shell42" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(45, 9)
+
+[node name="Shell43" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(45, -9)
+
+[node name="Shell44" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, -45)
+
+[node name="Shell45" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, -45)
+
+[node name="Shell46" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-54, 0)
+
+[node name="Shell47" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, 54)
+
+[node name="Shell48" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(54, 0)
+
+[node name="Shell49" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, -54)
+
+[node name="Shell50" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, -36)
+
+[node name="Shell51" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, 36)
+
+[node name="Shell52" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, 36)
+
+[node name="Shell53" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, -36)
+
+[node name="Shell54" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(27, -45)
+
+[node name="Shell55" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, -45)
+
+[node name="Shell56" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-45, -27)
+
+[node name="Shell57" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-45, 27)
+
+[node name="Shell58" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, 45)
+
+[node name="Shell59" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(27, 45)
+
+[node name="Shell60" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(45, 27)
+
+[node name="Shell61" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(45, -27)
+
+[node name="Shell62" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, -54)
+
+[node name="Shell63" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, -54)
+
+[node name="Shell64" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-54, -18)
+
+[node name="Shell65" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-54, 18)
+
+[node name="Shell66" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, 54)
+
+[node name="Shell67" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, 54)
+
+[node name="Shell68" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(54, 18)
+
+[node name="Shell69" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(54, -18)
+
+[node name="Shell70" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(45, -45)
+
+[node name="Shell71" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-45, -45)
+
+[node name="Shell72" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-45, 45)
+
+[node name="Shell73" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(45, 45)
+
+[node name="Shell74" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(54, 36)
+
+[node name="Shell75" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(54, -36)
+
+[node name="Shell76" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, -54)
+
+[node name="Shell77" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, -54)
+
+[node name="Shell78" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-54, -36)
+
+[node name="Shell79" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-54, 36)
+
+[node name="Shell80" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-36, 54)
+
+[node name="Shell81" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(36, 54)
+
+[node name="Shell82" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(63, 9)
+
+[node name="Shell83" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(63, -9)
+
+[node name="Shell84" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, -63)
+
+[node name="Shell85" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, -63)
+
+[node name="Shell86" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-63, -9)
+
+[node name="Shell87" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-63, 9)
+
+[node name="Shell88" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, 63)
+
+[node name="Shell89" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, 63)
+
+[node name="Shell90" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, 9)
+
+[node name="Shell91" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, 0)
+
+[node name="Shell92" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, -9)
+
+[node name="Shell93" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, 0)
+
+[node name="Shell94" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, 18)
+
+[node name="Shell95" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, 9)
+
+[node name="Shell96" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(18, -9)
+
+[node name="Shell97" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(9, -18)
+
+[node name="Shell98" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, -18)
+
+[node name="Shell99" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, -9)
+
+[node name="Shell100" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-18, 9)
+
+[node name="Shell101" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-9, 18)
+
+[node name="Shell102" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, 27)
+
+[node name="Shell103" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(27, 0)
+
+[node name="Shell104" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(0, -27)
+
+[node name="Shell105" parent="Shells" instance=ExtResource("3_8frl5")]
+visible = false
+position = Vector2(-27, 0)

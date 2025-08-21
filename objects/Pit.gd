@@ -37,7 +37,7 @@ func update_label():
 
 func update_shell_visibility():
 	var shells_container = get_node("Shells")
-	for i in range(1, 37):  # Shell1 to Shell37
+	for i in range(1, 50):  # Shell1 to Shell50
 		var shell_name = "Shell%d" % i
 		var shell = shells_container.get_node_or_null(shell_name)
 		if shell:
