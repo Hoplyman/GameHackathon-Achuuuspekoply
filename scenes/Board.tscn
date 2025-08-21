@@ -54,7 +54,7 @@ position = Vector2(1286, 663)
 script = ExtResource("2_hs2ul")
 
 [node name="MainHouse1" parent="." groups=["main_houses"] instance=ExtResource("3_66b1s")]
-position = Vector2(302, 642)
+position = Vector2(302, 659)
 
 [node name="MainHouse2" parent="." groups=["main_houses"] instance=ExtResource("3_66b1s")]
 position = Vector2(1564, 659)
