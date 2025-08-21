@@ -11,9 +11,7 @@ config_version=5
 [application]
 
 config/name="Sungka"
-
 run/main_scene="uid://5gfo7bqx7y0u"
-
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://Main Menu/icon.svg"
 
@@ -23,10 +21,8 @@ ResolutionManager="*res://Scripts/ResolutionManager.gd"
 
 [display]
 
-window/size/viewport_width=1280
-window/size/viewport_height=1080
+window/size/resizable=false
 window/stretch/mode="viewport"
-window/stretch/aspect="expand"
 
 [rendering]
 
