@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bcb6042rmhtnw" path="res://objects/ClickArea.gd" id="1_b1yj3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_b1yj3"]
-radius = 42.0
+radius = 50.01
 
 [node name="ClickArea" type="Area2D"]
 script = ExtResource("1_b1yj3")
