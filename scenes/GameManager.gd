@@ -11,37 +11,58 @@ var turn_indicator: Label
 var player1_label: Label
 var player2_label: Label
 
+# Resolution scaling
+var base_resolution = Vector2(1920, 1080)
+var ui_scale_factor: float = 1.0
+
 func _ready():
 	add_to_group("game_manager")  # Add to group so pits can find us
 	pits = get_tree().get_nodes_in_group("pits")
 	main_houses = get_tree().get_nodes_in_group("main_houses")
+	
+	# Calculate UI scale factor
+	calculate_ui_scale()
+	
 	call_deferred("create_ui_elements")
 	call_deferred("start_game")
+
+func calculate_ui_scale():
+	var viewport_size = get_viewport().get_visible_rect().size
+	var width_ratio = viewport_size.x / base_resolution.x
+	var height_ratio = viewport_size.y / base_resolution.y
+	ui_scale_factor = min(width_ratio, height_ratio)
+	print("UI Scale factor: ", ui_scale_factor)
+
+func scaled_font_size(base_size: int) -> int:
+	return int(base_size * ui_scale_factor)
+
+func scaled_position(base_pos: Vector2) -> Vector2:
+	return base_pos * ui_scale_factor
 
 func create_ui_elements():
 	# Wait for the scene to be ready before adding UI elements
 	await get_tree().process_frame
 	
-	# Create turn indicator
+	# Create turn indicator with scaled font and position
 	turn_indicator = Label.new()
 	turn_indicator.text = "Player 1's Turn"
-	turn_indicator.position = Vector2(50, 50)
-	turn_indicator.add_theme_font_size_override("font_size", 24)
+	turn_indicator.position = scaled_position(Vector2(50, 50))
+	turn_indicator.add_theme_font_size_override("font_size", scaled_font_size(24))
 	get_parent().call_deferred("add_child", turn_indicator)
 	
-	# Create Player 1 label (bottom side)
+	# Create Player 1 label (bottom side) with scaling
 	player1_label = Label.new()
 	player1_label.text = "PLAYER 1"
-	player1_label.position = Vector2(800, 200)  # Adjust based on your board
-	player1_label.add_theme_font_size_override("font_size", 20)
+	player1_label.position = scaled_position(Vector2(800, 200))  # Adjust based on your board
+	player1_label.add_theme_font_size_override("font_size", scaled_font_size(20))
 	player1_label.add_theme_color_override("font_color", Color.BLUE)
 	get_parent().call_deferred("add_child", player1_label)
 	
-	# Create Player 2 label (top side)
+	# Create Player 2 label (top side) with scaling
 	player2_label = Label.new()
 	player2_label.text = "PLAYER 2"
-	player2_label.position = Vector2(800, 900)  # Adjust based on your board
-	player2_label.add_theme_font_size_override("font_size", 20)
+	player2_label.position = scaled_position(Vector2(800, 900))  # Adjust based on your board
+	player2_label.add_theme_font_size_override("font_size", scaled_font_size(20))
 	player2_label.add_theme_color_override("font_color", Color.RED)
 	get_parent().call_deferred("add_child", player2_label)
 	
@@ -83,6 +104,8 @@ func highlight_player_pits(player: int):
 			var sprite = pit.get_node_or_null("Sprite2D")
 			if sprite:
 				sprite.modulate = highlight_color
+
+# ... (rest of your existing GameManager code stays the same)
 
 func handle_pit_click(pit_index: int):
 	if not game_active or is_distributing:
