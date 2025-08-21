@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Sungka"
+run/main_scene="uid://5gfo7bqx7y0u"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
