@@ -313,8 +313,7 @@ func complete_stage():
 	currency += bonus_currency
 	print("Earned ", bonus_currency, " gold!")
 	
-	# Save progress
-	save_campaign_progress()
+	
 	
 	stage_completed.emit()
 	
@@ -549,7 +548,32 @@ func continue_to_next_stage():
 		if child is Panel and child.size.x > 400:
 			child.queue_free()
 	
+	# Get the CampaignGameManager inside BoardC
+	var game_manager = get_node("../BoardC/CampaignGameManager")
+
+	# Call its start_new_round
+	if game_manager.has_method("start_new_round"):
+		game_manager.start_new_round()
+	else:
+		print("CampaignGameManager does not have start_new_round()")
+
+	# Continue with starting the next stage
 	start_stage(current_stage + 1)
+
+	# Clean up shop UI
+	for child in campaign_ui.get_children():
+		if child is Panel and child.size.x > 400:
+			child.queue_free()
+	
+	# Get the BoardC node (adjust the path if needed)
+	var board = get_node("../BoardC")  # or $"../BoardC" depending on your tree
+
+	# Call its function
+	if board.has_method("start_new_round"):
+		board.start_new_round()
+	else:
+		print("BoardC does not have start_new_round()")
+	# Continue with starting the next stage
 
 func update_ui():
 	if stage_label:
@@ -679,9 +703,9 @@ func save_campaign_progress():
 	
 	var file = FileAccess.open("user://campaign_save.dat", FileAccess.WRITE)
 	if file:
-		file.store_string(JSON.stringify(save_data))
+		file.store_string(JSON.stringify(save_data, "\t"))  # pretty JSON
 		file.close()
-		print("Campaign progress saved!")
+		print("Campaign progress saved at: ", ProjectSettings.globalize_path("user://campaign_save.dat"))
 
 func load_campaign_progress():
 	if FileAccess.file_exists("user://campaign_save.dat"):
@@ -843,3 +867,7 @@ func skip_to_stage(stage_num: int):
 	print("Skipped to stage ", stage_num, " (debug)")
 	
 	
+
+
+func _on_save_pressed() -> void:
+	save_campaign_progress()

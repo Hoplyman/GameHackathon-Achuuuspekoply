@@ -67,8 +67,8 @@ func start_campaign_game():
 	
 	# Initialize main houses
 	for house in main_houses:
-		if house.has_method("set_shells"):
-			house.set_shells(0)
+		if house.has_method("take_all_shells"):
+			house.take_all_shells()
 
 func setup_pits_with_shells():
 	# Distribute player's shells across the pits (reset to starting positions)
@@ -266,8 +266,8 @@ func reset_for_next_round():
 	
 	# Clear main houses but keep shell types for next round
 	for house in main_houses:
-		if house.has_method("set_shells"):
-			house.set_shells(0)
+		if house.has_method("take_all_shells"):
+			house.take_all_shells()
 	
 	# Redistribute shells to pits (keeping same shell types/data)
 	setup_pits_with_shells()
