@@ -9,3 +9,19 @@
 
 [node name="CampaignManager" type="Node" parent="." groups=["campaign_manager"]]
 script = ExtResource("2_ru8ed")
+
+[node name="Save" type="Button" parent="."]
+offset_left = 1032.0
+offset_top = 376.0
+offset_right = 1139.0
+offset_bottom = 422.0
+
+[node name="Label" type="Label" parent="Save"]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 13.0
+offset_right = 67.0
+offset_bottom = 36.0
+text = "Save"
+
+[connection signal="pressed" from="Save" to="CampaignManager" method="_on_save_pressed"]
