@@ -18,16 +18,20 @@ config/icon="res://Main Menu/icon.svg"
 [autoload]
 
 ResolutionManager="*res://Scripts/ResolutionManager.gd"
-CampaignManager="*res://scenes/Campaign/CampaignManager.gd"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/mode=3
+window/size/resizable=false
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 <<<<<<<HEADwindow/size/viewport_width=1920
+
+[global_group]
+
+campaign_manager=""
 
 [rendering]
 

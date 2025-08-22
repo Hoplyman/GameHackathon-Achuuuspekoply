@@ -71,19 +71,27 @@ func start_campaign_game():
 			house.set_shells(0)
 
 func setup_pits_with_shells():
-	# Distribute player's shells across the pits
-	for i in range(min(pits.size(), player_shells.size())):
+	# Distribute player's shells across the pits (reset to starting positions)
+	var shells_per_pit = 7  # Standard starting amount
+	
+	for i in range(min(pits.size(), 7)):  # Only first 7 pits for campaign
 		var pit = pits[i]
 		if pit:
-			# Set basic shell count (we'll handle special effects during gameplay)
-			pit.set_shells(7)  # Base amount
+			# Reset to base shell count
+			pit.set_shells(shells_per_pit)
 			
-			# Store the shell data for later use
-			if pit.has_method("set_shell_data"):
-				pit.set_shell_data(player_shells[i])
+			# Restore original shell type data (keep the special shell types player collected)
+			if i < player_shells.size() and player_shells[i] != null:
+				if pit.has_method("set_shell_data"):
+					pit.set_shell_data(player_shells[i])
+				else:
+					pit.set_meta("shell_data", player_shells[i])
 			else:
-				# Add shell data as metadata if method doesn't exist
-				pit.set_meta("shell_data", player_shells[i])
+				# Default shell type if no special shell assigned
+				var default_shell = {"type": "tahong", "value": 1, "effect": "none"}
+				pit.set_meta("shell_data", default_shell)
+	
+	print("Pits setup complete - All pits reset to ", shells_per_pit, " shells each")
 
 func handle_pit_click(pit_index: int):
 	if not game_active or is_distributing:
@@ -237,3 +245,36 @@ func end_game_out_of_moves():
 	if campaign_manager:
 		# Campaign manager will check if target score was reached
 		pass
+
+func reset_for_next_round():
+	"""Reset the board state for next round while keeping shell types"""
+	print("Resetting for next round...")
+	
+	# Reset game state
+	game_active = true
+	is_distributing = false
+	moves_made = 0
+	
+	# Reset UI
+	if turn_indicator:
+		turn_indicator.text = "Your Turn - Choose a pit!"
+		turn_indicator.add_theme_color_override("font_color", Color.CYAN)
+	
+	if moves_label:
+		moves_label.text = "Moves: 0/" + str(max_moves)
+		moves_label.add_theme_color_override("font_color", Color.WHITE)
+	
+	# Clear main houses but keep shell types for next round
+	for house in main_houses:
+		if house.has_method("set_shells"):
+			house.set_shells(0)
+	
+	# Redistribute shells to pits (keeping same shell types/data)
+	setup_pits_with_shells()
+	
+	print("Board reset complete - Ready for next round!")
+
+func start_new_round(new_max_moves: int = 50):
+	"""Called by campaign manager to start a fresh round"""
+	max_moves = new_max_moves
+	reset_for_next_round()
