@@ -3,8 +3,12 @@
 [ext_resource type="Script" uid="uid://cjwsyvlbfgd0s" path="res://objects/Pit.gd" id="1_yhywh"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_gvsfr"]
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
+<<<<<<< HEAD
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gvsfr"]
+=======
+[ext_resource type="PackedScene" uid="uid://ddb2cc8rptbwo" path="res://objects/Shell.tscn" id="4_u1ng0"]
+>>>>>>> c3a88885406c8062b1642246661ffbdd696d0586
 
 [node name="Pit" type="Sprite2D"]
 texture = ExtResource("2_gvsfr")
