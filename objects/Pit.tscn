@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gvsfr"]
-=======
 
 
 [node name="Pit" type="Sprite2D"]
