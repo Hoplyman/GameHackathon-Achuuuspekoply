@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://5gfo7bqx7y0u"]
+
+[ext_resource type="Script" uid="uid://b3vvq5tna3oo7" path="res://scenes/Gameplay.gd" id="1_a8mty"]
+[ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
+[ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_gnmmn"]
+[ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4rwr5"]
+
+[node name="Gameplay" type="Node2D"]
+script = ExtResource("1_a8mty")
+
+[node name="Pit1" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(1285, 600)
+
+[node name="Pit2" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(1145, 600)
+
+[node name="Pit3" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(1007, 600)
+
+[node name="Pit4" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(868, 600)
+
+[node name="Pit5" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(732, 600)
+
+[node name="Pit6" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(594, 600)
+
+[node name="Pit7" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(454, 600)
+
+[node name="Pit8" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(453, 750)
+
+[node name="Pit9" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(596, 750)
+
+[node name="Pit10" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(730, 750)
+
+[node name="Pit11" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(867, 750)
+
+[node name="Pit12" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(1004, 750)
+
+[node name="Pit13" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(1145, 750)
+
+[node name="Pit14" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
+position = Vector2(1286, 750)
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("3_gnmmn")
+
+[node name="MainHouse1" parent="." groups=["main_houses"] instance=ExtResource("4_4rwr5")]
+position = Vector2(250, 675)
+
+[node name="MainHouse2" parent="." groups=["main_houses"] instance=ExtResource("4_4rwr5")]
+position = Vector2(1500, 675)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(869, 672)
+zoom = Vector2(0.8, 0.8)
