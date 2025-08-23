@@ -5,7 +5,7 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8frl5"]
 
-[node name="MainHouse" type="StaticBody2D"]
+[node name="MainHouse" type="StaticBody2D" groups=["main_houses"]]
 script = ExtResource("1_cpixq")
 
 [node name="MainHouseSprite" type="Sprite2D" parent="."]

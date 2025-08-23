@@ -42,6 +42,7 @@ func spawn_shells():
 		var pitx = pit_node.position.x
 		var pity = pit_node.position.y
 		gameplay.set_shells(shells, pitx, pity)
+		print("Pit found in group")
 	else:
 		print("Pit not found in group or gameplay not assigned!")
 
