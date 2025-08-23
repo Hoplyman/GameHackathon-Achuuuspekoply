@@ -1,15 +1,16 @@
 extends Node2D
 
-@onready var label = $ShellLabel
-@onready var shell_area = $GravityArea
-
 var shells: int = 0
-var fshells: int = 0
+
+@onready var timer := $Timer  # Access the Timer node
+@onready var label = $ShellLabel
 
 func _ready():
-	update_label()
 	setup_click_area()	
 	add_to_group("pits")
+	timer.connect("timeout", Callable(self, "_on_timer_timeout"))
+	timer.start()
+	update_label()
 
 func setup_click_area():
 	var click_area = get_node_or_null("ClickArea")
@@ -23,19 +24,22 @@ func setup_click_area():
 		print("Warning: No ClickArea found in ", name)
 
 func set_shells(amount: int):
+	var oldshell = shells
 	shells = amount
-	update_label()
-	spawn_shells()
+	spawn_shells(oldshell, shells)
 	
 func add_shells(amount: int):
+	var oldshell = shells
 	shells += amount
-	update_label()
-	spawn_shells()
+	spawn_shells(oldshell, shells)
+	
+func move_shells():
+	pass
 
-func spawn_shells():
+func spawn_shells(shells:int ,amount: int):
 	var gamemode: String = ""
-	var pvp = get_tree().root.get_node("Gameplay")
-	var campaign = get_tree().root.get_node("Campaign")
+	var campaign = get_tree().root.get_node_or_null("Campaign")
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	var pits = get_tree().get_nodes_in_group("pits")
 	var pit_index = pits.find(self)
 	if campaign:
@@ -56,24 +60,31 @@ func spawn_shells():
 		var pit_node = pits[pit_index]
 		var pitx = pit_node.position.x
 		var pity = pit_node.position.y
-		pvp.set_shells(shells, pitx, pity)
+		pvp.set_shells(shells, amount, pitx, pity)
 		print("Pit found in group")
 	else:
 		print("Pit not found in group")
 		return 0
 
-func update_label():
-	var shell_count = fshells
-	if label:
-		label.text = str(shell_count)
-	else:
-		print("Warning: ShellLabel not found in Pit")
-		
+func _on_timer_timeout():
+	print("Timer triggered!")
+
+	# No need to check timer.value — the timeout already means 1 second passed
+	shells = count_shells_in_area()
+	update_label()
+	print("Shells in area:", shells)
+
+	var value := 0
+	print("Value reset to:", value)
+	# Restart the timer to loop
+	timer.start()
+
 func count_shells_in_area() -> int:
+	var cshells: int = 0
 	var gamemode: String = ""
-	var pvp = get_tree().root.get_node("Gameplay")
-	var campaign = get_tree().root.get_node("Campaign")
-	fshells = 0
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var campaign = get_tree().root.get_node_or_null("Campaign")
+	shells = 0
 	if campaign:
 		print("Campaign found!")
 		gamemode = "Campaign"
@@ -82,30 +93,42 @@ func count_shells_in_area() -> int:
 		gamemode = ("Pvp")
 	else:
 		gamemode = ""
+		
+	var shell_area = get_node("ShellArea")
+	var overlapping_bodies = shell_area.get_overlapping_bodies()
+
 	if gamemode == "Campaign":
 		for child in campaign.get_children():
-			if child.name.begins_with("Shell"):  # Or use `is Shell` if you use a script class
-				if shell_area and shell_area.overlaps_body(child):
-					fshells += 1
-		return fshells
+			if child is RigidBody2D:
+				if child in overlapping_bodies:
+					print("Shell overlapping in Campaign:", child.name)
+					cshells += 1
+		return cshells
+
 	elif gamemode == "Pvp":
 		for child in pvp.get_children():
-			if child.name.begins_with("Shell"):  # Or use `is Shell` if you use a script class
-				if shell_area and shell_area.overlaps_body(child):
-					fshells += 1
-		return fshells
+			if child is RigidBody2D:
+				if child in overlapping_bodies:
+					print("Shell overlapping in Pvp:", child.name)
+					cshells += 1
+		return cshells
 	else:
 		return 0
-	
 
-func _on_gravity_area_body_entered(body: Node2D) -> void:
+
+func _on_shell_area_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D:
 		print("RigidBody2D entered:", body.name)
-		var shell_count := count_shells_in_area()
-		print("Shells in area:", shell_count)
+		update_label()
 
-func _on_gravity_area_body_exited(body: Node2D) -> void:
+func _on_shell_area_body_exited(body: Node2D) -> void:
 	if body is RigidBody2D:
 		print("RigidBody2D exited:", body.name)
-		var shell_count := count_shells_in_area()
-		print("Shells in area after exit:", shell_count)
+		update_label()
+		
+func update_label():
+	var shell_count = shells
+	if label:
+		label.text = str(shell_count)
+	else:
+		print("Warning: ShellLabel not found in Pit")

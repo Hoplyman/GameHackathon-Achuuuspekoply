@@ -248,7 +248,8 @@ func start_game():
 	print("Starting Shell Masters game!")
 	# Initialize pits with shells
 	for pit in pits:
-		pit.set_shells(7)  # put 7 shells in each pit
+		pit.set_shells(7)
+	  # put 7 shells in each pit
 	
 	# Initialize main houses (basic setup)
 	for house in main_houses:
