@@ -6,10 +6,9 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gvsfr"]
 
-
-[node name="Pit" type="Sprite2D"]
-texture = ExtResource("2_gvsfr")
-hframes = 11
+[node name="Pit" type="StaticBody2D"]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("1_yhywh")
 
 [node name="ShellLabel" type="Label" parent="."]
@@ -21,16 +20,27 @@ offset_bottom = -27.0
 [node name="ClickArea" parent="." instance=ExtResource("3_gvsfr")]
 show_behind_parent = true
 
-[node name="CollisionArea" type="Area2D" parent="."]
-modulate = Color(0.991164, 0.991164, 0.991164, 1)
-position = Vector2(87, 2)
-scale = Vector2(5, 5)
-gravity_space_override = 1
-gravity_point = true
+[node name="PitSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_gvsfr")
+hframes = 11
 
-[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="CollisionArea"]
-position = Vector2(-17.4, -0.4)
-scale = Vector2(0.6, 0.6)
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]
+scale = Vector2(3, 3)
 polygon = PackedVector2Array(-0.333333, -11.6667, -4.66667, -10.6667, -8, -8.33333, -10.6667, -4.66667, -11.6667, 0, -10.6667, 4.66667, -8.33333, 8, -4.66667, 10.6667, 0, 11.6667, 4.66667, 10.6667, 8.33333, 8, 10.6667, 4.66667, 11.6667, 0, 10.6667, -4.66667, 8, -8.33333, 4.66667, -10.6667, 0.333333, -11.6667, -0.333333, -13.6667, 0.333333, -13.6667, 5.33333, -12.6667, 9.66667, -9.66667, 12.6667, -5.33333, 13.6667, 0, 12.6667, 5.33333, 9.66667, 9.66667, 5.33333, 12.6667, 0, 13.6667, -5.33333, 12.6667, -9.66667, 9.66667, -12.6667, 5.33333, -13.6667, 0, -12.6667, -5.33333, -9.66667, -9.66667, -5.33333, -12.6667, -0.333333, -13.6667, 0.333333, -11.6667)
 
-[node name="ShellArea" type="Area2D" parent="."]
+[node name="GravityArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector2(1, 1)
+gravity_direction = Vector2(1, 1)
+gravity = 100.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityArea"]
+scale = Vector2(3.4, 3.4)
+shape = SubResource("CircleShape2D_gvsfr")
+debug_color = Color(1, 1, 1, 0.42)
+
+[connection signal="body_entered" from="GravityArea" to="." method="_on_gravity_area_body_entered"]
+[connection signal="body_exited" from="GravityArea" to="." method="_on_gravity_area_body_exited"]
