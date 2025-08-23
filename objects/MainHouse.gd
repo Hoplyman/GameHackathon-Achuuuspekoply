@@ -7,6 +7,7 @@ var shells: int = 0
 
 func _ready():
 	update_label()
+	add_to_group("main_houses")
 
 # Add shells
 func add_shells(amount: int):

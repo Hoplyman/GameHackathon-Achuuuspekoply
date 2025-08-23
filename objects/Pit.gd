@@ -10,6 +10,7 @@ var gameplay  # assigned externally by the manager
 func _ready():
 	update_label()
 	setup_click_area()	
+	add_to_group("pits")
 
 func setup_click_area():
 	var click_area = get_node_or_null("ClickArea")

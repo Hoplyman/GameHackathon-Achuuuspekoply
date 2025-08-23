@@ -32,6 +32,8 @@ window/stretch/aspect="expand"
 [global_group]
 
 campaign_manager=""
+pits=""
+main_houses=""
 
 [layer_names]
 
