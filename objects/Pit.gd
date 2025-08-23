@@ -5,7 +5,7 @@ extends Node2D
 
 var shells: int = 0
 var fshells: int = 0
-var gameplay  # will be set by the manager
+var gameplay  # assigned externally by the manager
 
 func _ready():
 	update_label()
@@ -44,7 +44,6 @@ func spawn_shells():
 	else:
 		print("Pit not found in group or gameplay not assigned!")
 
-	
 func update_label():
 	var shell_count = fshells
 	if label:
@@ -53,12 +52,14 @@ func update_label():
 		print("Warning: ShellLabel not found in Pit")
 		
 func count_shells_in_area() -> int:
-	var shell_area = get_node_or_null("GravityArea")
-	var gameplay = get_tree().root.get_node("Gameplay")  # Adjust path as needed
 	fshells = 0
+	if not gameplay:
+		print("Gameplay not assigned in Pit!")
+		return 0
+
 	for child in gameplay.get_children():
-		if child.name.begins_with("Shell"):  # Or use `is ShellClass` if applicable
-			if shell_area.overlaps_body(child):  # Checks if the shell is inside the Area2D
+		if child.name.begins_with("Shell"):  # Or use `is Shell` if you use a script class
+			if shell_area and shell_area.overlaps_body(child):
 				fshells += 1
 	return fshells
 
@@ -73,4 +74,3 @@ func _on_gravity_area_body_exited(body: Node2D) -> void:
 		print("RigidBody2D exited:", body.name)
 		var shell_count := count_shells_in_area()
 		print("Shells in area after exit:", shell_count)
-		
