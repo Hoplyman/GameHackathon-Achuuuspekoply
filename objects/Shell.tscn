@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ddb2cc8rptbwo"]
 
 [ext_resource type="Texture2D" uid="uid://cacstupdpj3bt" path="res://assets/Sprites/ShellSprites.png" id="1_r6mts"]
-[ext_resource type="Script" uid="uid://chihm8wg1872a" path="res://objects/shell.gd" id="2_uej0b"]
+[ext_resource type="Script" path="res://objects/shell.gd" id="2_uej0b"]
 
 [node name="Shell" type="Sprite2D"]
 texture = ExtResource("1_r6mts")
