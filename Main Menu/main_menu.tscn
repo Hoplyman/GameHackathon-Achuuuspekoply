@@ -310,7 +310,6 @@ text = "?"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tgyvh")
 autoplay = true
-bus = &"Music"
 
 [node name="Settings Panel" type="Panel" parent="."]
 layout_mode = 1
