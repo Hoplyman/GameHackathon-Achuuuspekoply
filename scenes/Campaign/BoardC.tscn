@@ -6,28 +6,28 @@
 
 [node name="BoardC" type="Node2D"]
 
-[node name="Pit1" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit1" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(699, 560)
 
-[node name="Pit2" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit2" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(664, 684)
 
-[node name="Pit3" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit3" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(715, 806)
 
-[node name="Pit4" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit4" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(867, 848)
 
-[node name="Pit5" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit5" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(1003, 817)
 
-[node name="Pit6" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit6" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(1072, 688)
 
-[node name="Pit7" parent="." groups=["pits"] instance=ExtResource("2_d6s7t")]
+[node name="Pit7" parent="." instance=ExtResource("2_d6s7t")]
 position = Vector2(1039, 554)
 
-[node name="MainHouse1" parent="." groups=["main_houses"] instance=ExtResource("4_4nujt")]
+[node name="MainHouse1" parent="." instance=ExtResource("4_4nujt")]
 position = Vector2(872, 490)
 
 [node name="Camera2D" type="Camera2D" parent="."]

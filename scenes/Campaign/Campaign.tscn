@@ -1,9 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddr6vc600sy3g"]
+[gd_scene load_steps=4 format=3 uid="uid://ddr6vc600sy3g"]
 
 [ext_resource type="PackedScene" uid="uid://dhl7lyh8ulnim" path="res://scenes/Campaign/BoardC.tscn" id="1_1u1o0"]
+[ext_resource type="Script" uid="uid://bxi78pycvdork" path="res://scenes/Campaign/campaign.gd" id="1_x5nh7"]
 [ext_resource type="Script" uid="uid://bbggvj5723soo" path="res://scenes/Campaign/CampaignManager.gd" id="2_ru8ed"]
 
 [node name="Campaign" type="Node2D"]
+script = ExtResource("1_x5nh7")
 
 [node name="BoardC" parent="." instance=ExtResource("1_1u1o0")]
 

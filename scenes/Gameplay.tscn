@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://oxqv1afhmwa5"]
+[gd_scene load_steps=6 format=3 uid="uid://oxqv1afhmwa5"]
 
+[ext_resource type="Script" uid="uid://b3vvq5tna3oo7" path="res://scenes/Gameplay.gd" id="1_a8mty"]
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
 [ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_gnmmn"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4rwr5"]
@@ -11,6 +12,7 @@ _data = {
 point_count = 18
 
 [node name="Gameplay" type="Node2D"]
+script = ExtResource("1_a8mty")
 
 [node name="Pit1" parent="." instance=ExtResource("2_jfxgp")]
 position = Vector2(1285, 600)
@@ -57,10 +59,10 @@ position = Vector2(1286, 750)
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("3_gnmmn")
 
-[node name="MainHouse1" parent="." groups=["main_houses"] instance=ExtResource("4_4rwr5")]
+[node name="MainHouse1" parent="." instance=ExtResource("4_4rwr5")]
 position = Vector2(250, 675)
 
-[node name="MainHouse2" parent="." groups=["main_houses"] instance=ExtResource("4_4rwr5")]
+[node name="MainHouse2" parent="." instance=ExtResource("4_4rwr5")]
 position = Vector2(1500, 675)
 
 [node name="Camera2D" type="Camera2D" parent="."]
