@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=3 uid="uid://oxqv1afhmwa5"]
+[gd_scene load_steps=5 format=3 uid="uid://oxqv1afhmwa5"]
 
-[ext_resource type="Script" path="res://scenes/board.gd" id="1_a8mty"]
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
 [ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_gnmmn"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4rwr5"]
@@ -12,7 +11,6 @@ _data = {
 point_count = 18
 
 [node name="Gameplay" type="Node2D"]
-script = ExtResource("1_a8mty")
 
 [node name="Pit1" parent="." groups=["pits"] instance=ExtResource("2_jfxgp")]
 position = Vector2(1285, 600)

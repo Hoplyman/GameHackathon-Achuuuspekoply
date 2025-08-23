@@ -5,6 +5,7 @@ extends Node2D
 
 var shells: int = 0
 var fshells: int = 0
+var gameplay  # will be set by the manager
 
 func _ready():
 	update_label()
@@ -32,17 +33,16 @@ func add_shells(amount: int):
 	spawn_shells()
 
 func spawn_shells():
-	var gameplay = get_tree().root.get_node("Gameplay")  # Adjust path as needed
 	var pits = get_tree().get_nodes_in_group("pits")
 	var pit_index = pits.find(self)
 
-	if pit_index != -1:
+	if pit_index != -1 and gameplay:
 		var pit_node = pits[pit_index]
 		var pitx = pit_node.position.x
 		var pity = pit_node.position.y
 		gameplay.set_shells(shells, pitx, pity)
 	else:
-		print("Pit not found in group!")
+		print("Pit not found in group or gameplay not assigned!")
 
 	
 func update_label():
@@ -73,3 +73,4 @@ func _on_gravity_area_body_exited(body: Node2D) -> void:
 		print("RigidBody2D exited:", body.name)
 		var shell_count := count_shells_in_area()
 		print("Shells in area after exit:", shell_count)
+		

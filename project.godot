@@ -18,7 +18,6 @@ config/icon="res://Main Menu/icon.svg"
 [autoload]
 
 ResolutionManager="*res://Scripts/ResolutionManager.gd"
-CampaignManager="*res://scenes/Campaign/CampaignManager.gd"
 
 [display]
 

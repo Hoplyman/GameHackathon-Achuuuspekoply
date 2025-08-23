@@ -1,12 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://4dldi0onjqhq"]
+[gd_scene load_steps=4 format=3 uid="uid://4dldi0onjqhq"]
 
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="1_qails"]
-[ext_resource type="Script" path="res://scenes/board.gd" id="1_w6jgk"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="3_66b1s"]
 [ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_w6jgk"]
 
 [node name="Board" type="Node2D"]
-script = ExtResource("1_w6jgk")
 
 [node name="Pit1" parent="." groups=["pits"] instance=ExtResource("1_qails")]
 position = Vector2(1285, 600)
