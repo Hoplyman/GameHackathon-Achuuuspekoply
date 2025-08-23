@@ -1,22 +1,42 @@
-[gd_scene load_steps=37 format=3 uid="uid://c7ycxw704aoix"]
+[gd_scene load_steps=50 format=3 uid="uid://c7ycxw704aoix"]
 
 [ext_resource type="Script" uid="uid://ckvqu10j4uyqw" path="res://Main Menu/main_menu.gd" id="1_06t4h"]
 [ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="2_fu7sn"]
-[ext_resource type="Texture2D" uid="uid://b6uuta54yl4u" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/Untitled design (2).png" id="2_jix8l"]
-[ext_resource type="Texture2D" uid="uid://ouwrpivkeqot" path="res://Main Menu/assets/Particles.png" id="3_ft8e8"]
+[ext_resource type="Texture2D" uid="uid://b6uuta54yl4u" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/Untitled design (2).png" id="2_jix8l"]
+[ext_resource type="AudioStream" uid="uid://diqsrtsg3vhaj" path="res://Main Menu/assets/Eric Skiff - A Night Of Dizzy Spells.mp3" id="2_tgyvh"]
+[ext_resource type="Texture2D" uid="uid://bal5ih3u052u6" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/Flare_small.PNG" id="3_ev4s5"]
 [ext_resource type="Texture2D" uid="uid://y2l8wwy744h4" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/Setting menu.png" id="3_glbon"]
 [ext_resource type="Texture2D" uid="uid://dr8sfk5sgfdl6" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/UI Big Play Button.png" id="3_jix8l"]
 [ext_resource type="Texture2D" uid="uid://bp04w0mmq5mpw" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/Sprite sheets/buttons/Square Buttons 26x26.png" id="4_nlkkf"]
+[ext_resource type="Script" uid="uid://dckamjku3xdbs" path="res://Main Menu/gpu_particles_2d.gd" id="4_qm7iq"]
 [ext_resource type="Script" uid="uid://dsga2360d8l3n" path="res://Main Menu/settings_panel.gd" id="8_2ekim"]
+[ext_resource type="Script" uid="uid://b2sqrlc6h1k1v" path="res://Main Menu/check_button.gd" id="9_hd3la"]
+[ext_resource type="Script" uid="uid://43bgkclegbv1" path="res://Main Menu/scale_control.gd" id="10_b6svo"]
+[ext_resource type="Script" uid="uid://da6g7lfkabkx" path="res://Main Menu/audio_control.gd" id="10_eq6yn"]
+[ext_resource type="Texture2D" uid="uid://cvpcrfavrq4rd" path="res://Main Menu/assets/Untitled4_20250823184647.png" id="12_eq6yn"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qe12f"]
 texture = ExtResource("2_jix8l")
 region_rect = Rect2(0, 16, 1984, 1312)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2ekim"]
+[sub_resource type="Gradient" id="Gradient_ev4s5"]
+offsets = PackedFloat32Array(0, 0.0818182, 0.309091, 0.718182, 1)
+colors = PackedColorArray(0.983202, 0.90256, 0.517249, 1, 0.921547, 0.785048, 0.186335, 1, 0.954166, 0.754408, 0.191949, 1, 0.965333, 0.667459, 3.85046e-07, 1, 0.9509, 0.65724, 3.85046e-07, 1)
 
-[sub_resource type="Gradient" id="Gradient_hd3la"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qm7iq"]
+gradient = SubResource("Gradient_ev4s5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jhmoq"]
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(640, 360, 1)
+gravity = Vector3(0, 0, 0)
+linear_accel_min = -2.23517e-06
+linear_accel_max = 3.0
+scale_min = 0.3
+scale_max = 0.6
+color_ramp = SubResource("GradientTexture1D_qm7iq")
+turbulence_enabled = true
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8qtwp"]
 texture = ExtResource("3_glbon")
@@ -72,6 +92,8 @@ region_rect = Rect2(99, 3, 90, 27)
 texture = ExtResource("4_nlkkf")
 region_rect = Rect2(59, 109, 26, 26)
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ev4s5"]
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0o4t1"]
 texture = ExtResource("4_nlkkf")
 region_rect = Rect2(11, 107, 26, 28)
@@ -114,6 +136,37 @@ border_color = Color(0.768627, 0.603922, 0.423529, 1)
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xn1h2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eq6yn"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tgyvh"]
+bg_color = Color(0.909804, 0.811765, 0.65098, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.666667, 0.47451, 0.34902, 1)
+expand_margin_left = 11.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ev4s5"]
+bg_color = Color(0.909804, 0.811765, 0.65098, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.819608, 0.666667, 0.486275, 1)
+expand_margin_left = 11.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xn1h2"]
+bg_color = Color(0.909804, 0.811765, 0.65098, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.819608, 0.666667, 0.486275, 1)
+expand_margin_left = 11.0
+
 [node name="MainMenu" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -122,7 +175,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_06t4h")
-metadata/_edit_use_anchors_ = true
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -134,36 +186,36 @@ offset_bottom = 9.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qe12f")
-metadata/_edit_use_anchors_ = true
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
-material = SubResource("ShaderMaterial_2ekim")
-use_parent_material = true
-position = Vector2(1145, 6.00006)
-scale = Vector2(-2.08803, 2.15912)
-amount = 80
-texture = ExtResource("3_ft8e8")
-lifetime = 4.0
-preprocess = 2.0
-speed_scale = 0.45
-randomness = 1.0
-lifetime_randomness = 1.0
-direction = Vector2(0, -1)
-spread = 180.0
-gravity = Vector2(0, 100)
-initial_velocity_min = 126.92
-initial_velocity_max = 126.92
-scale_amount_min = 0.2
-scale_amount_max = 0.4
-color_ramp = SubResource("Gradient_hd3la")
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(573, 280)
+amount = 95
+texture = ExtResource("3_ev4s5")
+lifetime = 50.0
+preprocess = 10.0
+visibility_rect = Rect2(-100, 1, 200, 200)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_jhmoq")
+script = ExtResource("4_qm7iq")
 
 [node name="Main Menu Panel" type="Panel" parent="."]
 layout_mode = 0
 offset_left = 39.0
-offset_top = 38.0
+offset_top = 42.0
 offset_right = 549.0
-offset_bottom = 592.0
+offset_bottom = 596.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_8qtwp")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+offset_left = 155.0
+offset_top = 95.0
+offset_right = 388.0
+offset_bottom = 137.0
+scale = Vector2(1.28672, 1.49592)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 50
+text = "MAIN MENU"
 
 [node name="Button_Container" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -172,10 +224,10 @@ anchor_left = 0.516493
 anchor_top = 0.487654
 anchor_right = 0.516493
 anchor_bottom = 0.487654
-offset_left = -474.0
-offset_top = -222.0
-offset_right = -117.0
-offset_bottom = 199.0
+offset_left = -477.0
+offset_top = -130.0
+offset_right = -120.0
+offset_bottom = 224.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 24
@@ -251,22 +303,26 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_fu7sn")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/hover = SubResource("StyleBoxTexture_dy7ct")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ev4s5")
 theme_override_styles/normal = SubResource("StyleBoxTexture_0o4t1")
 text = "?"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_tgyvh")
+autoplay = true
+bus = &"Music"
 
 [node name="Settings Panel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.0138889
-offset_left = 39.0
-offset_top = 38.0
+anchor_bottom = 0.0138889
+offset_left = 38.0
+offset_top = 34.0
 offset_right = 544.0
-offset_bottom = 587.0
+offset_bottom = 586.0
 theme_override_styles/panel = SubResource("StyleBoxTexture_npuod")
 script = ExtResource("8_2ekim")
-metadata/_edit_use_anchors_ = true
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Settings Panel"]
 
 [node name="Back" type="Button" parent="Settings Panel"]
 layout_mode = 0
@@ -284,30 +340,93 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_bbj2o")
 theme_override_styles/normal = SubResource("StyleBoxTexture_ev4s5")
 text = "Back"
 
-[node name="HSlider" type="HSlider" parent="Settings Panel"]
-offset_left = 239.0
-offset_top = 150.0
-offset_right = 434.0
-offset_bottom = 205.0
+[node name="Label" type="Label" parent="Settings Panel"]
+layout_mode = 0
+offset_left = 61.0
+offset_top = 174.0
+offset_right = 194.0
+offset_bottom = 209.0
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 40
+text = "Volume"
+
+[node name="AudioControl" type="HSlider" parent="Settings Panel/Label"]
+layout_mode = 0
+offset_left = 196.0
+offset_top = -8.0
+offset_right = 400.0
+offset_bottom = 47.0
 theme_override_icons/tick = SubResource("MeshTexture_2ekim")
 theme_override_styles/slider = SubResource("StyleBoxLine_hd3la")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_b6svo")
-value = 50.0
+min_value = -80.0
+max_value = 0.0
 rounded = true
+script = ExtResource("10_eq6yn")
+audio_bus_name = "Music"
 
-[node name="Label" type="Label" parent="Settings Panel"]
+[node name="Fullscreen" type="CheckButton" parent="Settings Panel"]
 layout_mode = 0
-offset_left = 122.0
-offset_top = 165.0
-offset_right = 228.0
-offset_bottom = 191.0
+offset_left = 55.0
+offset_top = 254.0
+offset_right = 455.0
+offset_bottom = 297.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_fu7sn")
-theme_override_font_sizes/font_size = 30
-text = "Volume"
+theme_override_font_sizes/font_size = 40
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_xn1h2")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_eq6yn")
+text = "Fullscreen"
+script = ExtResource("9_hd3la")
+
+[node name="Label2" type="Label" parent="Settings Panel"]
+layout_mode = 0
+offset_left = 63.0
+offset_top = 348.0
+offset_right = 285.0
+offset_bottom = 383.0
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 40
+text = "Resolution"
+
+[node name="ScaleControl" type="OptionButton" parent="Settings Panel/Label2"]
+layout_mode = 0
+offset_left = 272.0
+offset_top = 2.0
+offset_right = 396.0
+offset_bottom = 32.0
+theme_override_colors/font_color = Color(0.666667, 0.47451, 0.34902, 1)
+theme_override_colors/font_pressed_color = Color(0.666667, 0.47451, 0.34902, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/hover = SubResource("StyleBoxFlat_tgyvh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ev4s5")
+theme_override_styles/normal = SubResource("StyleBoxFlat_xn1h2")
+alignment = 1
+selected = 0
+item_count = 3
+popup/item_0/text = "High"
+popup/item_0/id = 0
+popup/item_1/text = "Medium"
+popup/item_1/id = 1
+popup/item_2/text = "Low"
+popup/item_2/id = 2
+script = ExtResource("10_b6svo")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 579.0
+offset_top = 124.0
+offset_right = 1130.0
+offset_bottom = 514.0
+texture = ExtResource("12_eq6yn")
+expand_mode = 1
+stretch_mode = 4
 
 [connection signal="pressed" from="Button_Container/Start" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Button_Container/Versus" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Button_Container/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Button_Container/Settings" to="Settings Panel" method="_on_settings_pressed"]
-[connection signal="pressed" from="Button_Container/Quit" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="Settings Panel/Back" to="." method="_on_back_pressed"]
+[connection signal="value_changed" from="Settings Panel/Label/AudioControl" to="Settings Panel/Label/AudioControl" method="_on_value_changed"]
+[connection signal="toggled" from="Settings Panel/Fullscreen" to="Settings Panel/Fullscreen" method="_on_toggled"]

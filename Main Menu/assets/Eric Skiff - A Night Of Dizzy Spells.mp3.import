@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://diqsrtsg3vhaj"
+path="res://.godot/imported/Eric Skiff - A Night Of Dizzy Spells.mp3-0e51a105df240f5a05f63d9d1d75a2c0.mp3str"
+
+[deps]
+
+source_file="res://Main Menu/assets/Eric Skiff - A Night Of Dizzy Spells.mp3"
+dest_files=["res://.godot/imported/Eric Skiff - A Night Of Dizzy Spells.mp3-0e51a105df240f5a05f63d9d1d75a2c0.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
