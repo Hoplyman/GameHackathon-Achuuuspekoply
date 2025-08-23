@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhl7lyh8ulnim"]
+
+[ext_resource type="PackedScene" uid="uid://bs7o4c0k8p46j" path="res://objects/PitC.tscn" id="3_elqb6"]
+[ext_resource type="Script" uid="uid://cl3823apx7bx3" path="res://scenes/Campaign/CampaignGameManager.gd" id="3_eq8b1"]
+[ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4nujt"]
+
+[node name="BoardC" type="Node2D"]
+
+[node name="MainHouse1" parent="." instance=ExtResource("4_4nujt")]
+position = Vector2(922, 502)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(869, 672)
+zoom = Vector2(0.8, 0.8)
+
+[node name="CampaignGameManager" type="Node" parent="."]
+script = ExtResource("3_eq8b1")
+
+[node name="PitC" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(778, 580)
+
+[node name="PitC2" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(729, 696)
+
+[node name="PitC3" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(772, 806)
+
+[node name="PitC4" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(885, 853)
+
+[node name="PitC5" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(997, 828)
+
+[node name="PitC6" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(1067, 715)
+
+[node name="PitC7" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(1057, 593)
