@@ -8,7 +8,7 @@ func _ready():
 	settings_panel.visible = false
 	
 func _on_start_pressed(): 
-	get_tree().change_scene_to_file("res://scenes/Campaign/Campaign.tscn")
+	get_tree().change_scene_to_file("")
 
 func _on_settings_pressed(): 
 	button_container.visible = false 
@@ -20,7 +20,3 @@ func _on_quit_pressed():
 func _on_back_pressed():
 	button_container.visible = true 
 	settings_panel.visible = false
-
-
-func _on_versus_pressed():
-	get_tree().change_scene_to_file("res://scenes/Gameplay.tscn")
