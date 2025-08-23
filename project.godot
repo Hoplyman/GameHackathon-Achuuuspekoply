@@ -18,6 +18,7 @@ config/icon="res://Main Menu/icon.svg"
 [autoload]
 
 ResolutionManager="*res://Scripts/ResolutionManager.gd"
+CampaignManager="*res://scenes/Campaign/CampaignManager.gd"
 
 [display]
 
@@ -32,6 +33,13 @@ window/stretch/aspect="expand"
 [global_group]
 
 campaign_manager=""
+
+[layer_names]
+
+2d_physics/layer_1="Main"
+2d_physics/layer_2="Shell"
+2d_physics/layer_3="Pit"
+2d_physics/layer_4="Board"
 
 [rendering]
 

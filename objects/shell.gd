@@ -1,9 +1,10 @@
-extends Sprite2D
+extends RigidBody2D
 
-# Integer shell type (0 to 11)
 var shell_type: int = 0
+var shellsprite: Sprite2D  # Or AnimatedSprite2D depending on your setup
 
 func _ready() -> void:
+	shellsprite = get_node("ShellSprite")
 	update_shell_frame()
 
 func set_shell_type(new_type: int) -> void:
@@ -14,4 +15,4 @@ func set_shell_type(new_type: int) -> void:
 		print("Invalid shell type:", new_type)
 
 func update_shell_frame() -> void:
-	frame = shell_type
+	shellsprite.frame = shell_type
