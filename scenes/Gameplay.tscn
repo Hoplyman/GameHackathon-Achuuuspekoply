@@ -57,10 +57,10 @@ position = Vector2(1286, 750)
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("3_gnmmn")
 
-[node name="MainHouse1" parent="." groups=["main_houses"] instance=ExtResource("4_4rwr5")]
+[node name="MainHouse1" parent="." instance=ExtResource("4_4rwr5")]
 position = Vector2(250, 675)
 
-[node name="MainHouse2" parent="." groups=["main_houses"] instance=ExtResource("4_4rwr5")]
+[node name="MainHouse2" parent="." instance=ExtResource("4_4rwr5")]
 position = Vector2(1500, 675)
 
 [node name="Camera2D" type="Camera2D" parent="."]

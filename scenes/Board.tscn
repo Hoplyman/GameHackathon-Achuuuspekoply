@@ -6,55 +6,55 @@
 
 [node name="Board" type="Node2D"]
 
-[node name="Pit1" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit1" parent="." instance=ExtResource("1_qails")]
 position = Vector2(1285, 600)
 
-[node name="Pit2" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit2" parent="." instance=ExtResource("1_qails")]
 position = Vector2(1145, 600)
 
-[node name="Pit3" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit3" parent="." instance=ExtResource("1_qails")]
 position = Vector2(1007, 600)
 
-[node name="Pit4" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit4" parent="." instance=ExtResource("1_qails")]
 position = Vector2(868, 600)
 
-[node name="Pit5" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit5" parent="." instance=ExtResource("1_qails")]
 position = Vector2(732, 600)
 
-[node name="Pit6" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit6" parent="." instance=ExtResource("1_qails")]
 position = Vector2(594, 600)
 
-[node name="Pit7" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit7" parent="." instance=ExtResource("1_qails")]
 position = Vector2(454, 600)
 
-[node name="Pit8" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit8" parent="." instance=ExtResource("1_qails")]
 position = Vector2(453, 750)
 
-[node name="Pit9" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit9" parent="." instance=ExtResource("1_qails")]
 position = Vector2(596, 750)
 
-[node name="Pit10" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit10" parent="." instance=ExtResource("1_qails")]
 position = Vector2(730, 750)
 
-[node name="Pit11" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit11" parent="." instance=ExtResource("1_qails")]
 position = Vector2(867, 750)
 
-[node name="Pit12" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit12" parent="." instance=ExtResource("1_qails")]
 position = Vector2(1004, 750)
 
-[node name="Pit13" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit13" parent="." instance=ExtResource("1_qails")]
 position = Vector2(1145, 750)
 
-[node name="Pit14" parent="." groups=["pits"] instance=ExtResource("1_qails")]
+[node name="Pit14" parent="." instance=ExtResource("1_qails")]
 position = Vector2(1286, 750)
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("3_w6jgk")
 
-[node name="MainHouse1" parent="." groups=["main_houses"] instance=ExtResource("3_66b1s")]
+[node name="MainHouse1" parent="." instance=ExtResource("3_66b1s")]
 position = Vector2(250, 675)
 
-[node name="MainHouse2" parent="." groups=["main_houses"] instance=ExtResource("3_66b1s")]
+[node name="MainHouse2" parent="." instance=ExtResource("3_66b1s")]
 position = Vector2(1500, 675)
 
 [node name="Camera2D" type="Camera2D" parent="."]
