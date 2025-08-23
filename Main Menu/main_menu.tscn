@@ -425,7 +425,7 @@ expand_mode = 1
 stretch_mode = 4
 
 [connection signal="pressed" from="Button_Container/Start" to="." method="_on_start_pressed"]
-[connection signal="pressed" from="Button_Container/Versus" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="Button_Container/Versus" to="." method="_on_versus_pressed"]
 [connection signal="pressed" from="Button_Container/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Button_Container/Settings" to="Settings Panel" method="_on_settings_pressed"]
 [connection signal="pressed" from="Settings Panel/Back" to="." method="_on_back_pressed"]
