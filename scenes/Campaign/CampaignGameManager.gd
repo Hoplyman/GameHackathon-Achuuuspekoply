@@ -17,7 +17,8 @@ var turn_indicator: Label
 var moves_label: Label
 
 func _ready():
-	pits = get_tree().get_nodes_in_group("pits")
+	add_to_group("game_manager")
+	pits = get_tree().get_nodes_in_group("pitsC")
 	main_houses = get_tree().get_nodes_in_group("main_houses")
 	
 	# Get campaign manager

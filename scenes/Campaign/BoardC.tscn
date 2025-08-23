@@ -1,34 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://dhl7lyh8ulnim"]
 
-[ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_d6s7t"]
+[ext_resource type="PackedScene" uid="uid://bs7o4c0k8p46j" path="res://objects/PitC.tscn" id="3_elqb6"]
 [ext_resource type="Script" uid="uid://cl3823apx7bx3" path="res://scenes/Campaign/CampaignGameManager.gd" id="3_eq8b1"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4nujt"]
 
 [node name="BoardC" type="Node2D"]
 
-[node name="Pit1" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(699, 560)
-
-[node name="Pit2" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(664, 684)
-
-[node name="Pit3" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(715, 806)
-
-[node name="Pit4" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(867, 848)
-
-[node name="Pit5" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(1003, 817)
-
-[node name="Pit6" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(1072, 688)
-
-[node name="Pit7" parent="." instance=ExtResource("2_d6s7t")]
-position = Vector2(1039, 554)
-
 [node name="MainHouse1" parent="." instance=ExtResource("4_4nujt")]
-position = Vector2(872, 490)
+position = Vector2(903, 496)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(869, 672)
@@ -36,3 +15,24 @@ zoom = Vector2(0.8, 0.8)
 
 [node name="CampaignGameManager" type="Node" parent="."]
 script = ExtResource("3_eq8b1")
+
+[node name="PitC" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(741, 615)
+
+[node name="PitC2" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(704, 728)
+
+[node name="PitC3" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(766, 860)
+
+[node name="PitC4" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(913, 891)
+
+[node name="PitC5" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(1054, 869)
+
+[node name="PitC6" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(1061, 737)
+
+[node name="PitC7" parent="." instance=ExtResource("3_elqb6")]
+position = Vector2(1029, 606)
