@@ -310,6 +310,7 @@ text = "?"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_tgyvh")
 autoplay = true
+bus = &"Music"
 
 [node name="Settings Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -358,9 +359,9 @@ offset_bottom = 47.0
 theme_override_icons/tick = SubResource("MeshTexture_2ekim")
 theme_override_styles/slider = SubResource("StyleBoxLine_hd3la")
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_b6svo")
-min_value = -80.0
-max_value = 0.0
-rounded = true
+max_value = 1.0
+step = 0.05
+value = 1.0
 script = ExtResource("10_eq6yn")
 audio_bus_name = "Music"
 
