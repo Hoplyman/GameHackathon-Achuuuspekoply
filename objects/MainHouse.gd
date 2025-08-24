@@ -2,25 +2,43 @@ extends Node2D
 
 var shells: int = 0
 var scores: int = 0
+var use_timer_counting: bool = true  # Flag to control counting method
+var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawning
 
 @onready var timer := $Timer  # Access the Timer node
 @onready var label = $StoneLabel
 
 func _ready():
 	add_to_group("main_houses")
-	timer.connect("timeout", Callable(self, "_on_timer_timeout"))
-	timer.start()
+	# Only connect timer if we're using timer-based counting
+	if use_timer_counting:
+		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
+		timer.start()
 	update_label()
 
 func set_shells(amount: int):
 	var oldshell = shells
 	shells = amount
-	spawn_shells(oldshell, shells)
+	# Only spawn visual shells if we're in visual spawning mode
+	if use_visual_spawning:
+		spawn_shells(oldshell, shells)
+	update_label()  # Update label immediately
 	
 func add_shells(amount: int):
+	# This is called by GameManager - disable timer counting to avoid double counting
+	use_timer_counting = false
+	if timer.is_connected("timeout", _on_timer_timeout):
+		timer.disconnect("timeout", _on_timer_timeout)
+	timer.stop()
+	
 	var oldshell = shells
 	shells += amount
-	spawn_shells(oldshell, shells)
+	
+	# CRITICAL FIX: Don't spawn visual shells when physical shells are being used
+	# The physical shells already exist and moved here, we just need to update the counter
+	print("MainHouse: Added ", amount, " shells. Total: ", shells, " (no visual spawning)")
+	
+	update_label()
 
 # Take all shells (used at end of game to collect remaining pits)
 func take_all_shells() -> int:
@@ -37,7 +55,12 @@ func take_all_scores() -> int:
 	update_label()
 	return temp
 
-func spawn_shells(shells: int, amount: int):
+func spawn_shells(old_shells: int, new_shells: int):
+	# Only spawn visual shells if explicitly enabled
+	if not use_visual_spawning:
+		print("Visual spawning disabled - skipping shell spawn")
+		return
+		
 	var gamemode: String = ""
 	var campaign = get_tree().root.get_node_or_null("Campaign")
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
@@ -56,22 +79,38 @@ func spawn_shells(shells: int, amount: int):
 		var house_node = main_houses[house_index]
 		var housex = house_node.position.x
 		var housey = house_node.position.y
-		campaign.set_shells(shells, housex, housey)
+		campaign.set_shells(old_shells, housex, housey)
 		print("MainHouse found in group")
 	elif house_index != -1 and gamemode == "Pvp":
 		var house_node = main_houses[house_index]
 		var housex = house_node.position.x
 		var housey = house_node.position.y
-		pvp.set_shells(shells, amount, housex, housey)
+		pvp.set_shells(old_shells, new_shells, housex, housey)
 		print("MainHouse found in group")
 	else:
 		print("MainHouse not found in group")
 		return 0
 
+# NEW: Function to enable visual spawning mode (for initialization only)
+func enable_visual_spawning():
+	use_visual_spawning = true
+	print("Visual spawning enabled for MainHouse")
+
+# NEW: Function to disable visual spawning mode (for gameplay)
+func disable_visual_spawning():
+	use_visual_spawning = false
+	print("Visual spawning disabled for MainHouse")
+
 func _on_timer_timeout():
-	# No need to check timer.value — the timeout already means 1 second passed
-	shells = count_shells_in_area()
-	update_label()
+	# Only count if timer counting is enabled
+	if not use_timer_counting:
+		return
+		
+	# No need to check timer.value â€" the timeout already means 1 second passed
+	var new_shell_count = count_shells_in_area()
+	if new_shell_count != shells:
+		shells = new_shell_count
+		update_label()
 	# Restart the timer to loop
 	timer.start()
 
@@ -106,7 +145,8 @@ func count_shells_in_area() -> int:
 		
 	elif gamemode == "Pvp":
 		for child in pvp.get_children():
-			if child.is_in_group("Shells"):
+			# CRITICAL FIX: Only count shells that are NOT currently moving
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
 				if child in overlapping_bodies:
 					cshells += 1
 					var cscore: int = child.get_score()
@@ -120,13 +160,17 @@ func count_shells_in_area() -> int:
 		return 0
 
 func _on_shell_area_body_entered(body: Node2D) -> void:
-	if body is RigidBody2D:
+	if body is RigidBody2D and use_timer_counting:
 		print("RigidBody2D entered:", body.name)
+		# Small delay to let physics settle
+		await get_tree().create_timer(0.1).timeout
 		update_label()
 
 func _on_shell_area_body_exited(body: Node2D) -> void:
-	if body is RigidBody2D:
+	if body is RigidBody2D and use_timer_counting:
 		print("RigidBody2D exited:", body.name)
+		# Small delay to let physics settle
+		await get_tree().create_timer(0.1).timeout
 		update_label()
 		
 func update_label():

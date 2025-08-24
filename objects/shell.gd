@@ -20,9 +20,13 @@ func _ready() -> void:
 	set_pit()
 	Score = 2
 	shellsprite = get_node("ShellSprite")
-	shell_type = randi_range(1, 12)
-	add_to_group("Shell")
-	timer.connect("timeout", Callable(self, "_on_timer_timeout"))
+	shell_type = randi_range(1, 12)  # This will be 1-12, but we need 0-11 for frames
+	add_to_group("Shells")  # Fixed: was "Shell", should be "Shells"
+	
+	# Fix: Check if signal is already connected before connecting
+	if not timer.timeout.is_connected(_on_timer_timeout):
+		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
+	
 	# Don't start timer automatically - only when needed
 	update_shell_frame()
 
@@ -61,14 +65,24 @@ func set_pit():
 		return closest_pit
 
 func set_shell_type(new_type: int) -> void:
-	if new_type >= 0 and new_type < 12:
-		shell_type = new_type
+	# Fix: Ensure the type is within valid range (0-11 for 12 frames)
+	if new_type >= 1 and new_type <= 12:
+		shell_type = new_type - 1  # Convert 1-12 range to 0-11 range
 		update_shell_frame()
 	else:
 		print("Invalid shell type:", new_type)
 
 func update_shell_frame() -> void:
-	shellsprite.frame = shell_type
+	# Fix: Ensure frame index is within bounds (0-11 for 12 frames)
+	var frame_index = shell_type
+	if shell_type >= 1 and shell_type <= 12:
+		frame_index = shell_type - 1  # Convert 1-12 to 0-11
+	elif shell_type > 12:
+		frame_index = 11  # Use last frame if out of bounds
+	elif shell_type < 1:
+		frame_index = 0   # Use first frame if out of bounds
+	
+	shellsprite.frame = frame_index
 
 func assign_move(amount: int, player: int):
 	Move += amount
@@ -126,6 +140,7 @@ func move_shell(player: int):
 			if Moving == false and waiting_for_timer == false:
 				remove_from_group("Shells")
 				add_to_group("MoveShells")
+				# CRITICAL FIX: Disable collision detection during movement to prevent duplication
 				collision_layer = 0
 				collision_mask = 0
 				gravity_scale = 0
@@ -141,8 +156,9 @@ func move_shell(player: int):
 				# Stop the shell and re-enable physics
 				linear_velocity = Vector2.ZERO
 				Moving = false
+				# CRITICAL FIX: Only enable collision when movement is completely finished
 				collision_layer = 2
-				collision_mask = 2 | 3  # Fixed: use bitwise OR instead of AND
+				collision_mask = 2 | 3
 				gravity_scale = 1
 				freeze = false  # Unfreeze the body
 				remove_from_group("MoveShells")
@@ -163,12 +179,8 @@ func _physics_process(delta):
 			global_position = move_target  # Snap to exact position
 			Moving = false
 			
-			# Re-enable physics temporarily
-			collision_layer = 2
-			collision_mask = 2 | 3
-			gravity_scale = 1
-			freeze = false
-			linear_velocity = Vector2.ZERO
+			# IMPORTANT: Keep collision disabled during intermediate stops
+			# This prevents the shell from being detected by pit areas during movement
 			
 			# Check if there are more moves
 			if Move > 0:
@@ -177,10 +189,15 @@ func _physics_process(delta):
 				timer.start()
 				print("Waiting for timer before next move...")
 			else:
-				# All moves complete
+				# All moves complete - NOW we can re-enable physics and collision
+				collision_layer = 2
+				collision_mask = 2 | 3
+				gravity_scale = 1
+				freeze = false
+				linear_velocity = Vector2.ZERO
 				remove_from_group("MoveShells")
 				add_to_group("Shells")
-				print("All movements complete")
+				print("All movements complete - collision re-enabled")
 
 func _on_timer_timeout() -> void:
 	timer.stop()  # Stop the timer

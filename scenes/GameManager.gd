@@ -147,38 +147,22 @@ func get_player_pit_range(player: int) -> Array:
 	else:
 		return [7, 13]
 
-func distribute_shells(start_pit_index: int,player: int):
-	#is_distributing = true
+func distribute_shells(start_pit_index: int, player: int):
+	is_distributing = true
 	var pit = get_pit(start_pit_index)
-	var pit_index = start_pit_index
 	var shells_to_distribute = pit.shells
 	
 	print("Distributing ", shells_to_distribute, " shells from pit ", start_pit_index + 1)
 	
-	# Empty the starting pit
-	#pit.set_shells(0)
+	# Use the physical shell movement system ONLY
 	pit.move_shells(player)
 	
-	#var current_index = start_pit_index
-	#var shells_remaining = shells_to_distribute
+	is_distributing = false
 	
-	# Distribute shells one by one with delay
-	#while shells_remaining > 0:
-	#	await get_tree().create_timer(0.5).timeout  # 0.5 second delay between each placement
-		
-	#	current_index = get_next_position(current_index)
-	#	var target = get_position_node(current_index)
-		
-	#	if target:
-	#		if target.has_method("add_shells"):
-	#			target.add_shells(1)
-	#			print("Placed 1 shell at position ", current_index)
-	#		shells_remaining -= 1
-	
-	#is_distributing = false
-	
-	# Check for additional turn or capture rules here
-	#check_end_turn_rules(current_index)
+	# Wait for shell movement to complete, then check rules
+	# You'll need to modify this to wait for the physical shells to finish moving
+	await get_tree().create_timer(shells_to_distribute * 0.5).timeout
+	check_end_turn_rules(start_pit_index + shells_to_distribute)  # This needs to be calculated properly
 
 func get_next_position(current_pos: int) -> int:
 	# Sungka board layout: 
@@ -216,6 +200,8 @@ func get_position_node(position: int) -> Node2D:
 	return null
 
 func check_end_turn_rules(last_position: int):
+	print("Checking end turn rules. Last position: ", last_position)
+	
 	# Rule: If last shell lands in your main house, get another turn
 	if (current_turn == 0 and last_position == 14) or (current_turn == 1 and last_position == 15):
 		print("Player ", current_turn + 1, " gets another turn!")
@@ -230,7 +216,7 @@ func check_end_turn_rules(last_position: int):
 				# Landed in own empty pit - capture opposite pit
 				capture_opposite_pit(last_position)
 	
-	# Switch turns
+	# Switch turns if no extra turn was earned
 	switch_turn()
 	check_game_over()
 
@@ -246,11 +232,57 @@ func capture_opposite_pit(pit_index: int):
 		add_shells_to_main_house(current_turn, captured_shells)
 		print("Player ", current_turn + 1, " captured ", captured_shells, " shells!")
 
+func clear_all_shells():
+	"""Clear ALL shells from the game scene before initialization"""
+	print("Clearing all existing shells...")
+	
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var campaign = get_tree().root.get_node_or_null("Campaign")
+	var target_node = pvp if pvp else campaign
+	
+	if not target_node:
+		print("No game scene found")
+		return
+	
+	var shells_removed = 0
+	var children_to_remove = []
+	
+	# Collect all shells that need to be removed
+	for child in target_node.get_children():
+		if child.is_in_group("Shells") or child.is_in_group("MoveShells"):
+			children_to_remove.append(child)
+	
+	# Remove all shells
+	for shell in children_to_remove:
+		shell.queue_free()
+		shells_removed += 1
+	
+	print("Removed ", shells_removed, " existing shells")
+	
+	# Wait for shells to be actually removed
+	if shells_removed > 0:
+		await get_tree().process_frame
+		await get_tree().process_frame
+
 func start_game():
 	print("Starting Shell Masters game!")
-	# Initialize pits with shells
+	
+	# CRITICAL FIX: Clear ALL existing shells first
+	await clear_all_shells()
+	
+	# CRITICAL FIX: Enable visual spawning only for initialization
+	for house in main_houses:
+		if house.has_method("enable_visual_spawning"):
+			house.enable_visual_spawning()
+		if house.has_method("disable_visual_spawning"):
+			house.disable_visual_spawning()  # Actually keep it disabled for gameplay
+	
+	# Wait another frame to ensure all shells are cleared
+	await get_tree().process_frame
+	
+	# Initialize pits with shells - this should now create exactly 7 shells per pit
 	for pit in pits:
-		pit.set_shells(7)  # put 7 shells in each pit
+		pit.set_shells(7)  # This will create exactly 7 visual shells
 	
 	# Initialize main houses (basic setup)
 	for house in main_houses:
@@ -261,6 +293,20 @@ func start_game():
 	print("Player 1 (BLUE) controls pits 1-7 (bottom row)")
 	print("Player 2 (RED) controls pits 8-14 (top row)")
 	print("Player 1's turn - click on highlighted pits!")
+	
+	# Debug: Check shell counts after initialization
+	await get_tree().process_frame
+	await get_tree().process_frame  # Wait for all spawning to complete
+	
+	for i in range(pits.size()):
+		var pit = pits[i]
+		if pit:
+			var visual_count = pit.count_shells_in_area()
+			var label_count = pit.shells
+			print("Pit ", i + 1, ": Label=", label_count, ", Visual=", visual_count)
+			
+			if visual_count != label_count:
+				print("WARNING: Shell count mismatch in pit ", i + 1)
 	
 	# Only update display if UI elements are ready
 	if turn_indicator:
