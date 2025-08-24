@@ -137,7 +137,7 @@ func handle_pit_click(pit_index: int):
 		return
 	
 	print("Player ", current_turn + 1, " selected pit ", pit_index + 1)
-	distribute_shells(pit_index)
+	distribute_shells(pit_index, current_turn + 1)
 
 func get_player_pit_range(player: int) -> Array:
 	# Player 0 (Player 1): pits 0-6 (bottom row)
@@ -147,36 +147,38 @@ func get_player_pit_range(player: int) -> Array:
 	else:
 		return [7, 13]
 
-func distribute_shells(start_pit_index: int):
-	is_distributing = true
+func distribute_shells(start_pit_index: int,player: int):
+	#is_distributing = true
 	var pit = get_pit(start_pit_index)
+	var pit_index = start_pit_index
 	var shells_to_distribute = pit.shells
 	
 	print("Distributing ", shells_to_distribute, " shells from pit ", start_pit_index + 1)
 	
 	# Empty the starting pit
-	pit.set_shells(0)
+	#pit.set_shells(0)
+	pit.move_shells(player)
 	
-	var current_index = start_pit_index
-	var shells_remaining = shells_to_distribute
+	#var current_index = start_pit_index
+	#var shells_remaining = shells_to_distribute
 	
 	# Distribute shells one by one with delay
-	while shells_remaining > 0:
-		await get_tree().create_timer(0.5).timeout  # 0.5 second delay between each placement
+	#while shells_remaining > 0:
+	#	await get_tree().create_timer(0.5).timeout  # 0.5 second delay between each placement
 		
-		current_index = get_next_position(current_index)
-		var target = get_position_node(current_index)
+	#	current_index = get_next_position(current_index)
+	#	var target = get_position_node(current_index)
 		
-		if target:
-			if target.has_method("add_shells"):
-				target.add_shells(1)
-				print("Placed 1 shell at position ", current_index)
-			shells_remaining -= 1
+	#	if target:
+	#		if target.has_method("add_shells"):
+	#			target.add_shells(1)
+	#			print("Placed 1 shell at position ", current_index)
+	#		shells_remaining -= 1
 	
-	is_distributing = false
+	#is_distributing = false
 	
 	# Check for additional turn or capture rules here
-	check_end_turn_rules(current_index)
+	#check_end_turn_rules(current_index)
 
 func get_next_position(current_pos: int) -> int:
 	# Sungka board layout: 

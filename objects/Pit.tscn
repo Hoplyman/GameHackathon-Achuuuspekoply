@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://crgh76dqr0wvu"]
 
-[ext_resource type="Script" path="res://objects/Pit.gd" id="1_yhywh"]
+[ext_resource type="Script" uid="uid://duhh6hoogsog" path="res://objects/Pit.gd" id="1_yhywh"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_gvsfr"]
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
 
@@ -33,7 +33,7 @@ offset_right = -10.0
 offset_bottom = -27.0
 
 [node name="ShellArea" type="Area2D" parent="."]
-collision_layer = 0
+collision_layer = 16
 collision_mask = 2
 gravity_space_override = 3
 gravity_point = true

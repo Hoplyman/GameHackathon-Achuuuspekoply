@@ -28,13 +28,46 @@ func set_shells(amount: int):
 	shells = amount
 	spawn_shells(oldshell, shells)
 	
-func add_shells(amount: int):
+func add_shells(amount):
 	var oldshell = shells
 	shells += amount
 	spawn_shells(oldshell, shells)
 	
-func move_shells():
-	pass
+func move_shells(player: int):
+	var gamemode: String = ""
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var campaign = get_tree().root.get_node_or_null("Campaign")
+	if campaign:
+		print("Campaign found!")
+		gamemode = "Campaign"
+	elif  pvp:
+		gamemode = ("Pvp")
+	else:
+		gamemode = ""
+		
+	var shell_area = get_node("ShellArea")
+	var overlapping_bodies = shell_area.get_overlapping_bodies()
+
+	if gamemode == "Campaign":
+		for child in campaign.get_children():
+			if child.is_in_group("Shells"):
+				if child in overlapping_bodies:
+					print("Shell overlapping in Campaign:", child.name)
+		return 0
+
+	elif gamemode == "Pvp":
+		var totalmove = 1
+		for child in pvp.get_children():
+			if child.is_in_group("Shells"):
+				if child in overlapping_bodies:
+					print("Shell overlapping in Pvp:", child.name)
+					child.remove_from_group("Shells")
+					child.add_to_group("MoveShells")
+					child.assign_move(totalmove, player)
+					totalmove += 1
+		return 0
+	else:
+		return 0
 
 func spawn_shells(shells:int ,amount: int):
 	var gamemode: String = ""
@@ -46,7 +79,6 @@ func spawn_shells(shells:int ,amount: int):
 		print("Campaign found!")
 		gamemode = "Campaign"
 	elif  pvp:
-		print("Gameplay found!")
 		gamemode = ("Pvp")
 	else:
 		gamemode = ""
@@ -67,15 +99,10 @@ func spawn_shells(shells:int ,amount: int):
 		return 0
 
 func _on_timer_timeout():
-	print("Timer triggered!")
-
 	# No need to check timer.value — the timeout already means 1 second passed
 	shells = count_shells_in_area()
 	update_label()
-	print("Shells in area:", shells)
-
 	var value := 0
-	print("Value reset to:", value)
 	# Restart the timer to loop
 	timer.start()
 
@@ -84,12 +111,10 @@ func count_shells_in_area() -> int:
 	var gamemode: String = ""
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	var campaign = get_tree().root.get_node_or_null("Campaign")
-	shells = 0
 	if campaign:
 		print("Campaign found!")
 		gamemode = "Campaign"
 	elif  pvp:
-		print("Gameplay found!")
 		gamemode = ("Pvp")
 	else:
 		gamemode = ""
@@ -99,7 +124,7 @@ func count_shells_in_area() -> int:
 
 	if gamemode == "Campaign":
 		for child in campaign.get_children():
-			if child is RigidBody2D:
+			if child.is_in_group("Shells"):
 				if child in overlapping_bodies:
 					print("Shell overlapping in Campaign:", child.name)
 					cshells += 1
@@ -107,9 +132,8 @@ func count_shells_in_area() -> int:
 
 	elif gamemode == "Pvp":
 		for child in pvp.get_children():
-			if child is RigidBody2D:
+			if child.is_in_group("Shells"):
 				if child in overlapping_bodies:
-					print("Shell overlapping in Pvp:", child.name)
 					cshells += 1
 		return cshells
 	else:
