@@ -18,7 +18,7 @@ var moves_label: Label
 
 func _ready():
 	add_to_group("game_manager")
-	pits = get_tree().get_nodes_in_group("pitsC")
+	pits = get_tree().get_nodes_in_group("pitsC")  # Changed from "pits" to "pitsC"
 	main_houses = get_tree().get_nodes_in_group("main_houses")
 	
 	# Get campaign manager
@@ -28,6 +28,52 @@ func _ready():
 	
 	call_deferred("create_ui_elements")
 	call_deferred("start_campaign_game")
+	
+func setup_initial_shells():
+	print("Setting up initial shells for all pits")
+	
+	# DISABLE pit shell detection temporarily
+	for pit in pits:
+		if pit:
+			var shell_area = pit.get_node_or_null("ShellArea")
+			if shell_area:
+				shell_area.monitoring = false
+	
+	var shell_scene = preload("res://objects/ShellC.tscn")
+	var campaign = get_tree().root.get_node("Campaign")
+	
+	for pit in pits:
+		if pit:
+			print("Creating shells for pit ", pit.name)
+			for i in range(7):  # 7 shells per pit
+				var shell = shell_scene.instantiate()
+				
+				# Position shells in a tight circle around pit center
+				var angle = (i * 2.0 * PI) / 7  # Fixed PI calculation
+				var radius = 8  # Small radius to keep shells close to pit
+				var offset = Vector2(cos(angle) * radius, sin(angle) * radius)
+				shell.position = pit.global_position + offset
+				
+				# Make shells stable initially - disable physics
+				shell.gravity_scale = 0
+				shell.freeze = true
+				shell.collision_layer = 2  # Keep collision for detection but disable physics
+				shell.collision_mask = 0   # Don't collide with anything initially
+				
+				campaign.add_child(shell)
+				await get_tree().process_frame
+				await get_tree().create_timer(0.5).timeout
+				shell.gravity_scale = 1
+				shell.freeze = false
+				shell.collision_mask = 6
+	
+	# RE-ENABLE pit shell detection and manually set counts
+	for pit in pits:
+		if pit:
+			pit.set_shells(7)  # Set correct count
+			var shell_area = pit.get_node_or_null("ShellArea")
+			if shell_area:
+				shell_area.monitoring = true
 
 func create_ui_elements():
 	await get_tree().process_frame
@@ -64,6 +110,7 @@ func start_campaign_game():
 	
 	# Initialize pits with player's shells
 	setup_pits_with_shells()
+	setup_initial_shells()
 	
 	# Initialize main houses
 	for house in main_houses:
@@ -118,100 +165,31 @@ func handle_pit_click(pit_index: int):
 		end_game_out_of_moves()
 
 func distribute_shells(start_pit_index: int):
+	# CHANGED: Now uses the same system as VS mode
 	is_distributing = true
 	var pit = get_pit(start_pit_index)
-	var shells_to_distribute = pit.shells
 	
 	# Get shell data for special effects
 	var shell_data = pit.get_meta("shell_data", {})
 	
-	print("Distributing ", shells_to_distribute, " shells from pit ", start_pit_index + 1)
+	print("Player selected pit ", start_pit_index + 1)
 	
-	# Empty the starting pit
-	pit.set_shells(0)
-	
-	var current_index = start_pit_index
-	var shells_remaining = shells_to_distribute
-	var bonus_points = 0
-	
-	# Distribute shells one by one with delay
-	while shells_remaining > 0:
-		await get_tree().create_timer(0.3).timeout  # Faster for campaign
-		
-		current_index = get_next_position(current_index)
-		var target = get_position_node(current_index)
-		
-		if target:
-			target.add_shells(1)
-			
-			# Apply shell effects when landing in big house
-			if current_index == 14:  # Player's big house
-				if campaign_manager:
-					bonus_points += campaign_manager.apply_shell_effect(shell_data, target)
-					# Base point for reaching big house
-					campaign_manager.add_score(1 + bonus_points)
-			
-			print("Placed 1 shell at position ", current_index)
-			shells_remaining -= 1
+	# Call the pit's move_shells function just like in VS mode
+	pit.move_shells(1)  # Player is always player 1 in campaign
 	
 	is_distributing = false
 	
-	# Check for capture rules (simplified for campaign)
-	check_campaign_rules(current_index)
+	# Check for campaign rules after movement completes
+	# Note: This happens immediately, but the actual shell movement is handled by Campaign.gd
+	await get_tree().create_timer(0.1).timeout  # Small delay to let movement start
+	check_campaign_rules_after_movement(shell_data)
 
-func get_next_position(current_pos: int) -> int:
-	# Campaign mode: only player side, simpler movement
-	if current_pos < 6:  # Moving through player's pits (0-5)
-		return current_pos + 1
-	elif current_pos == 6:  # From last player pit to big house
-		return 14  # Player's big house
-	elif current_pos == 14:  # From big house, wrap around
-		return 0  # Back to first pit
-	else:
-		return 0  # Default fallback
-
-func get_position_node(position: int) -> Node2D:
-	if position < 14:  # Regular pits (0-13, but only 0-6 used in campaign)
-		return get_pit(position)
-	elif position == 14:  # Player's big house
-		return get_main_house(0)
-	return null
-
-func check_campaign_rules(last_position: int):
-	# Rule: If last shell lands in big house, get bonus turn
-	if last_position == 14:
-		print("Landed in big house! Bonus turn!")
-		return  # Don't end turn
-	
-	# Rule: Capture opposite pit if landed in empty pit
-	if last_position < 7:  # Player's side
-		var pit = get_pit(last_position)
-		if pit and pit.shells == 1:  # Was empty before placement
-			var opposite_index = 13 - last_position
-			if opposite_index < pits.size():
-				var opposite_pit = get_pit(opposite_index)
-				if opposite_pit and opposite_pit.shells > 0:
-					capture_opposite_pit(last_position)
-
-func capture_opposite_pit(pit_index: int):
-	var opposite_index = 13 - pit_index
-	var opposite_pit = get_pit(opposite_index)
-	var own_pit = get_pit(pit_index)
-	
-	if opposite_pit and own_pit and opposite_pit.shells > 0:
-		var captured_shells = opposite_pit.shells + own_pit.shells
-		opposite_pit.set_shells(0)
-		own_pit.set_shells(0)
-		
-		# Add to big house and score
-		var big_house = get_main_house(0)
-		if big_house:
-			big_house.add_shells(captured_shells)
-		
-		if campaign_manager:
-			campaign_manager.add_score(captured_shells)
-		
-		print("Captured ", captured_shells, " shells!")
+func check_campaign_rules_after_movement(shell_data: Dictionary):
+	# Apply any special shell effects
+	if campaign_manager and shell_data.has("effect"):
+		var bonus_points = campaign_manager.apply_shell_effect(shell_data, get_main_house(0))
+		if bonus_points > 0:
+			campaign_manager.add_score(bonus_points)
 
 func get_pit(pit_index: int) -> Node2D:
 	if pit_index < pits.size():

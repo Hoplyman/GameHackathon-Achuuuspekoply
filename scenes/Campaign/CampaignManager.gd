@@ -228,7 +228,7 @@ func start_stage(stage_number: int):
 
 func show_boss_warning():
 	var boss_warning = Label.new()
-	boss_warning.text = "⚔️ BOSS BATTLE! ⚔️"
+	boss_warning.text = "BOSS BATTLE!"
 	boss_warning.position = Vector2(400, 300)
 	boss_warning.add_theme_font_size_override("font_size", 36)
 	boss_warning.add_theme_color_override("font_color", Color.RED)
@@ -266,7 +266,7 @@ func unlock_content(category: String, item: String):
 
 func show_unlock_notification(category: String, item: String):
 	var notification = Label.new()
-	notification.text = "🔓 UNLOCKED: " + item.replace("_", " ").capitalize()
+	notification.text = "UNLOCKED: " + item.replace("_", " ").capitalize()
 	notification.position = Vector2(400, 200)
 	notification.add_theme_font_size_override("font_size", 24)
 	notification.add_theme_color_override("font_color", Color.LIME_GREEN)
@@ -313,8 +313,6 @@ func complete_stage():
 	currency += bonus_currency
 	print("Earned ", bonus_currency, " gold!")
 	
-	
-	
 	stage_completed.emit()
 	
 	if current_stage >= max_stages:
@@ -352,7 +350,7 @@ func show_achievement_popup(title: String, description: String):
 	campaign_ui.add_child(popup)
 	
 	var title_label = Label.new()
-	title_label.text = "🏆 " + title
+	title_label.text = title
 	title_label.position = Vector2(20, 15)
 	title_label.add_theme_font_size_override("font_size", 20)
 	title_label.add_theme_color_override("font_color", Color.GOLD)
@@ -383,7 +381,7 @@ func create_enhanced_shop_ui():
 	
 	# Shop title
 	var shop_title = Label.new()
-	shop_title.text = "🛒 SHELL MASTERS SHOP - Stage " + str(current_stage)
+	shop_title.text = "SHELL MASTERS SHOP - Stage " + str(current_stage)
 	shop_title.position = Vector2(200, 20)
 	shop_title.add_theme_font_size_override("font_size", 24)
 	shop_title.add_theme_color_override("font_color", Color.GOLD)
@@ -399,12 +397,11 @@ func create_enhanced_shop_ui():
 	continue_btn.position = Vector2(300, 540)
 	continue_btn.size = Vector2(200, 40)
 	continue_btn.add_theme_font_size_override("font_size", 16)
-	continue_btn.pressed.connect(continue_to_next_stage)
 	shop_panel.add_child(continue_btn)
 
 func create_shell_shop_section(parent: Panel):
 	var section_title = Label.new()
-	section_title.text = "🐚 SHELLS"
+	section_title.text = "SHELLS"
 	section_title.position = Vector2(50, 60)
 	section_title.add_theme_font_size_override("font_size", 20)
 	section_title.add_theme_color_override("font_color", Color.CYAN)
@@ -460,7 +457,7 @@ func create_shell_shop_item(parent: Panel, shell_key: String, shell_data: Dictio
 
 func create_house_upgrade_section(parent: Panel):
 	var section_title = Label.new()
-	section_title.text = "🏠 HOUSE UPGRADES"
+	section_title.text = "HOUSE UPGRADES"
 	section_title.position = Vector2(50, 320)
 	section_title.add_theme_font_size_override("font_size", 20)
 	section_title.add_theme_color_override("font_color", Color.ORANGE)
@@ -542,44 +539,11 @@ func refresh_shop():
 	await get_tree().process_frame
 	create_enhanced_shop_ui()
 
-func continue_to_next_stage():
-	# Clean up shop UI
-	for child in campaign_ui.get_children():
-		if child is Panel and child.size.x > 400:
-			child.queue_free()
-	
-	# Get the CampaignGameManager inside BoardC
-	var game_manager = get_node("../BoardC/CampaignGameManager")
-
-	# Call its start_new_round
-	if game_manager.has_method("start_new_round"):
-		game_manager.start_new_round()
-	else:
-		print("CampaignGameManager does not have start_new_round()")
-
-	# Continue with starting the next stage
-	start_stage(current_stage + 1)
-
-	# Clean up shop UI
-	for child in campaign_ui.get_children():
-		if child is Panel and child.size.x > 400:
-			child.queue_free()
-	
-	# Get the BoardC node (adjust the path if needed)
-	var board = get_node("../BoardC")  # or $"../BoardC" depending on your tree
-
-	# Call its function
-	if board.has_method("start_new_round"):
-		board.start_new_round()
-	else:
-		print("BoardC does not have start_new_round()")
-	# Continue with starting the next stage
-
 func update_ui():
 	if stage_label:
 		var stage_text = "Stage " + str(current_stage)
 		if is_boss_stage():
-			stage_text += " ⚔️ BOSS"
+			stage_text += " BOSS"
 		stage_label.text = stage_text
 	
 	if score_label:
@@ -611,38 +575,37 @@ func apply_shell_effect(shell_data: Dictionary, target_house: Node2D) -> int:
 	match shell_data.effect:
 		"bonus_points":
 			bonus_points = shell_data.get("bonus", 0)
-			print("💰 ", shell_data.name, " bonus: +", bonus_points, " points!")
+			print("Gold shell bonus: +", bonus_points, " points!")
 		
 		"duplicate_chance":
 			var chance = shell_data.get("chance", 0)
 			if randi() % 100 < chance:
 				bonus_points = 2
-				print("🍀 ", shell_data.name, " duplicated! +2 points!")
+				print("Lucky shell duplicated! +2 points!")
 		
 		"seek_big_house":
 			bonus_points = 3
-			print("⚓ ", shell_data.name, " seeks big house! +3 points!")
+			print("Anchor shell seeks big house! +3 points!")
 		
 		"evolving":
 			# Memory shell gets stronger each use
 			shell_data["usage_count"] = shell_data.get("usage_count", 0) + 1
 			bonus_points = shell_data["usage_count"]
-			print("🧠 ", shell_data.name, " evolves! Usage: ", shell_data["usage_count"], " (+", bonus_points, " points)")
+			print("Memory shell evolves! Usage: ", shell_data["usage_count"], " (+", bonus_points, " points)")
 		
 		"sacrifice":
 			# Phoenix shell destroys itself for big bonus
 			bonus_points = 10
 			owned_shells.erase(shell_data)
-			print("🔥 ", shell_data.name, " sacrifices itself! +10 points!")
+			print("Phoenix shell sacrifices itself! +10 points!")
 			show_sacrifice_effect(target_house)
 		
 		"double_trigger":
-			print("🔄 ", shell_data.name, " triggers house effect twice!")
-			# This needs to be handled by the house system
+			print("Echo shell triggers house effect twice!")
 			bonus_points = apply_house_upgrade_effects(target_house) * 2
 		
 		"teleport":
-			print("👻 ", shell_data.name, " teleports!")
+			print("Spirit shell teleports!")
 			bonus_points = 2
 	
 	return bonus_points
@@ -658,18 +621,17 @@ func apply_house_upgrade_effects(house: Node2D) -> int:
 				var shells_in_house = house.shells if house.has_method("get_shells") else 0
 				if shells_in_house >= upgrade_data.get("threshold", 5):
 					bonus += upgrade_data.get("bonus", 1)
-					print("🌾 Harvest bonus: +", upgrade_data.get("bonus", 1))
+					print("Harvest bonus: +", upgrade_data.get("bonus", 1))
 			
 			"attract_shells":
 				var chance = upgrade_data.get("chance", 30)
 				if randi() % 100 < chance:
 					bonus += 1
-					print("🧲 Magnet house attracts shell! +1")
+					print("Magnet house attracts shell! +1")
 			
 			"copy_last_effect":
-				# Echo house copies last effect
 				bonus += 1
-				print("📡 Echo house copies effect! +1")
+				print("Echo house copies effect! +1")
 	
 	return bonus
 
@@ -703,9 +665,9 @@ func save_campaign_progress():
 	
 	var file = FileAccess.open("user://campaign_save.dat", FileAccess.WRITE)
 	if file:
-		file.store_string(JSON.stringify(save_data, "\t"))  # pretty JSON
+		file.store_string(JSON.stringify(save_data, "\t"))
 		file.close()
-		print("Campaign progress saved at: ", ProjectSettings.globalize_path("user://campaign_save.dat"))
+		print("Campaign progress saved")
 
 func load_campaign_progress():
 	if FileAccess.file_exists("user://campaign_save.dat"):
@@ -726,18 +688,14 @@ func load_campaign_progress():
 				achievements = save_data.get("achievements", achievements)
 				unlocked_content = save_data.get("unlocked_content", unlocked_content)
 				print("Campaign progress loaded!")
-			else:
-				print("Failed to parse save file")
 
 func win_campaign():
-	print("🏆 CAMPAIGN COMPLETED! Congratulations, Shell Master!")
+	print("CAMPAIGN COMPLETED! Congratulations, Shell Master!")
 	
-	# Final achievement
 	if not achievements.get("campaign_complete", false):
 		achievements["campaign_complete"] = true
 		show_achievement_popup("Campaign Master!", "Completed all 20 stages!")
 	
-	# Show victory screen
 	show_victory_screen()
 	game_over.emit()
 
@@ -749,7 +707,7 @@ func show_victory_screen():
 	campaign_ui.add_child(victory_panel)
 	
 	var title = Label.new()
-	title.text = "🏆 VICTORY! 🏆"
+	title.text = "VICTORY!"
 	title.position = Vector2(200, 50)
 	title.add_theme_font_size_override("font_size", 36)
 	title.add_theme_color_override("font_color", Color.GOLD)
@@ -761,113 +719,3 @@ func show_victory_screen():
 	subtitle.add_theme_font_size_override("font_size", 20)
 	subtitle.add_theme_color_override("font_color", Color.WHITE)
 	victory_panel.add_child(subtitle)
-	
-	# Stats
-	var stats_text = "Final Statistics:\n"
-	stats_text += "• Stages Completed: " + str(current_stage) + "\n"
-	stats_text += "• Total Gold Earned: " + str(currency + calculate_total_spent()) + "\n"
-	stats_text += "• Shells Collected: " + str(owned_shells.size()) + "\n"
-	stats_text += "• House Upgrades: " + str(owned_house_upgrades.size()) + "\n"
-	stats_text += "• Achievements: " + str(count_achievements()) + "/" + str(achievements.size())
-	
-	var stats_label = Label.new()
-	stats_label.text = stats_text
-	stats_label.position = Vector2(50, 170)
-	stats_label.add_theme_font_size_override("font_size", 16)
-	stats_label.add_theme_color_override("font_color", Color.CYAN)
-	victory_panel.add_child(stats_label)
-
-func calculate_total_spent() -> int:
-	var total = 0
-	for shell in owned_shells:
-		if shell.has("cost"):
-			total += shell.cost
-	
-	for upgrade_key in owned_house_upgrades:
-		if upgrade_key in house_upgrades:
-			total += house_upgrades[upgrade_key].cost
-	
-	return total
-
-func count_achievements() -> int:
-	var count = 0
-	for achieved in achievements.values():
-		if achieved:
-			count += 1
-	return count
-
-func lose_stage():
-	current_state = GameState.DEFEAT
-	print("💀 Stage failed!")
-	
-	# Show failure options
-	show_failure_screen()
-
-func show_failure_screen():
-	var failure_panel = Panel.new()
-	failure_panel.position = Vector2(300, 200)
-	failure_panel.size = Vector2(400, 300)
-	failure_panel.add_theme_color_override("bg_color", Color(0.2, 0.1, 0.1, 0.95))
-	campaign_ui.add_child(failure_panel)
-	
-	var title = Label.new()
-	title.text = "💀 STAGE FAILED"
-	title.position = Vector2(100, 30)
-	title.add_theme_font_size_override("font_size", 24)
-	title.add_theme_color_override("font_color", Color.RED)
-	failure_panel.add_child(title)
-	
-	# Retry button
-	var retry_btn = Button.new()
-	retry_btn.text = "Retry Stage"
-	retry_btn.position = Vector2(150, 120)
-	retry_btn.size = Vector2(100, 40)
-	retry_btn.pressed.connect(func(): retry_current_stage())
-	failure_panel.add_child(retry_btn)
-	
-	# Shop button (costs gold)
-	var shop_btn = Button.new()
-	shop_btn.text = "Emergency Shop (50g)"
-	shop_btn.position = Vector2(120, 170)
-	shop_btn.size = Vector2(160, 40)
-	shop_btn.disabled = currency < 50
-	shop_btn.pressed.connect(func(): emergency_shop())
-	failure_panel.add_child(shop_btn)
-
-func retry_current_stage():
-	# Clean up failure UI
-	for child in campaign_ui.get_children():
-		if child is Panel and child.size.x == 400:
-			child.queue_free()
-	
-	start_stage(current_stage)
-
-func emergency_shop():
-	currency -= 50
-	# Clean up failure UI
-	for child in campaign_ui.get_children():
-		if child is Panel and child.size.x == 400:
-			child.queue_free()
-	
-	enter_shop()
-
-# Debug functions for testing
-func add_debug_currency(amount: int):
-	currency += amount
-	update_ui()
-	print("Added ", amount, " gold (debug)")
-
-func unlock_all_content():
-	unlocked_content["shells"] = shell_types.keys()
-	unlocked_content["houses"] = house_upgrades.keys()
-	print("All content unlocked (debug)")
-
-func skip_to_stage(stage_num: int):
-	start_stage(stage_num)
-	print("Skipped to stage ", stage_num, " (debug)")
-	
-	
-
-
-func _on_save_pressed() -> void:
-	save_campaign_progress()
