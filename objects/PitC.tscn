@@ -1,53 +1,15 @@
 [gd_scene load_steps=5 format=3 uid="uid://bs7o4c0k8p46j"]
 
+[ext_resource type="Script" uid="uid://u3tf51rkqed6" path="res://objects/PitC.gd" id="1_5e5ci"]
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="2_iod30"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="3_fl75u"]
-
-[sub_resource type="GDScript" id="GDScript_jaxoo"]
-script/source = "extends Node2D
-
-@onready var label = $ShellLabel
-var shells: int = 0
-
-func _ready():
-	update_label()
-
-	setup_click_area()
-
-func setup_click_area():
-	var click_area = get_node_or_null(\"ClickArea\")
-	if click_area and click_area.has_method(\"setup\"):
-		var pits = get_tree().get_nodes_in_group(\"pitsC\")
-		var pit_index = pits.find(self)
-		if pit_index >= 0:
-			click_area.setup(self, pit_index)
-			print(\"Setup click area for pit \", pit_index)
-	else:
-		print(\"Warning: No ClickArea found in \", name)
-
-func add_shells(amount: int):
-	shells += amount
-	update_label()
-
-
-func set_shells(amount: int):
-	shells = amount
-	update_label()
-
-
-func update_label():
-	if label:
-		label.text = str(shells)
-	else:
-		print(\"Warning: ShellLabel not found in Pit\")
-"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_h0pp4"]
 
 [node name="PitC" type="StaticBody2D" groups=["pitsC"]]
 collision_layer = 4
 collision_mask = 0
-script = SubResource("GDScript_jaxoo")
+script = ExtResource("1_5e5ci")
 
 [node name="ClickArea" parent="." instance=ExtResource("2_iod30")]
 show_behind_parent = true

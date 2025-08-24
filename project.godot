@@ -35,6 +35,7 @@ main_houses=""
 Shells=""
 Area=""
 MoveShells=""
+pitsC=""
 
 [layer_names]
 
