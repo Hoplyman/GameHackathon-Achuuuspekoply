@@ -4,8 +4,9 @@ var Moving: bool = false # is Moving
 var Player: int = 0 # whose player turn for turn purposes
 var Pit: int = 0 # what Pit is the Shell is in
 var Move: int = 0 # number of Moves 
-var shell_type: int = 0
-var shellsprite: Sprite2D
+var Score: int = 0 # total score to tally when in Pits
+var shell_type: int = 0 # the type of shell for unique effects
+var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
 
 @onready var timer := $Timer
@@ -17,12 +18,17 @@ var arrival_threshold: float = 10.0
 
 func _ready() -> void:
 	set_pit()
+	Score = 2
 	shellsprite = get_node("ShellSprite")
 	shell_type = randi_range(1, 12)
 	add_to_group("Shell")
 	timer.connect("timeout", Callable(self, "_on_timer_timeout"))
 	# Don't start timer automatically - only when needed
 	update_shell_frame()
+
+func get_score() -> int:
+	var score: int = Score
+	return score
 
 func set_pit():
 	var gamemode: String = ""
