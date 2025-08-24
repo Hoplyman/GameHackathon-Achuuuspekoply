@@ -1,9 +1,9 @@
 extends RigidBody2D
 
-var Moving: bool = false
-var Player: int = 0
-var Pit: int = 0
-var Move: int = 0
+var Moving: bool = false # is Moving 
+var Player: int = 0 # whose player turn for turn purposes
+var Pit: int = 0 # what Pit is the Shell is in
+var Move: int = 0 # number of Moves 
 var shell_type: int = 0
 var shellsprite: Sprite2D
 var waiting_for_timer: bool = false  # New variable to track timer waiting
@@ -82,58 +82,66 @@ func move_shell(player: int):
 		gamemode = "Pvp"
 	else:
 		gamemode = ""
-	
-	if Pit == 7:
-		if player == 1:
-			target = pvp.get_node("MainHouse1").global_position
-			Pit = 14
-		else:
-			target = pvp.get_node("Pit8").global_position
-	elif Pit == 14:
-		if player == 2:
-			target = pvp.get_node("MainHouse2").global_position
-			Pit = 15
-		else:
-			target = pvp.get_node("Pit1").global_position
+	if gamemode == "Campaign":
+		var boardc = campaign.get_node_or_null("BoardC")
+		if Pit <= 6:
+			target = boardc.get_node("PitC" + str(Pit+1)).global_position
+		elif Pit == 7:
+			target = boardc.get_node("MainHouse1").global_position
+		elif Pit >= 8:
+			target = boardc.get_node("PitC1").global_position
 			Pit = 0
-	elif Pit <= 6 or (Pit >= 8 and Pit <= 13):
-		target = pvp.get_node("Pit" + str(Pit+1)).global_position
-	elif Pit == 15:
-		target = pvp.get_node("Pit" + str(8)).global_position
-		Pit = 7
-	elif Pit == 16:
-		target = pvp.get_node("Pit" + str(1)).global_position
-		Pit = 0
-	else:
-		Pit = 1
-		target = pvp.get_node("Pit1").global_position
-	
-	if Move >= 1:
-		if Moving == false and waiting_for_timer == false:
-			remove_from_group("Shells")
-			add_to_group("MoveShells")
-			collision_layer = 0
-			collision_mask = 0
-			gravity_scale = 0
-			freeze = true  # Freeze the body to prevent falling
-			Move -= 1
-			Pit += 1
-			Moving = true
-			# Store the target for the physics process
-			move_target = target
-			print("Starting movement to:", target)
-	elif Move == 0:
-		if Moving == true:
-			# Stop the shell and re-enable physics
-			linear_velocity = Vector2.ZERO
-			Moving = false
-			collision_layer = 2
-			collision_mask = 2 | 3  # Fixed: use bitwise OR instead of AND
-			gravity_scale = 1
-			freeze = false  # Unfreeze the body
-			remove_from_group("MoveShells")
-			add_to_group("Shells")
-			print("All movements complete")
+	if gamemode == "Pvp":
+		if Pit == 7:
+			if player == 1:
+				target = pvp.get_node("MainHouse1").global_position
+				Pit = 14
+			else:
+				target = pvp.get_node("Pit8").global_position
+		elif Pit == 14:
+			if player == 2:
+				target = pvp.get_node("MainHouse2").global_position
+				Pit = 15
+			else:
+				target = pvp.get_node("Pit1").global_position
+				Pit = 0
+		elif Pit <= 6 or (Pit >= 8 and Pit <= 13):
+			target = pvp.get_node("Pit" + str(Pit+1)).global_position
+		elif Pit == 15:
+			target = pvp.get_node("Pit" + str(8)).global_position
+			Pit = 7
+		elif Pit == 16:
+			target = pvp.get_node("Pit" + str(1)).global_position
+			Pit = 0
+		else:
+			Pit = 1
+			target = pvp.get_node("Pit1").global_position
+		if Move >= 1:
+			if Moving == false and waiting_for_timer == false:
+				remove_from_group("Shells")
+				add_to_group("MoveShells")
+				collision_layer = 0
+				collision_mask = 0
+				gravity_scale = 0
+				freeze = true  # Freeze the body to prevent falling
+				Move -= 1
+				Pit += 1
+				Moving = true
+				# Store the target for the physics process
+				move_target = target
+				print("Starting movement to:", target)
+		elif Move == 0:
+			if Moving == true:
+				# Stop the shell and re-enable physics
+				linear_velocity = Vector2.ZERO
+				Moving = false
+				collision_layer = 2
+				collision_mask = 2 | 3  # Fixed: use bitwise OR instead of AND
+				gravity_scale = 1
+				freeze = false  # Unfreeze the body
+				remove_from_group("MoveShells")
+				add_to_group("Shells")
+				print("All movements complete")
 
 func _physics_process(delta):
 	if Moving and Move >= 0:
