@@ -21,27 +21,26 @@ visibility_layer = 0
 scale = Vector2(0.3, 0.3)
 shape = SubResource("CircleShape2D_uej0b")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="MoveTimer" type="Timer" parent="."]
 wait_time = 0.1
 
-[node name="Effect" type="Label" parent="."]
+[node name="ScoreTimer" type="Timer" parent="."]
+
+[node name="Container" type="Container" parent="."]
+layout_direction = 4
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Effect" type="Label" parent="Container"]
 visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-rotation = -0.0927488
+layout_mode = 2
 size_flags_horizontal = 3
 text = "Effect"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Score" type="Label" parent="."]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -14.0
-offset_right = 6.0
-grow_vertical = 0
+[node name="Score" type="Label" parent="Container"]
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
 theme_override_font_sizes/font_size = 10
@@ -49,4 +48,5 @@ text = "1"
 horizontal_alignment = 1
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]

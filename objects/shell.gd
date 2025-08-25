@@ -9,8 +9,10 @@ var Type: int = 0 # the type of shell for unique effects
 var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
 
-@onready var timer := $Timer
-@onready var labelscore := $Score
+@onready var movetimer := $MoveTimer
+@onready var scoretimer := $ScoreTimer
+@onready var labelscore := $Container/Score
+@onready var labeleffect := $Container/Effect
 
 # Movement variables
 var move_target: Vector2
@@ -18,23 +20,52 @@ var move_speed: float = 200.0
 var arrival_threshold: float = 10.0
 
 func _ready() -> void:
-	Type = randi_range(1, 12)  # This will be 1-12, but we need 0-11 for frames
+	Type = randi_range(1, 12)
+	Type = 3  # This will be 1-12, but we need 0-11 for frames
 	set_score()
 	set_pit()
 	shellsprite = get_node("ShellSprite")
 	add_to_group("Shells")  # Fixed: was "Shell", should be "Shells"
 	
 	# Fix: Check if signal is already connected before connecting
-	if not timer.timeout.is_connected(_on_timer_timeout):
-		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
-	
+	if not movetimer.timeout.is_connected(_on_move_timer_timeout):
+		movetimer.connect("timeout", Callable(self, "_on_timer_timeout"))
+	if not scoretimer.timeout.is_connected(_on_score_timer_timeout):
+		scoretimer.connect("timeout", Callable(self, "_on_timer_timeout"))
 	# Don't start timer automatically - only when needed
 	update_shell_frame()
 
 func shell_drop():
 	if Type == 1:
-		Score =+ 1
-		
+		Score += 1
+	elif Type == 2:
+		if Pit == 25 or Pit == 16:
+			Score += 5
+		else:
+			Score += 1
+	elif Type == 3:
+		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+		get_parent().add_child(Echo_Dup)
+		labeleffect.text = "ECHO"
+		labeleffect.modulate = Color(1.0, 0.0, 0.0, 0.0)  # Red but transparent
+		labeleffect.visible = true
+	# Create tween for fade in and fade out
+		var tween = create_tween()
+		tween.tween_property(labeleffect, "modulate:a", 1.0, 0.2)  # Fade in over 0.5 seconds
+		tween.tween_interval(2.0)  # Stay visible for 2 seconds
+		tween.tween_property(labeleffect, "modulate:a", 0.0, 0.5)  # Fade out over 0.5 seconds
+		tween.tween_callback(func(): labeleffect.visible = false) 
+	elif Type == 4:
+		Score *= 2
+		labeleffect.text = "ANCHOR"
+		labeleffect.modulate = Color(0.0, 0.0, 1.0, 0.0)  # Red but transparent
+		labeleffect.visible = true
+	# Create tween for fade in and fade out
+		var tween = create_tween()
+		tween.tween_property(labeleffect, "modulate:a", 1.0, 0.2)  # Fade in over 0.5 seconds
+		tween.tween_interval(2.0)  # Stay visible for 2 seconds
+		tween.tween_property(labeleffect, "modulate:a", 0.0, 0.5)  # Fade out over 0.5 seconds
+		tween.tween_callback(func(): labeleffect.visible = false) 
 	
 func shell_effect():
 	pass
@@ -48,7 +79,7 @@ func set_score():
 		Score = 3
 	elif Type == 2 or Type == 11:
 		Score = 5
-	labelscore.Text = str(Score)
+	labelscore.text = str(Score)
 
 func get_score() -> int:
 	var score: int = Score
@@ -206,7 +237,7 @@ func _physics_process(delta):
 			if Move > 0:
 				# Wait for timer before next move
 				waiting_for_timer = true
-				timer.start()
+				movetimer.start()
 				print("Waiting for timer before next move...")
 			else:
 				# All moves complete - NOW we can re-enable physics and collision
@@ -220,9 +251,14 @@ func _physics_process(delta):
 				shell_drop()
 				print("All movements complete - collision re-enabled")
 
-func _on_timer_timeout() -> void:
-	timer.stop()  # Stop the timer
+func _on_move_timer_timeout() -> void:
+	movetimer.stop()  # Stop the timer
 	if waiting_for_timer and Move > 0:
 		waiting_for_timer = false
 		print("Timer finished - continuing movement")
 		move_shell(Player)  # Continue with next move
+
+
+func _on_score_timer_timeout() -> void:
+	labelscore.Text = Score
+	scoretimer.start()
