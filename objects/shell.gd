@@ -59,10 +59,11 @@ func effect_text(Text: String, TextColor: Color):
 
 func shell_status():
 	var cTotalScore: int = 0
+	cTotalScore = Score
 	if MultiplierStacks >= 1 and Type != 11 or RustStacks <= 1:
 		var Multiplier: int = 0.5 * MultiplierStacks
 		Multiplier += 1
-		cTotalScore += Score * Multiplier
+		cTotalScore *= Multiplier
 	if CursedStacks >= 1 and Type != 7 or Type != 11:
 		var curse_reduction: int = 0.5 - (0.1 * CursedStacks)  # -50% base, +10% per stack
 		cTotalScore = int(cTotalScore * curse_reduction)
@@ -395,5 +396,6 @@ func _on_move_timer_timeout() -> void:
 		move_shell(Player)  # Continue with next move
 
 func _on_score_timer_timeout() -> void:
+	shell_status()
 	labelscore.text = str(TotalScore)  # Fixed: was labelscore.Text (capital T)
 	scoretimer.start()
