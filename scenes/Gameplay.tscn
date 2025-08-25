@@ -66,6 +66,6 @@ zoom = Vector2(0.9, 0.9)
 
 [node name="SpecialShellSelector" parent="." instance=ExtResource("5_jfxgp")]
 offset_left = 869.929
-offset_top = 421.025
+offset_top = 345.571
 offset_right = 869.929
-offset_bottom = 421.025
+offset_bottom = 345.571
