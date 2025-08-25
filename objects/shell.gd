@@ -5,11 +5,12 @@ var Player: int = 0 # whose player turn for turn purposes
 var Pit: int = 0 # what Pit is the Shell is in
 var Move: int = 0 # number of Moves 
 var Score: int = 0 # total score to tally when in Pits
-var shell_type: int = 0 # the type of shell for unique effects
+var Type: int = 0 # the type of shell for unique effects
 var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
 
 @onready var timer := $Timer
+@onready var labelscore := $Score
 
 # Movement variables
 var move_target: Vector2
@@ -17,10 +18,10 @@ var move_speed: float = 200.0
 var arrival_threshold: float = 10.0
 
 func _ready() -> void:
+	Type = randi_range(1, 12)  # This will be 1-12, but we need 0-11 for frames
+	set_score()
 	set_pit()
-	Score = 1
 	shellsprite = get_node("ShellSprite")
-	shell_type = randi_range(1, 12)  # This will be 1-12, but we need 0-11 for frames
 	add_to_group("Shells")  # Fixed: was "Shell", should be "Shells"
 	
 	# Fix: Check if signal is already connected before connecting
@@ -29,6 +30,25 @@ func _ready() -> void:
 	
 	# Don't start timer automatically - only when needed
 	update_shell_frame()
+
+func shell_drop():
+	if Type == 1:
+		Score =+ 1
+		
+	
+func shell_effect():
+	pass
+
+func set_score():
+	if Type == 1 or Type >= 3 and Type <= 5 or Type == 8 :
+		Score = 1
+	elif Type == 6 or Type == 7:
+		Score = 2
+	elif Type == 9 or Type == 12:
+		Score = 3
+	elif Type == 2 or Type == 11:
+		Score = 5
+	labelscore.Text = str(Score)
 
 func get_score() -> int:
 	var score: int = Score
@@ -67,19 +87,19 @@ func set_pit():
 func set_shell_type(new_type: int) -> void:
 	# Fix: Ensure the type is within valid range (0-11 for 12 frames)
 	if new_type >= 1 and new_type <= 12:
-		shell_type = new_type - 1  # Convert 1-12 range to 0-11 range
+		Type = new_type  # Convert 1-12 range to 0-11 range
 		update_shell_frame()
 	else:
 		print("Invalid shell type:", new_type)
 
 func update_shell_frame() -> void:
 	# Fix: Ensure frame index is within bounds (0-11 for 12 frames)
-	var frame_index = shell_type
-	if shell_type >= 1 and shell_type <= 12:
-		frame_index = shell_type - 1  # Convert 1-12 to 0-11
-	elif shell_type > 12:
+	var frame_index = Type
+	if Type >= 1 and Type <= 12:
+		frame_index = Type - 1  # Convert 1-12 to 0-11
+	elif Type > 12:
 		frame_index = 11  # Use last frame if out of bounds
-	elif shell_type < 1:
+	elif Type < 1:
 		frame_index = 0   # Use first frame if out of bounds
 	
 	shellsprite.frame = frame_index
@@ -197,6 +217,7 @@ func _physics_process(delta):
 				linear_velocity = Vector2.ZERO
 				remove_from_group("MoveShells")
 				add_to_group("Shells")
+				shell_drop()
 				print("All movements complete - collision re-enabled")
 
 func _on_timer_timeout() -> void:
