@@ -18,7 +18,7 @@ var arrival_threshold: float = 10.0
 
 func _ready() -> void:
 	set_pit()
-	Score = 2
+	Score = 1
 	shellsprite = get_node("ShellSprite")
 	shell_type = randi_range(1, 12)  # This will be 1-12, but we need 0-11 for frames
 	add_to_group("Shells")  # Fixed: was "Shell", should be "Shells"
