@@ -87,6 +87,13 @@ func create_special_shell_selector():
 		print("ERROR: SpecialShellSelector not found in scene!")
 
 func update_turn_display():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	for child in pvp.get_children():
+		if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+			var tween = create_tween()
+			tween.tween_interval(0.05)
+			await tween.finished
+			child.shell_startround()
 	if not turn_indicator:
 		print("Turn indicator not found!")
 		return
@@ -369,6 +376,13 @@ func get_pit(pit_index: int) -> Node2D:
 func switch_turn():
 	current_turn = 1 - current_turn
 	print("Turn switched to player ", current_turn + 1)
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	for child in pvp.get_children():
+		if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+			child.shell_endround()
+			var tween = create_tween()
+			tween.tween_interval(0.05)
+			await tween.finished
 	update_turn_display()
 
 func check_game_over() -> bool:

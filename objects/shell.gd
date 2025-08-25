@@ -9,6 +9,7 @@ var TotalScore: int = 0
 var Type: int = 1 # CHANGED: Start with normal shell type (1)
 var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
+var EffectBool: bool = false
 
 var MultiplierStacks: int = 0
 var DecayStacks: int = 0
@@ -57,7 +58,6 @@ func effect_text(Text: String, TextColor: Color):
 		tween.tween_property(labeleffect, "modulate:a", 0.0, 0.3)  # Fade out
 		tween.tween_callback(func(): labeleffect.visible = false)  # Hide
 
-
 func shell_status():
 	var cTotalScore: int = 0
 	cTotalScore = Score
@@ -72,26 +72,30 @@ func shell_status():
 
 func shell_startround():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
-	if Type == 5 and Pit == 15 or Pit == 16: #var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+	if Type == 5 and (Pit == 15 or Pit == 16): #var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
 		var randomType = randi_range(1, 12)  #get_parent().add_child(Echo_Dup)
 		pvp.spawn_shell(randomType, Pit)
-		effect_text("SPIRIT", Color(1.0, 1.0, 1.0, 0.0))
+		effect_text("SPIRIT SPAWN", Color(0.5, 0.0, 1.0, 0.0))
 	elif Type == 8:
-		#Chane nearby Shell into a random Type
-		#if no shell found
-		Type = randi_range(1,12)
-		effect_text("MIRROR", Color(1.0, 1.0, 1.0, 0.0))
-
+		effect_nearbyshells("SR-MIRROR")
+		if EffectBool == false:
+			Type = randi_range(1,12)
+			effect_text("MIRROR SHATTERED", Color(0.75, 0.75, 0.75, 0.0))
+		else:
+			EffectBool = false
 		
 func shell_endround():
 	if Type == 1:
 		if Pit == 15 or Pit == 16:
 			Score += 1
+			effect_text("+1", Color(1.0, 1.0, 1.0, 0.0))
 		elif Pit >= 1 and Pit <= 14:
-			Score = 1
+			if Score != 1:
+				Score = 1
+				effect_text("RESET", Color(1.0, 1.0, 1.0, 0.0))
 	elif Type == 2:
 		Score += 1
-		effect_text("GOLDEN", Color(1.0, 1.0, 0.0, 0.0))
+		effect_text("GOLDEN", Color(1.0, 0.84, 0.0))
 	elif Type == 3:
 		Score = 1
 		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
@@ -102,22 +106,30 @@ func shell_endround():
 			MultiplierStacks += 1
 			var Mulipliertext: int = 0.5 * MultiplierStacks
 			Mulipliertext += 1
-			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.0, 1.0, 0.0))
+			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.5, 1.0, 0.0))
 	elif Type == 6:
 		if Pit == 15 or Pit == 16:
 			Score += 2
+			effect_text("TIME +2", Color(1.0, 0.75, 0.8, 0.0))
 		elif Pit >= 1 and Pit <= 14:
-			Score += 1 # add +1 all nearby shells
-		effect_text("TIME", Color(1.0, 1.0, 1.0, 0.0))
+			effect_nearbyshells("TIME")
 	elif Type == 7:
 		pass
 		#add Luck on Pit
 	elif Type == 9:
 		pass
-		# apply burn to nearby shells and gain score for each burned
+		effect_nearbyshells("ER-FLAME")
 	elif Type == 12:
 		pass
-		# apply freeze to nearby shells and gain score for each freezed
+		effect_nearbyshells("ER-ICE")
+	if self.DecayStacks >= 1:
+		Score /= 2
+		DecayStacks -= 1
+	if BurnStacks >= 1:
+		Score -= BurnStacks
+		BurnStacks -= 1
+	if FreezeStacks >= 1:
+		FreezeStacks -= 1
 
 func shell_drop():
 	if Type == 1:
@@ -125,45 +137,41 @@ func shell_drop():
 	elif Type == 2:
 		if Pit == 25 or Pit == 16:
 			Score += 5
-			effect_text("GOLDEN", Color(1.0, 1.0, 0.0, 0.0))
+			effect_text("GOLDEN", Color(1.0, 0.84, 0.0, 0.0))
 		else:
 			Score += 1
 	elif Type == 3:
-		#replace EchoDup to nearby Shell
-		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
-		get_parent().add_child(Echo_Dup)
-		effect_text("ECHO", Color(1.0, 0.0, 0.0, 0.0))
+		effect_nearbyshells("DROP-ECHO")
 	elif Type == 4:
 		if Pit >= 1 and Pit <= 14:
-			#add give Multiplier to all nearby Shells
+			effect_nearbyshells("DROP-ANCHOR")
 			MultiplierStacks += 1 
 			var Mulipliertext: int = 0.5 * MultiplierStacks
 			Mulipliertext += 1
-			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.0, 1.0, 0.0))
+			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.5, 1.0, 0.0))
 	elif Type == 5:
 		Score += 1
 		var pvp = get_tree().root.get_node_or_null("Gameplay")
 		var randomType = randi_range(1, 12)  
 		pvp.spawn_shell(randomType, Pit)
-		effect_text("SPIRIT", Color(1.0, 1.0, 1.0, 0.0))
+		effect_text("SPIRIT", Color(0.5, 0.0, 1.0, 0.0))
 	elif Type == 6:
-		pass
-		# +1 score all nearby shells
+		effect_nearbyshells("TIME")
 	elif Type == 7:
-		var randomScore = randi_range(1, 5)  
+		var randomScore = randi_range(1,3)  
 		Score += randomScore
-		effect_text("LUCKY +" + str(randomScore), Color(0.0, 1.0, 0.0, 0.0))
+		effect_text("LUCKY +" + str(randomScore), Color(0.0, 0.8, 0.0, 0.0))
 	elif Type == 8:
-		pass
+		effect_nearbyshells("DROP-MIRROR")
 		#Copy 1 Nearby Shell type and change another shell type if no another shell found change this shell type to that type
 	elif Type == 9:
 		Score += 2
 	elif Type == 10:
 		Score += 1
-		#add activates 1 nearby Shell effect and Move +1 all nearby Chain
+		effect_nearbyshells("DROP-CHAIN")
 	elif Type == 11:
 		Score += 3
-		#add remove status effects of nearby shells
+		effect_nearbyshells("DROP-PURIFY")
 	elif Type == 12:
 		Score += 2
 
@@ -176,11 +184,166 @@ func set_score():
 		Score = 3
 	elif Type == 2 or Type == 11:
 		Score = 5
-	labelscore.text = str(Score)
+	shell_status()
+	labelscore.text = str(TotalScore)
 
 func get_score() -> int:
 	var score: int = Score
 	return score
+	
+func effect_nearbyshells(Effect:String):
+	var Shell1: Node2D = null
+	var Shell2: Node2D = null
+	var count: int = 0
+	var rng: int = 0
+	var gamemode: String = ""
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var campaign = get_tree().root.get_node_or_null("Campaign")
+	if campaign:
+		gamemode = "Campaign"
+	elif pvp:
+		gamemode = ("Pvp")
+	else:
+		gamemode = ""
+		
+	var shell_area = get_node("ShellRange")
+	var overlapping_bodies = shell_area.get_overlapping_bodies()
+
+	if gamemode == "Pvp":
+		for child in pvp.get_children():
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child in overlapping_bodies and child != self:
+					var tween = create_tween()
+					tween.tween_interval(0.1)
+					await tween.finished
+					if Effect == "DROP-ECHO":
+						Shell1 = child
+					elif Effect == "DROP-ANCHOR":
+						child.MultiplierStacks += 1 
+						var Mulipliertext: int = 0.5 * child.MultiplierStacks
+						Mulipliertext += 1
+						child.effect_text("SHELL X"+ str(Mulipliertext), Color(0.0, 0.5, 1.0, 0.0))
+					elif Effect == "TIME":
+						child.Score += 1
+						child.effect_text("TIME +1", Color(1.0, 0.75, 0.8, 0.0))
+					elif Effect == "SR-MIRROR":
+						Shell1 = child
+					elif Effect == "DROP-MIRROR":
+						if Shell1 == null:
+							Shell1 = child
+						elif Shell2 == null:
+							Shell2 = child
+					elif Effect == "ER-FLAME":
+						child.BurnStacks += 1
+						Score += 1
+						count += 1
+						child.effect_text("BURNED", Color(1.0, 0.65, 0.0, 0.0))
+					elif Effect == "DROP-CHAIN":
+						if child.Type == 10 and child.Pit >= 1 and child.Pit <= 14:
+							child.assign_move(1,Player)
+							rng = 4
+							child.effect_text("CHAIN MOVE", Color(0.0, 0.8, 0.8, 0.0))
+						if child.Type == 1:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 2:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 3:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 4 and (child.Pit >= 1 or child.Pit <= 14):
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 5:
+							Shell1 = child
+							if child.Pit == 15 or child.Pit == 16:
+								rng = randi_range(1,2)
+								if rng == 2:
+									rng = 3
+							else:
+								rng = 3
+						elif child.Type == 6:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 7:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 8:
+							Shell1 = child
+							rng = randi_range(1,2)
+						elif child.Type == 9:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif child.Type == 11:
+							Shell1 = child
+							rng = 3
+						elif child.Type == 12:
+							Shell1 = child
+							rng = randi_range(2,3)
+						elif rng != 4:
+							self.effect_text("CHAIN BREAK", Color(0.0, 0.8, 0.8, 0.0))
+					elif Effect == "DROP-PURIFY":
+						if DecayStacks >= 1:
+							child.DecayStacks = 0
+							count += 1
+						if BurnStacks >= 1:
+							child.BurnStacks = 0
+							count += 1
+						if FreezeStacks >= 1:
+							child.FreezeStacks = 0
+							count += 1
+						if RustStacks >= 1:
+							child.RustStacks = 0
+							count += 1
+						if CursedStacks >= 1:
+							child.CursedStacks = 0
+							count += 1
+						if DisableStacks >= 1:
+							child.DisableStacks = 0
+							count += 1
+						if count >= 1:
+							child.effect_text("PURIFIED", Color(1.0, 1.0, 0.8, 0.0))
+					elif Effect == "ER-ICE":
+						child.FreezeStacks += 1
+						Score += 1
+						count += 1
+						child.effect_text("FREEZED", Color(0.0, 1.0, 1.0, 0.0))
+						
+		if Effect == "DROP-ECHO" and Shell1 != null:
+			var Shell_Dup = Shell1.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+			get_parent().add_child(Shell_Dup)
+			Shell_Dup.effect_text("ECHO DUP SHELL", Color(1.0, 0.0, 0.0, 0.0))
+		elif Effect == "SR-MIRROR" and Shell1 != null:
+			EffectBool = true
+			Shell1.Type = randi_range(1,12)
+			Shell1.effect_text("MIRROR CHANGED", Color(0.75, 0.75, 0.75, 0.0))
+			Shell1.update_shell_frame()
+		elif Effect == "DROP-MIRROR" and Shell1 != null:
+			if Shell2 != null:
+				Shell2.Type = Shell1.Type
+				Shell2.effect_text("MIRROR COPIED", Color(0.75, 0.75, 0.75, 0.0))
+				Shell2.update_shell_frame()
+			else:
+				Type = Shell1.Type
+				self.effect_text("MIRROR SHATTERED", Color(0.75, 0.75, 0.75, 0.0))
+				self.update_shell_frame()
+		elif Effect == "ER-FLAME" and Shell1 != null:
+			self.effect_text("FLAME +" + str(count), Color(1.0, 0.65, 0.0, 0.0))
+		elif Effect == "DROP-CHAIN" and Shell1 != null:
+			if rng == 1:
+				Shell1.shell_startround()
+				self.effect_text("CHAIN S-ROUND", Color(0.0, 0.8, 0.8, 0.0))
+			elif rng == 2:
+				Shell1.shell_endround()
+				self.effect_text("CHAIN E-ROUND", Color(0.0, 0.8, 0.8, 0.0))	
+			elif rng == 3:
+				Shell1.shell_drop()
+				self.effect_text("CHAIN DROP", Color(0.0, 0.8, 0.8, 0.0))	
+		elif Effect == "ER-ICE" and Shell1 != null:
+			self.effect_text("ICE +" + str(count), Color(0.0, 1.0, 1.0, 0.0))
+	else:
+		return 
 
 func set_pit():
 	var gamemode: String = ""
