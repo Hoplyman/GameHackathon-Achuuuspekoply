@@ -1,8 +1,8 @@
 extends Node2D
 
 # Shell distribution settings
-const SHELL_MOVE_SPEED = 400.0  # pixels per second
-const SHELL_DROP_DELAY = 0.2    # seconds between each shell drop
+const SHELL_MOVE_SPEED = 600.0     # Increased from 400 pixels per second
+const SHELL_DROP_DELAY = 0.05   # seconds between each shell drop
 
 func set_shells(Shells: int, NewShells: int, x: int, y: int):
 	var game_manager = get_tree().get_nodes_in_group("game_manager")
@@ -13,7 +13,6 @@ func set_shells(Shells: int, NewShells: int, x: int, y: int):
 	if not Pvp:
 		Pvp = self
 	
-	# SAFETY CHECK: Don't create shells if the counts are the same
 	if Shells == NewShells:
 		print("Shell counts are equal (", Shells, "), skipping shell creation")
 		return
@@ -65,10 +64,7 @@ func move_shells(pit_index: int, player: int):
 	var shells_to_move = selected_pit.shells
 	print("Moving ", shells_to_move, " shells from pit ", pit_index)
 	
-	# Clear the selected pit immediately
 	selected_pit.set_shells(0)
-	
-	# Create distribution sequence
 	await distribute_shells_smoothly(shells_to_move, pit_index, game_manager)
 
 func distribute_shells_smoothly(shells_to_move: int, start_pit_index: int, game_manager: Node):
@@ -76,30 +72,12 @@ func distribute_shells_smoothly(shells_to_move: int, start_pit_index: int, game_
 	var last_position = start_pit_index
 	
 	for i in range(shells_to_move):
-		# Get next position
 		current_position = game_manager.get_next_position(current_position)
 		last_position = current_position
 		
-		# Get source and target positions
 		var source_pos = get_source_position(i == 0, start_pit_index, current_position, game_manager)
 		var target_node = game_manager.get_position_node(current_position)
 		
-		if not target_node:
-			print("Target node not found for position: ", current_position)
-			continue
-		
-		# Create and animate shell
-		await create_and_animate_shell(source_pos, target_node.global_position, current_position, game_manager)
-		
-		# Small delay between shells for smooth visual flow
-		if i < shells_to_move - 1:  # Don't delay after the last shell
-			await get_tree().create_timer(SHELL_DROP_DELAY).timeout
-	
-	print("Shell distribution complete. Last position: ", last_position)
-	
-	# Notify GameManager that distribution is complete
-	if game_manager.has_method("on_shell_distribution_complete"):
-		game_manager.on_shell_distribution_complete(last_position)
 
 func get_source_position(is_first_shell: bool, start_pit_index: int, current_position: int, game_manager: Node) -> Vector2:
 	if is_first_shell:
