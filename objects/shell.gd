@@ -111,21 +111,26 @@ func create_echo_duplicate():
 	await get_tree().process_frame
 	await get_tree().process_frame
 	
-	# FIXED: Position the duplicate within the pit's area, not with random offset
+	# NEW: Position the duplicate at a spawn location (above the pit or to the side)
 	var pit_position = current_pit.global_position
-	var safe_offset = Vector2(randf_range(-20, 20), randf_range(-20, 20))  # Smaller, safer offset
-	Echo_Dup.global_position = pit_position + safe_offset
+	var spawn_offset = Vector2(randf_range(-50, 50), -100)  # Spawn above with some randomness
+	Echo_Dup.global_position = pit_position + spawn_offset
 	
-	# Reset the duplicate's movement state properly
+	# Reset the duplicate's state
 	Echo_Dup.Moving = false
-	Echo_Dup.Move = 0
+	Echo_Dup.Move = 0  # Start with no moves
 	Echo_Dup.Player = 0
 	Echo_Dup.waiting_for_timer = false
 	
-	# CRITICAL FIX: Set the correct Pit number for the duplicate based on current pit
+	# Set the correct starting pit (where it spawned, not the target)
+	# We'll calculate this based on spawn position or use a "spawn pit" concept
 	Echo_Dup.Pit = get_pit_number_from_node(current_pit)
 	
-	# FIXED: Proper physics settings for the duplicate
+	# Make sure it's in the right group initially
+	Echo_Dup.remove_from_group("MoveShells") 
+	Echo_Dup.add_to_group("Shells")
+	
+	# Set up proper physics
 	Echo_Dup.collision_layer = 2
 	Echo_Dup.collision_mask = 22
 	Echo_Dup.gravity_scale = 1
@@ -133,14 +138,15 @@ func create_echo_duplicate():
 	Echo_Dup.linear_velocity = Vector2.ZERO
 	Echo_Dup.angular_velocity = 0
 	
-	# Make sure it's in the right group
-	Echo_Dup.remove_from_group("MoveShells")
-	Echo_Dup.add_to_group("Shells")
-	
 	# Update its appearance
 	Echo_Dup.update_shell_frame()
 	
-	print("Echo shell duplicated successfully in pit ", Echo_Dup.Pit, " at position: ", Echo_Dup.global_position)
+	print("Echo duplicate created at spawn position: ", Echo_Dup.global_position)
+	
+	# NEW: Use assign_move() to move the duplicate to the target pit!
+	# Give it 1 move to animate to the target pit
+	await get_tree().create_timer(0.2).timeout  # Small delay before starting movement
+	Echo_Dup.assign_move(1, Player)  # Use the same player and 1 move
 
 func get_pit_number_from_node(pit_node: Node2D) -> int:
 	if not pit_node:

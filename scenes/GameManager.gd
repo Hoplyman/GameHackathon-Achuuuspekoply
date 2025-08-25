@@ -249,34 +249,29 @@ func _on_special_shell_selected(shell_type: int, pit_index: int):
 func place_special_shell(shell_type: int, pit_index: int):
 	print("Placing special shell type ", shell_type, " in pit ", pit_index)
 	
-	# Force all special shells to be Echo shells (type 3)
 	var shell_scene = preload("res://objects/Shell.tscn")
 	var special_shell = shell_scene.instantiate()
 	
-	# Add to the current scene FIRST
 	get_tree().current_scene.add_child(special_shell)
-	
-	# Wait for shell to be fully ready
 	await get_tree().process_frame
 	await get_tree().process_frame
 	
-	# THEN set the shell type (this will trigger color change)
-	special_shell.set_shell_type(3)  # Echo shell
+	special_shell.set_shell_type(shell_type)
 	
-	# Position the shell at the selected pit
+	# Position at a spawn location (above the board or at a previous pit)
 	var target_pit = get_pit(pit_index)
 	if target_pit:
-		special_shell.global_position = target_pit.global_position
-		special_shell.freeze = true  # Prevent immediate physics
-		special_shell.gravity_scale = 0  # Disable gravity temporarily
+		var spawn_position = Vector2(target_pit.global_position.x, target_pit.global_position.y - 200)
+		special_shell.global_position = spawn_position
 		
-		# Wait a bit then enable physics properly
-		await get_tree().create_timer(0.1).timeout
-		special_shell.freeze = false
-		special_shell.gravity_scale = 1
-		special_shell.linear_velocity = Vector2.ZERO  # Start with no velocity
+		# Set initial pit (we'll say it's at a "virtual pit 0" or previous pit)
+		special_shell.Pit = pit_index  # Set to destination, assign_move will handle the rest
 		
-		print("Placed RED Echo shell in pit ", pit_index + 1)
+		print("Special shell spawned at: ", spawn_position)
+		
+		# Use assign_move() to animate it to the target pit!
+		await get_tree().create_timer(0.2).timeout
+		special_shell.assign_move(1, current_turn + 1)  # 1 move to reach target
 
 func capture_opposite_pit(pit_index: int):
 	var opposite_index = 13 - pit_index
