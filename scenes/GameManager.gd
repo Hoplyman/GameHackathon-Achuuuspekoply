@@ -235,43 +235,15 @@ func show_special_shell_selection():
 func _on_special_shell_selected(shell_type: int, pit_index: int):
 	awaiting_special_shell_selection = false
 	
-	if shell_type > 0 and pit_index >= 0:
-		# Player selected a special shell to place
-		place_special_shell(shell_type, pit_index)
-		print("Player ", current_turn + 1, " placed special shell type ", shell_type, " in pit ", pit_index + 1)
+	if shell_type > 0:
+		# Player selected a special shell (already spawned by SpecialShellSelector)
+		print("Player ", current_turn + 1, " selected special shell type ", shell_type)
 	else:
 		print("Player ", current_turn + 1, " skipped special shell selection")
 	
 	# Now switch turns and continue game
 	switch_turn()
 	check_game_over()
-
-func place_special_shell(shell_type: int, pit_index: int):
-	print("Placing special shell type ", shell_type, " in pit ", pit_index)
-	
-	var shell_scene = preload("res://objects/Shell.tscn")
-	var special_shell = shell_scene.instantiate()
-	
-	get_tree().current_scene.add_child(special_shell)
-	await get_tree().process_frame
-	await get_tree().process_frame
-	
-	special_shell.set_shell_type(shell_type)
-	
-	# Position at a spawn location (above the board or at a previous pit)
-	var target_pit = get_pit(pit_index)
-	if target_pit:
-		var spawn_position = Vector2(target_pit.global_position.x, target_pit.global_position.y - 200)
-		special_shell.global_position = spawn_position
-		
-		# Set initial pit (we'll say it's at a "virtual pit 0" or previous pit)
-		special_shell.Pit = pit_index  # Set to destination, assign_move will handle the rest
-		
-		print("Special shell spawned at: ", spawn_position)
-		
-		# Use assign_move() to animate it to the target pit!
-		await get_tree().create_timer(0.2).timeout
-		special_shell.assign_move(1, current_turn + 1)  # 1 move to reach target
 
 func capture_opposite_pit(pit_index: int):
 	var opposite_index = 13 - pit_index
