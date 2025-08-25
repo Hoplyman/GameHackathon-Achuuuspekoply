@@ -32,6 +32,7 @@ var arrival_threshold: float = 10.0
 func _ready() -> void:
 	# Wait a frame to ensure all nodes are ready
 	# Update appearance and score
+	scoretimer.start()
 	update_shell_frame()
 	set_score()
 	set_pit()
@@ -60,11 +61,11 @@ func effect_text(Text: String, TextColor: Color):
 func shell_status():
 	var cTotalScore: int = 0
 	cTotalScore = Score
-	if MultiplierStacks >= 1 and Type != 11 or RustStacks <= 1:
+	if MultiplierStacks >= 1 and (Type != 11 or RustStacks <= 1):
 		var Multiplier: int = 0.5 * MultiplierStacks
 		Multiplier += 1
 		cTotalScore *= Multiplier
-	if CursedStacks >= 1 and Type != 7 or Type != 11:
+	if CursedStacks >= 1 and (Type != 7 or Type != 11):
 		var curse_reduction: int = 0.5 - (0.1 * CursedStacks)  # -50% base, +10% per stack
 		cTotalScore = int(cTotalScore * curse_reduction)
 	TotalScore = cTotalScore
