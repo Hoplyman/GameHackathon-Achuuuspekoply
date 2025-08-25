@@ -5,7 +5,7 @@ var Player: int = 0 # whose player turn for turn purposes
 var Pit: int = 0 # what Pit is the Shell is in
 var Move: int = 0 # number of Moves 
 var Score: int = 0 # total score to tally when in Pits
-var Type: int = 0 # the type of shell for unique effects
+var Type: int = 1 # CHANGED: Start with normal shell type (1)
 var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
 
@@ -13,6 +13,7 @@ var waiting_for_timer: bool = false  # New variable to track timer waiting
 @onready var scoretimer := $ScoreTimer
 @onready var labelscore := $Container/Score
 @onready var labeleffect := $Container/Effect
+@onready var shell_sprite := $ShellSprite  # Use @onready for proper initialization
 
 # Movement variables
 var move_target: Vector2
@@ -20,20 +21,27 @@ var move_speed: float = 200.0
 var arrival_threshold: float = 10.0
 
 func _ready() -> void:
-	Type = randi_range(1, 12)
-	Type = 3  # This will be 1-12, but we need 0-11 for frames
+	# Wait a frame to ensure all nodes are ready
+	await get_tree().process_frame
+	
+	# CHANGED: Always start with normal shell type (1)
+	Type = 1  # Normal shell
+	shellsprite = shell_sprite  # Assign the @onready reference
+	
+	# Update appearance and score
+	update_shell_frame()
 	set_score()
 	set_pit()
-	shellsprite = get_node("ShellSprite")
+	
 	add_to_group("Shells")  # Fixed: was "Shell", should be "Shells"
 	
 	# Fix: Check if signal is already connected before connecting
 	if not movetimer.timeout.is_connected(_on_move_timer_timeout):
-		movetimer.connect("timeout", Callable(self, "_on_timer_timeout"))
+		movetimer.connect("timeout", Callable(self, "_on_move_timer_timeout"))
 	if not scoretimer.timeout.is_connected(_on_score_timer_timeout):
-		scoretimer.connect("timeout", Callable(self, "_on_timer_timeout"))
-	# Don't start timer automatically - only when needed
-	update_shell_frame()
+		scoretimer.connect("timeout", Callable(self, "_on_score_timer_timeout"))
+	
+	print("Shell initialized with type: ", Type)
 
 func shell_drop():
 	if Type == 1:
@@ -44,17 +52,31 @@ func shell_drop():
 		else:
 			Score += 1
 	elif Type == 3:
-		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
-		get_parent().add_child(Echo_Dup)
+		# Show ECHO effect label FIRST
 		labeleffect.text = "ECHO"
-		labeleffect.modulate = Color(1.0, 0.0, 0.0, 0.0)  # Red but transparent
+		labeleffect.modulate = Color(1.0, 0.0, 0.0, 1.0)  # Full red, fully visible
 		labeleffect.visible = true
-	# Create tween for fade in and fade out
-		var tween = create_tween()
-		tween.tween_property(labeleffect, "modulate:a", 1.0, 0.2)  # Fade in over 0.5 seconds
-		tween.tween_interval(2.0)  # Stay visible for 2 seconds
-		tween.tween_property(labeleffect, "modulate:a", 0.0, 0.5)  # Fade out over 0.5 seconds
-		tween.tween_callback(func(): labeleffect.visible = false) 
+	
+	# Create tween for the label effect
+		var label_tween = create_tween()
+		label_tween.tween_interval(1.5)  # Show for 1.5 seconds
+		label_tween.tween_property(labeleffect, "modulate:a", 0.0, 0.5)  # Fade out
+		label_tween.tween_callback(func(): labeleffect.visible = false)
+	
+		# THEN create the duplicate shell
+		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+		Echo_Dup.global_position = global_position + Vector2(randf_range(-15, 15), randf_range(-15, 15))
+	
+	# Reset the duplicate's movement state
+		Echo_Dup.Moving = false
+		Echo_Dup.Move = 0
+		Echo_Dup.collision_layer = 2
+		Echo_Dup.collision_mask = 22
+		Echo_Dup.gravity_scale = 1
+		Echo_Dup.freeze = false
+	
+		get_parent().add_child(Echo_Dup)
+		print("Echo shell created and duplicated!")
 	elif Type == 4:
 		Score *= 2
 		labeleffect.text = "ANCHOR"
@@ -118,22 +140,35 @@ func set_pit():
 func set_shell_type(new_type: int) -> void:
 	# Fix: Ensure the type is within valid range (0-11 for 12 frames)
 	if new_type >= 1 and new_type <= 12:
-		Type = new_type  # Convert 1-12 range to 0-11 range
+		Type = new_type
 		update_shell_frame()
+		set_score()  # Recalculate score for new type
+		print("Shell type set to: ", Type)
 	else:
 		print("Invalid shell type:", new_type)
 
 func update_shell_frame() -> void:
+	# Safety check: Make sure shellsprite exists before trying to use it
+	if not shellsprite:
+		await get_tree().process_frame  # Wait for shell to be ready
+		if shell_sprite:
+			shellsprite = shell_sprite
+		else:
+			print("Warning: shellsprite is still null")
+			return
+	
 	# Fix: Ensure frame index is within bounds (0-11 for 12 frames)
-	var frame_index = Type
-	if Type >= 1 and Type <= 12:
-		frame_index = Type - 1  # Convert 1-12 to 0-11
-	elif Type > 12:
-		frame_index = 11  # Use last frame if out of bounds
-	elif Type < 1:
-		frame_index = 0   # Use first frame if out of bounds
+	var frame_index = Type - 1 if Type >= 1 else 0
+	frame_index = clamp(frame_index, 0, 11)
 	
 	shellsprite.frame = frame_index
+	
+	# FIXED: Set color based on shell type
+	if Type == 3:  # Echo shell should be red
+		shellsprite.modulate = Color.RED
+		print("Echo shell set to RED color")
+	else:
+		shellsprite.modulate = Color.WHITE
 
 func assign_move(amount: int, player: int):
 	Move += amount
@@ -260,5 +295,5 @@ func _on_move_timer_timeout() -> void:
 
 
 func _on_score_timer_timeout() -> void:
-	labelscore.Text = Score
+	labelscore.text = str(Score)  # Fixed: was labelscore.Text (capital T)
 	scoretimer.start()

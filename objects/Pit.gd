@@ -239,25 +239,37 @@ func _on_shell_area_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D and body.is_in_group("Shells"):
 		print("Shell entered pit ", name, ": ", body.name)
 		
-		if not use_timer_counting and initialization_complete:
-			shells += 1
-			update_label()
-			print("Updated pit ", name, " to ", shells, " shells")
+		# FIXED: Always update shell count when a shell enters, regardless of timer mode
+		await get_tree().create_timer(0.1).timeout  # Small delay for physics to settle
+		
+		if use_timer_counting:
+			# Let timer handle the counting
+			return
 		else:
-			await get_tree().create_timer(0.1).timeout
-			update_label()
+			# Manually count shells in area
+			var new_count = count_shells_in_area()
+			if new_count != shells:
+				shells = new_count
+				update_label()
+				print("Updated pit ", name, " to ", shells, " shells")
 
 func _on_shell_area_body_exited(body: Node2D) -> void:
 	if body is RigidBody2D and body.is_in_group("Shells"):
 		print("Shell exited pit ", name, ": ", body.name)
 		
-		if not use_timer_counting and initialization_complete:
-			shells = max(0, shells - 1)
-			update_label()
-			print("Updated pit ", name, " to ", shells, " shells")
+		# FIXED: Always update shell count when a shell exits
+		await get_tree().create_timer(0.1).timeout  # Small delay for physics to settle
+		
+		if use_timer_counting:
+			# Let timer handle the counting
+			return
 		else:
-			await get_tree().create_timer(0.1).timeout
-			update_label()
+			# Manually count shells in area
+			var new_count = count_shells_in_area()
+			if new_count != shells:
+				shells = new_count
+				update_label()
+				print("Updated pit ", name, " to ", shells, " shells")
 		
 func update_label():
 	var shell_count = shells

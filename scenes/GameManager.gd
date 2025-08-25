@@ -5,11 +5,13 @@ var pits: Array
 var main_houses: Array
 var game_active: bool = true
 var is_distributing: bool = false
+var awaiting_special_shell_selection: bool = false
 
 # UI Elements
 var turn_indicator: Label
 var player1_label: Label
 var player2_label: Label
+var special_shell_selector: Control
 
 # Resolution scaling
 var base_resolution = Vector2(1920, 1080)
@@ -23,6 +25,7 @@ func _ready():
 	calculate_ui_scale()
 	call_deferred("create_ui_elements")
 	call_deferred("start_game")
+	call_deferred("create_special_shell_selector")
 
 func calculate_ui_scale():
 	var viewport_size = get_viewport().get_visible_rect().size
@@ -74,9 +77,22 @@ func create_ui_elements():
 	update_turn_display()
 	print("UI Elements created successfully!")
 
+func create_special_shell_selector():
+	# Get reference to the selector that's already in the scene
+	special_shell_selector = get_parent().get_node("SpecialShellSelector")
+	if special_shell_selector:
+		special_shell_selector.special_shell_selected.connect(_on_special_shell_selected)
+		print("Special shell selector connected!")
+	else:
+		print("ERROR: SpecialShellSelector not found in scene!")
+
 func update_turn_display():
 	if not turn_indicator:
 		print("Turn indicator not found!")
+		return
+		
+	if awaiting_special_shell_selection:
+		turn_indicator.text = "Player " + str(current_turn + 1) + " - Choose Special Shell"
 		return
 		
 	if current_turn == 0:
@@ -103,7 +119,12 @@ func highlight_player_pits(player: int):
 			pit.modulate = highlight_color
 
 func handle_pit_click(pit_index: int):
-	if not game_active or is_distributing:
+	# First check if we're in special shell selection mode
+	if awaiting_special_shell_selection:
+		if special_shell_selector.handle_pit_click(pit_index):
+			return  # Pit click was handled by special shell selector
+	
+	if not game_active or is_distributing or awaiting_special_shell_selection:
 		return
 	
 	var pit = get_pit(pit_index)
@@ -191,6 +212,8 @@ func check_end_turn_rules(last_position: int):
 	# Rule: Extra turn for landing in own main house
 	if (current_turn == 0 and last_position == 14) or (current_turn == 1 and last_position == 15):
 		print("Player ", current_turn + 1, " gets another turn!")
+		# NO special shell selection after extra turn - just continue turn
+		update_turn_display()
 		return
 	
 	# Rule: Capture for landing in own empty pit
@@ -201,8 +224,59 @@ func check_end_turn_rules(last_position: int):
 			if last_position >= player_range[0] and last_position <= player_range[1]:
 				capture_opposite_pit(last_position)
 	
+	# Show special shell selection before switching turns
+	show_special_shell_selection()
+
+func show_special_shell_selection():
+	awaiting_special_shell_selection = true
+	update_turn_display()
+	special_shell_selector.show_selection(current_turn)
+
+func _on_special_shell_selected(shell_type: int, pit_index: int):
+	awaiting_special_shell_selection = false
+	
+	if shell_type > 0 and pit_index >= 0:
+		# Player selected a special shell to place
+		place_special_shell(shell_type, pit_index)
+		print("Player ", current_turn + 1, " placed special shell type ", shell_type, " in pit ", pit_index + 1)
+	else:
+		print("Player ", current_turn + 1, " skipped special shell selection")
+	
+	# Now switch turns and continue game
 	switch_turn()
 	check_game_over()
+
+func place_special_shell(shell_type: int, pit_index: int):
+	print("Placing special shell type ", shell_type, " in pit ", pit_index)
+	
+	# Force all special shells to be Echo shells (type 3)
+	var shell_scene = preload("res://objects/Shell.tscn")
+	var special_shell = shell_scene.instantiate()
+	
+	# Add to the current scene FIRST
+	get_tree().current_scene.add_child(special_shell)
+	
+	# Wait for shell to be fully ready
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	# THEN set the shell type (this will trigger color change)
+	special_shell.set_shell_type(3)  # Echo shell
+	
+	# Position the shell at the selected pit
+	var target_pit = get_pit(pit_index)
+	if target_pit:
+		special_shell.global_position = target_pit.global_position
+		special_shell.freeze = true  # Prevent immediate physics
+		special_shell.gravity_scale = 0  # Disable gravity temporarily
+		
+		# Wait a bit then enable physics properly
+		await get_tree().create_timer(0.1).timeout
+		special_shell.freeze = false
+		special_shell.gravity_scale = 1
+		special_shell.linear_velocity = Vector2.ZERO  # Start with no velocity
+		
+		print("Placed RED Echo shell in pit ", pit_index + 1)
 
 func capture_opposite_pit(pit_index: int):
 	var opposite_index = 13 - pit_index
@@ -256,9 +330,11 @@ func start_game():
 	
 	await get_tree().process_frame
 	
-	# Initialize pits with exactly 7 shells each
+	# Initialize pits with exactly 7 NORMAL shells each (type 1)
 	for pit in pits:
 		pit.set_shells(7)
+		# NEW: Force all starting shells to be normal shells
+		force_normal_shells_in_pit(pit)
 	
 	# FIXED: Wait longer to ensure all shell spawning is completely finished
 	await get_tree().process_frame
@@ -275,6 +351,7 @@ func start_game():
 			house.update_label()
 	
 	print("Game initialized with ", pits.size(), " pits and ", main_houses.size(), " main houses")
+	print("All starting shells are normal shells (type 1)")
 	print("Player 1 (BLUE) controls pits 1-7 (bottom row)")
 	print("Player 2 (RED) controls pits 8-14 (top row)")
 	
@@ -282,6 +359,22 @@ func start_game():
 		update_turn_display()
 	else:
 		highlight_player_pits(0)
+
+func force_normal_shells_in_pit(pit: Node2D):
+	# Find all shells in this pit and force them to be normal shells
+	var game_scene = get_tree().root.get_node_or_null("Gameplay")
+	if not game_scene:
+		game_scene = get_parent()
+	
+	var shell_area = pit.get_node_or_null("ShellArea")
+	if not shell_area:
+		return
+	
+	var overlapping_bodies = shell_area.get_overlapping_bodies()
+	
+	for child in game_scene.get_children():
+		if child.is_in_group("Shells") and child in overlapping_bodies:
+			child.set_shell_type(1)  # Force to normal shell
 
 func get_main_house(player_index: int) -> Node2D:
 	if player_index < main_houses.size():
@@ -333,6 +426,8 @@ func check_game_over() -> bool:
 
 func end_game():
 	game_active = false
+	awaiting_special_shell_selection = false
+	special_shell_selector.hide_selection()
 	print("Game Over!")
 	
 	var player1_remaining = 0

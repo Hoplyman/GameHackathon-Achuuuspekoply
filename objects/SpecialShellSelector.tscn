@@ -1,0 +1,65 @@
+[gd_scene load_steps=2 format=3 uid="uid://dni16xmjr8sb5"]
+
+[ext_resource type="Script" uid="uid://tfc45qacojm4" path="res://objects/SpecialShellSelector.gd" id="1_specialselector"]
+
+[node name="SpecialShellSelector" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_specialselector")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -250.0
+offset_right = 200.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Player X - Choose a Special Shell"
+horizontal_alignment = 1
+
+[node name="ShellButtonsContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="PitSelectionLabel" type="Label" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Click on one of your pits to place this shell."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ConfirmButton" type="Button" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Confirm"
+
+[node name="SkipButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Skip Turn"
