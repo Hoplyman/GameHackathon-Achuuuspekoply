@@ -311,6 +311,7 @@ text = "?"
 stream = ExtResource("2_tgyvh")
 autoplay = true
 bus = &"Music"
+parameters/looping = true
 
 [node name="Settings Panel" type="Panel" parent="."]
 layout_mode = 1
