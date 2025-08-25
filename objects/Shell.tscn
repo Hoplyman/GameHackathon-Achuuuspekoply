@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddb2cc8rptbwo"]
+[gd_scene load_steps=5 format=3 uid="uid://ddb2cc8rptbwo"]
 
 [ext_resource type="Texture2D" uid="uid://cacstupdpj3bt" path="res://assets/Sprites/ShellSprites.png" id="1_r6mts"]
 [ext_resource type="Script" uid="uid://chihm8wg1872a" path="res://objects/shell.gd" id="2_uej0b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uej0b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4hf8t"]
 
 [node name="Shell" type="RigidBody2D" groups=["Shells"]]
 collision_layer = 2
@@ -46,6 +48,13 @@ size_flags_vertical = 6
 theme_override_font_sizes/font_size = 10
 text = "1"
 horizontal_alignment = 1
+
+[node name="ShellRange" type="Area2D" parent="."]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ShellRange"]
+scale = Vector2(3.4, 3.4)
+shape = SubResource("CircleShape2D_4hf8t")
+debug_color = Color(1, 1, 1, 0.42)
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]

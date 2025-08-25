@@ -5,10 +5,18 @@ var Player: int = 0 # whose player turn for turn purposes
 var Pit: int = 0 # what Pit is the Shell is in
 var Move: int = 0 # number of Moves 
 var Score: int = 0 # total score to tally when in Pits
+var TotalScore: int = 0 
 var Type: int = 1 # CHANGED: Start with normal shell type (1)
 var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
-var is_echo_duplicate: bool = false  # Track if this is an Echo duplicate
+
+var MultiplierStacks: int = 0
+var DecayStacks: int = 0
+var BurnStacks: int = 0
+var FreezeStacks: int = 0
+var RustStacks: int = 0
+var CursedStacks: int = 0
+var DisableStacks: int = 0
 
 @onready var movetimer := $MoveTimer
 @onready var scoretimer := $ScoreTimer
@@ -23,13 +31,6 @@ var arrival_threshold: float = 10.0
 
 func _ready() -> void:
 	# Wait a frame to ensure all nodes are ready
-	await get_tree().process_frame
-	
-	# CHANGED: Always start with normal shell type (1) unless it's an Echo duplicate
-	if not is_echo_duplicate:
-		Type = 1  # Normal shell
-	shellsprite = shell_sprite  # Assign the @onready reference
-	
 	# Update appearance and score
 	update_shell_frame()
 	set_score()
@@ -45,157 +46,124 @@ func _ready() -> void:
 	
 	print("Shell initialized with type: ", Type)
 
+func effect_text(Text: String, TextColor: Color):
+		labeleffect.text = Text
+		labeleffect.modulate = TextColor  # Red but transparent
+		labeleffect.visible = true
+		var tween = create_tween()
+		tween.tween_property(labeleffect, "modulate:a", 1.0, 0.2)  # Fade in
+		tween.tween_interval(2.0)  # Wait for 2 seconds (correct function)
+		tween.tween_property(labeleffect, "modulate:a", 0.0, 0.3)  # Fade out
+		tween.tween_callback(func(): labeleffect.visible = false)  # Hide
+
+
+func shell_status():
+	var cTotalScore: int = 0
+	if MultiplierStacks >= 1 and Type != 11 or RustStacks <= 1:
+		var Multiplier: int = 0.5 * MultiplierStacks
+		Multiplier += 1
+		cTotalScore += Score * Multiplier
+	if CursedStacks >= 1 and Type != 7 or Type != 11:
+		var curse_reduction: int = 0.5 - (0.1 * CursedStacks)  # -50% base, +10% per stack
+		cTotalScore = int(cTotalScore * curse_reduction)
+	TotalScore = cTotalScore
+
+func shell_startround():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	if Type == 5 and Pit == 15 or Pit == 16: #var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+		var randomType = randi_range(1, 12)  #get_parent().add_child(Echo_Dup)
+		pvp.spawn_shell(randomType, Pit)
+		effect_text("SPIRIT", Color(1.0, 1.0, 1.0, 0.0))
+	elif Type == 8:
+		#Chane nearby Shell into a random Type
+		#if no shell found
+		Type = randi_range(1,12)
+		effect_text("MIRROR", Color(1.0, 1.0, 1.0, 0.0))
+
+		
+func shell_endround():
+	if Type == 1:
+		if Pit == 15 or Pit == 16:
+			Score += 1
+		elif Pit >= 1 and Pit <= 14:
+			Score = 1
+	elif Type == 2:
+		Score += 1
+		effect_text("GOLDEN", Color(1.0, 1.0, 0.0, 0.0))
+	elif Type == 3:
+		Score = 1
+		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+		get_parent().add_child(Echo_Dup)
+		effect_text("ECHO", Color(1.0, 0.0, 0.0, 0.0))
+	elif Type == 4:
+		if Pit >= 1 and Pit <= 14:
+			MultiplierStacks += 1
+			var Mulipliertext: int = 0.5 * MultiplierStacks
+			Mulipliertext += 1
+			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.0, 1.0, 0.0))
+	elif Type == 6:
+		if Pit == 15 or Pit == 16:
+			Score += 2
+		elif Pit >= 1 and Pit <= 14:
+			Score += 1 # add +1 all nearby shells
+		effect_text("TIME", Color(1.0, 1.0, 1.0, 0.0))
+	elif Type == 7:
+		pass
+		#add Luck on Pit
+	elif Type == 9:
+		pass
+		# apply burn to nearby shells and gain score for each burned
+	elif Type == 12:
+		pass
+		# apply freeze to nearby shells and gain score for each freezed
+
 func shell_drop():
 	if Type == 1:
 		Score += 1
 	elif Type == 2:
 		if Pit == 25 or Pit == 16:
 			Score += 5
+			effect_text("GOLDEN", Color(1.0, 1.0, 0.0, 0.0))
 		else:
 			Score += 1
 	elif Type == 3:
-		# FIXED: Only trigger Echo effect if this is NOT already a duplicate
-		if not is_echo_duplicate:
-			trigger_echo_effect()
-		else:
-			# This is already an Echo duplicate, just add normal score
-			Score += 1
+		#replace EchoDup to nearby Shell
+		var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+		get_parent().add_child(Echo_Dup)
+		effect_text("ECHO", Color(1.0, 0.0, 0.0, 0.0))
 	elif Type == 4:
-		Score *= 2
-		labeleffect.text = "ANCHOR"
-		labeleffect.modulate = Color(0.0, 0.0, 1.0, 0.0)  # Blue but transparent
-		labeleffect.visible = true
-		# Create tween for fade in and fade out
-		var tween = create_tween()
-		tween.tween_property(labeleffect, "modulate:a", 1.0, 0.2)  # Fade in over 0.2 seconds
-		tween.tween_interval(2.0)  # Stay visible for 2 seconds
-		tween.tween_property(labeleffect, "modulate:a", 0.0, 0.5)  # Fade out over 0.5 seconds
-		tween.tween_callback(func(): labeleffect.visible = false)
-
-func trigger_echo_effect():
-	# Show ECHO effect label FIRST
-	labeleffect.text = "ECHO"
-	labeleffect.modulate = Color(1.0, 0.0, 0.0, 1.0)  # Full red, fully visible
-	labeleffect.visible = true
-
-	# Create tween for the label effect
-	var label_tween = create_tween()
-	label_tween.tween_interval(1.5)  # Show for 1.5 seconds
-	label_tween.tween_property(labeleffect, "modulate:a", 0.0, 0.5)  # Fade out
-	label_tween.tween_callback(func(): labeleffect.visible = false)
-
-	# Wait a bit for physics to settle before creating duplicate
-	await get_tree().create_timer(0.2).timeout
-
-	# FIXED: Create the duplicate shell properly positioned within the current pit
-	create_echo_duplicate()
-
-func create_echo_duplicate():
-	# Find the current pit this shell is in
-	var current_pit = find_current_pit()
-	if not current_pit:
-		print("Echo shell could not find current pit for duplication")
-		return
-
-	# Create the duplicate
-	var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
-	
-	# CRITICAL: Mark it as an Echo duplicate to prevent infinite duplication
-	Echo_Dup.is_echo_duplicate = true
-	Echo_Dup.Type = 3  # Keep it as Echo type but prevent further duplication
-	
-	# Add to the current scene
-	get_parent().add_child(Echo_Dup)
-	
-	# Wait for the duplicate to be ready
-	await get_tree().process_frame
-	await get_tree().process_frame
-	
-	# NEW: Position the duplicate at a spawn location (above the pit or to the side)
-	var pit_position = current_pit.global_position
-	var spawn_offset = Vector2(randf_range(-50, 50), -100)  # Spawn above with some randomness
-	Echo_Dup.global_position = pit_position + spawn_offset
-	
-	# Reset the duplicate's state
-	Echo_Dup.Moving = false
-	Echo_Dup.Move = 0  # Start with no moves
-	Echo_Dup.Player = 0
-	Echo_Dup.waiting_for_timer = false
-	
-	# Set the correct starting pit (where it spawned, not the target)
-	# We'll calculate this based on spawn position or use a "spawn pit" concept
-	Echo_Dup.Pit = get_pit_number_from_node(current_pit)
-	
-	# Make sure it's in the right group initially
-	Echo_Dup.remove_from_group("MoveShells") 
-	Echo_Dup.add_to_group("Shells")
-	
-	# Set up proper physics
-	Echo_Dup.collision_layer = 2
-	Echo_Dup.collision_mask = 22
-	Echo_Dup.gravity_scale = 1
-	Echo_Dup.freeze = false
-	Echo_Dup.linear_velocity = Vector2.ZERO
-	Echo_Dup.angular_velocity = 0
-	
-	# Update its appearance
-	Echo_Dup.update_shell_frame()
-	
-	print("Echo duplicate created at spawn position: ", Echo_Dup.global_position)
-	
-	# NEW: Use assign_move() to move the duplicate to the target pit!
-	# Give it 1 move to animate to the target pit
-	await get_tree().create_timer(0.2).timeout  # Small delay before starting movement
-	Echo_Dup.assign_move(1, Player)  # Use the same player and 1 move
-
-func get_pit_number_from_node(pit_node: Node2D) -> int:
-	if not pit_node:
-		return 1
-	
-	var pit_name = pit_node.name
-	var pit_number = pit_name.replace("Pit", "")
-	return int(pit_number) if pit_number.is_valid_int() else 1
-
-func find_current_pit() -> Node2D:
-	var gamemode: String = ""
-	var pvp = get_tree().root.get_node_or_null("Gameplay")
-	var campaign = get_tree().root.get_node_or_null("Campaign")
-	
-	if campaign:
-		gamemode = "Campaign"
-	elif pvp:
-		gamemode = "Pvp"
-	else:
-		return null
-	
-	# Check all pits to find which one this shell is currently in
-	var pits = get_tree().get_nodes_in_group("pits")
-	
-	for pit in pits:
-		if pit and pit.has_node("ShellArea"):
-			var shell_area = pit.get_node("ShellArea")
-			var overlapping_bodies = shell_area.get_overlapping_bodies()
-			
-			if self in overlapping_bodies:
-				print("Found shell in pit: ", pit.name)
-				return pit
-	
-	print("Shell not found in any pit - using closest pit")
-	# Fallback: find closest pit
-	var closest_pit: Node2D = null
-	var shortest_distance = INF
-	
-	for pit in pits:
-		if pit:
-			var dist = global_position.distance_to(pit.global_position)
-			if dist < shortest_distance:
-				shortest_distance = dist
-				closest_pit = pit
-	
-	return closest_pit
-
-func shell_effect():
-	pass
+		if Pit >= 1 and Pit <= 14:
+			#add give Multiplier to all nearby Shells
+			MultiplierStacks += 1 
+			var Mulipliertext: int = 0.5 * MultiplierStacks
+			Mulipliertext += 1
+			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.0, 1.0, 0.0))
+	elif Type == 5:
+		Score += 1
+		var pvp = get_tree().root.get_node_or_null("Gameplay")
+		var randomType = randi_range(1, 12)  
+		pvp.spawn_shell(randomType, Pit)
+		effect_text("SPIRIT", Color(1.0, 1.0, 1.0, 0.0))
+	elif Type == 6:
+		pass
+		# +1 score all nearby shells
+	elif Type == 7:
+		var randomScore = randi_range(1, 5)  
+		Score += randomScore
+		effect_text("LUCKY +" + str(randomScore), Color(0.0, 1.0, 0.0, 0.0))
+	elif Type == 8:
+		pass
+		#Copy 1 Nearby Shell type and change another shell type if no another shell found change this shell type to that type
+	elif Type == 9:
+		Score += 2
+	elif Type == 10:
+		Score += 1
+		#add activates 1 nearby Shell effect and Move +1 all nearby Chain
+	elif Type == 11:
+		Score += 3
+		#add remove status effects of nearby shells
+	elif Type == 12:
+		Score += 2
 
 func set_score():
 	if Type == 1 or Type >= 3 and Type <= 5 or Type == 8 :
@@ -427,5 +395,5 @@ func _on_move_timer_timeout() -> void:
 		move_shell(Player)  # Continue with next move
 
 func _on_score_timer_timeout() -> void:
-	labelscore.text = str(Score)  # Fixed: was labelscore.Text (capital T)
+	labelscore.text = str(TotalScore)  # Fixed: was labelscore.Text (capital T)
 	scoretimer.start()
