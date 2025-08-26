@@ -2,14 +2,15 @@ extends Node2D
 
 var shells: int = 0
 var use_timer_counting: bool = true
-var initialization_complete: bool = false  # NEW: Track initialization state
+var initialization_complete: bool = false
 
 @onready var timer := $Timer
 @onready var label = $ShellLabel
 
 func _ready():
-	setup_click_area()	
+	setup_click_area()
 	add_to_group("pits")
+	
 	# CRITICAL FIX: Stop timer immediately and disable timer counting from the start
 	use_timer_counting = false
 	timer.stop()
@@ -23,7 +24,7 @@ func setup_click_area():
 		var pit_index = pits.find(self)
 		if pit_index >= 0:
 			click_area.setup(self, pit_index)
-			print("Setup click area for pit ", pit_index)
+			print("Setup click area with hover for pit ", pit_index)
 	else:
 		print("Warning: No ClickArea found in ", name)
 
@@ -226,7 +227,7 @@ func count_shells_in_area() -> int:
 					cshells += 1
 		return cshells
 
-	elif gamemode == "Pvp":
+	elif gamemode == "Pvv":
 		for child in pvp.get_children():
 			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
 				if child in overlapping_bodies:

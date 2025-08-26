@@ -173,7 +173,7 @@ func distribute_shells(start_pit_index: int, player: int):
 	is_distributing = false
 	check_end_turn_rules(final_position)
 
-# NEW: Function to properly calculate where the last shell will land
+# Function to properly calculate where the last shell will land
 func calculate_final_position(start_pit: int, shell_count: int) -> int:
 	var current_pos = start_pit
 	
@@ -307,10 +307,10 @@ func start_game():
 	# Initialize pits with exactly 7 NORMAL shells each (type 1)
 	for pit in pits:
 		pit.set_shells(7)
-		# NEW: Force all starting shells to be normal shells
+		# Force all starting shells to be normal shells
 		force_normal_shells_in_pit(pit)
 	
-	# FIXED: Wait longer to ensure all shell spawning is completely finished
+	# Wait longer to ensure all shell spawning is completely finished
 	await get_tree().process_frame
 	await get_tree().process_frame
 	await get_tree().create_timer(0.1).timeout  # Extra delay to ensure shells are settled
@@ -328,6 +328,8 @@ func start_game():
 	print("All starting shells are normal shells (type 1)")
 	print("Player 1 (BLUE) controls pits 1-7 (bottom row)")
 	print("Player 2 (RED) controls pits 8-14 (top row)")
+	print("Hover over pits/main houses to see shell contents!")
+	print("Right-click for detailed shell information!")
 	
 	if turn_indicator:
 		update_turn_display()
