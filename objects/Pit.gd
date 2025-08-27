@@ -10,10 +10,9 @@ var initialization_complete: bool = false
 @onready var timer := $Timer
 @onready var labelshell = $ShellLabel
 @onready var labeleffect := $Effect
-
 func _ready():
 	setup_click_area()
-	PitType = randi_range(1,11)
+	PitType = randi_range(5,5)
 	update_pit_frame()
 	add_to_group("pits")
 	# CRITICAL FIX: Stop timer immediately and disable timer counting from the start
@@ -244,7 +243,7 @@ func count_shells_in_area() -> int:
 func _on_shell_area_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D and body.is_in_group("Shells"):
 		print("Shell entered pit ", name, ": ", body.name)
-		
+		pit_drop()
 		# FIXED: Always update shell count when a shell enters, regardless of timer mode
 		await get_tree().create_timer(0.1).timeout  # Small delay for physics to settle
 		
@@ -349,6 +348,10 @@ func pit_click():
 	if PitType == 6:
 		effect_shells_in_area("CHAIN")
 		
+func pit_drop():
+	if PitType == 9:
+		effect_shells_in_area("VOID")
+		
 func effect_shells_in_area(Effect: String):
 	var Shell1: Node2D = null
 	var Shell2: Node2D = null
@@ -360,13 +363,13 @@ func effect_shells_in_area(Effect: String):
 	var gamemode: String = ""
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	var campaign = get_tree().root.get_node_or_null("Campaign")
-	var GameManager = get_tree().root.get_node_or_null("GameManager")
-	#var current_turn: int = GameManager.current_turn
+	var GameManager = pvp.get_node_or_null("GameManager")
+	var current_turn: int = GameManager.current_turn
 	var Player: int = 0
-	#if current_turn != 0:
-	#	Player = current_turn
-	#else:
-	Player = 0
+	if current_turn != 0:
+		Player = current_turn
+	else:
+		Player = 0
 	var pits = get_tree().get_nodes_in_group("pits")
 	var pit_index = pits.find(self)
 	Player += 1
