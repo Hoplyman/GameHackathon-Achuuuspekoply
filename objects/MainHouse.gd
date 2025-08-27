@@ -10,11 +10,24 @@ var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawn
 
 func _ready():
 	add_to_group("main_houses")
+	setup_click_area()  # NEW: Setup click area for tooltip
 	# Only connect timer if we're using timer-based counting
 	if use_timer_counting:
 		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
 		timer.start()
 	update_label()
+
+# NEW: Setup click area for tooltip functionality
+func setup_click_area():
+	var click_area = get_node_or_null("ClickArea")
+	if click_area and click_area.has_method("setup"):
+		var main_houses = get_tree().get_nodes_in_group("main_houses")
+		var house_index = main_houses.find(self)
+		if house_index >= 0:
+			click_area.setup(self, house_index)
+			print("Setup click area with hover for MainHouse ", house_index)
+	else:
+		print("Warning: No ClickArea found in MainHouse ", name)
 
 func set_shells(amount: int):
 	var oldshell = shells
@@ -106,7 +119,7 @@ func _on_timer_timeout():
 	if not use_timer_counting:
 		return
 		
-	# No need to check timer.value â€" the timeout already means 1 second passed
+	# No need to check timer.value Ã¢â‚¬" the timeout already means 1 second passed
 	var new_shell_count = count_shells_in_area()
 	if new_shell_count != shells:
 		shells = new_shell_count
