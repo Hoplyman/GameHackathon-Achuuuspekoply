@@ -1,0 +1,93 @@
+[gd_scene load_steps=2 format=3 uid="uid://offhl6mxjsqp"]
+
+[sub_resource type="GDScript" id="GDScript_n2fsv"]
+script/source = "extends Area2D
+class_name HoverArea
+
+var target_node: Node2D
+var tooltip_system: ShellTooltip
+
+func _ready():
+	# Set up signals for mouse interaction
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+	
+	# Enable input processing for right-click detection
+	input_event.connect(_on_input_event)
+	
+	# Find or create tooltip system (deferred to avoid setup conflicts)
+	setup_tooltip_system.call_deferred()
+
+func setup_tooltip_system():
+	# Look for existing tooltip system in the scene
+	var game_node = get_tree().root.get_node_or_null(\"Gameplay\")
+	if not game_node:
+		game_node = get_tree().root.get_node_or_null(\"Campaign\")
+	
+	if game_node:
+		tooltip_system = game_node.get_node_or_null(\"ShellTooltip\")
+		
+		# Create tooltip system if it doesn't exist
+		if not tooltip_system:
+			tooltip_system = preload(\"res://objects/ShellTooltip.gd\").new()
+			tooltip_system.name = \"ShellTooltip\"
+			game_node.add_child.call_deferred(tooltip_system)
+			print(\"Created new tooltip system\")
+
+func setup_for_target(target: Node2D):
+	target_node = target
+	
+	# Set collision shape to match target's visual bounds
+	setup_collision_shape()
+
+func setup_collision_shape():
+	if not target_node:
+		return
+	
+	# Create a collision shape that covers the visual area
+	var collision_shape = CollisionShape2D.new()
+	
+	if target_node.is_in_group(\"pits\"):
+		# For pits, create a circle shape
+		var circle_shape = CircleShape2D.new()
+		circle_shape.radius = 40  # Adjust based on pit size
+		collision_shape.shape = circle_shape
+	elif target_node.is_in_group(\"main_houses\"):
+		# For main houses, create a larger circle
+		var circle_shape = CircleShape2D.new()
+		circle_shape.radius = 80  # Larger for main houses
+		collision_shape.shape = circle_shape
+	else:
+		# Default rectangle
+		var rect_shape = RectangleShape2D.new()
+		rect_shape.size = Vector2(60, 60)
+		collision_shape.shape = rect_shape
+	
+	add_child(collision_shape)
+	print(\"Setup hover area for: \", target_node.name)
+
+func _on_mouse_entered():
+	if tooltip_system and target_node:
+		tooltip_system.start_hover(target_node)
+
+func _on_mouse_exited():
+	if tooltip_system:
+		tooltip_system.stop_hover()
+
+func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int):
+	if event is InputEventMouseButton:
+		var mouse_event = event as InputEventMouseButton
+		
+		# Right-click for detailed view
+		if mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed:
+			if tooltip_system and target_node:
+				tooltip_system.show_detailed_tooltip_for_target(target_node)
+				print(\"Right-clicked on \", target_node.name, \" - showing detailed view\")
+"
+
+[node name="HoverArea" type="Area2D"]
+collision_layer = 0
+collision_mask = 0
+monitoring = false
+monitorable = false
+script = SubResource("GDScript_n2fsv")
