@@ -29,6 +29,7 @@ var DisableStacks: int = 0
 var move_target: Vector2
 var move_speed: float = 200.0
 var arrival_threshold: float = 10.0
+var PitNode: Node2D
 
 func _ready() -> void:
 	# Wait a frame to ensure all nodes are ready
@@ -444,9 +445,9 @@ func move_shell(player: int):
 	if gamemode == "Pvp":
 		if next_pit <= 14 and next_pit >= 1:
 			# Regular pit
-			var pit_node = pvp.get_node_or_null("Pit" + str(next_pit))
-			if pit_node:
-				target = pit_node.global_position
+			PitNode = pvp.get_node_or_null("Pit" + str(next_pit))
+			if PitNode:
+				target = PitNode.global_position
 			else:
 				print("ERROR: Could not find Pit", next_pit)
 				return
@@ -483,6 +484,7 @@ func move_shell(player: int):
 		Pit = next_pit
 		Moving = true
 		move_target = target
+		
 		
 		print("Shell moving from pit ", (next_pit - 1), " to pit ", next_pit, " (", Move, " moves remaining)")
 
@@ -545,6 +547,8 @@ func _physics_process(delta):
 				remove_from_group("MoveShells")
 				add_to_group("Shells")
 				shell_drop()
+				if PitNode != null:
+					PitNode.pit_drop()
 				print("All movements complete - final position: pit ", Pit)
 
 func _on_move_timer_timeout() -> void:
