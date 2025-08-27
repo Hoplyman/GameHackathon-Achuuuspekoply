@@ -8,8 +8,12 @@ var original_color: Color = Color.WHITE  # Store the original color
 var hover_timer: Timer
 var tooltip_system: ShellTooltip
 var is_hovering: bool = false
+var mouse_exit_timer: Timer  # New: delay before calling stop_hover
 
 func _ready():
+	# Add to group so tooltip can find us
+	add_to_group("click_areas")
+	
 	# Connect the input event signal
 	input_event.connect(_on_input_event)
 	
@@ -27,6 +31,13 @@ func setup_hover_system():
 	hover_timer.one_shot = true
 	hover_timer.timeout.connect(_on_hover_timer_timeout)
 	add_child(hover_timer)
+	
+	# Create mouse exit timer to give time for mouse to reach tooltip
+	mouse_exit_timer = Timer.new()
+	mouse_exit_timer.wait_time = 0.3  # 0.3 second delay before stopping hover
+	mouse_exit_timer.one_shot = true
+	mouse_exit_timer.timeout.connect(_on_mouse_exit_timeout)
+	add_child(mouse_exit_timer)
 	
 	# Find or create tooltip system (deferred to avoid setup conflicts)
 	call_deferred("find_tooltip_system")
@@ -78,6 +89,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 
 func _on_mouse_entered():
 	print("Mouse entered pit: ", associated_pit.name if associated_pit else "unknown")
+	
+	# Cancel any pending mouse exit
+	mouse_exit_timer.stop()
+	
 	# Store the current color before changing it for visual feedback
 	if associated_pit:
 		original_color = associated_pit.modulate
@@ -92,6 +107,14 @@ func _on_mouse_entered():
 		
 		# Also directly tell tooltip system to start hover
 		if tooltip_system:
+			# If tooltip is showing a different target, force cleanup first
+			if tooltip_system.current_target and tooltip_system.current_target != associated_pit and tooltip_system.visible:
+				print("Force cleaning up old tooltip before showing new one")
+				tooltip_system.visible = false
+				tooltip_system.tooltip_locked = false
+				tooltip_system.current_target = null
+				tooltip_system.is_hovering = false
+			
 			tooltip_system.start_hover(associated_pit)
 
 func _on_mouse_exited():
@@ -100,13 +123,22 @@ func _on_mouse_exited():
 	if associated_pit:
 		associated_pit.modulate = original_color
 	
-	# Stop hover tooltip functionality
+	# Stop hover tooltip functionality with delay to allow mouse to reach tooltip
 	is_hovering = false
 	hover_timer.stop()
 	
+	# Start delayed stop hover to give mouse time to reach tooltip
+	mouse_exit_timer.start()
+	print("Started mouse exit timer - tooltip will stop in 0.3 seconds unless mouse reaches tooltip")
+
+func _on_mouse_exit_timeout():
+	# Only stop hover if tooltip isn't locked (mouse isn't over tooltip)
 	if tooltip_system:
+		# Always try to stop hover after the timeout - let tooltip decide if it should actually hide
+		print("Mouse exit timeout - requesting tooltip stop")
 		tooltip_system.stop_hover()
-		print("Stopped hover for tooltip system")
+	
+	print("ClickArea hover ended for: ", associated_pit.name if associated_pit else "unknown")
 
 func _on_hover_timer_timeout():
 	print("Hover timer timeout for: ", associated_pit.name if associated_pit else "unknown")
@@ -114,3 +146,8 @@ func _on_hover_timer_timeout():
 		tooltip_system.show_tooltip_for_target(associated_pit)
 	else:
 		print("Cannot show tooltip - hover: ", is_hovering, ", tooltip_system: ", tooltip_system != null, ", pit: ", associated_pit != null)
+
+# New function: allow tooltip to keep ClickArea "alive" when mouse is over tooltip
+func keep_hover_active():
+	mouse_exit_timer.stop()
+	print("Keeping hover active - tooltip requested it")

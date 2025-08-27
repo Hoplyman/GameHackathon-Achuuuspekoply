@@ -6,6 +6,7 @@ var tooltip_label: RichTextLabel
 var hover_timer: Timer
 var is_hovering: bool = false
 var current_target: Node2D = null
+var tooltip_locked: bool = false  # New: prevents tooltip from disappearing
 
 # Shell type names for display
 var shell_type_names = {
@@ -51,36 +52,109 @@ func _ready():
 	
 	# Make tooltip invisible initially
 	visible = false
+	# Ensure tooltip can receive mouse input
+	mouse_filter = Control.MOUSE_FILTER_PASS
 	print("ShellTooltip initialized successfully")
 
 func setup_tooltip_ui():
 	# Create panel background
 	tooltip_panel = Panel.new()
-	tooltip_panel.modulate = Color(0.1, 0.1, 0.1, 0.95)  # Dark semi-transparent background
+	tooltip_panel.modulate = Color(1, 1, 1, 1)  # Dark semi-transparent background
+	# Make sure panel can receive mouse input
+	tooltip_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(tooltip_panel)
 	
-	# Create RichTextLabel for text
+	# Create RichTextLabel for text with scrolling enabled
 	tooltip_label = RichTextLabel.new()
-	tooltip_label.fit_content = true
-	tooltip_label.scroll_active = false
+	tooltip_label.fit_content = false  # Allow manual sizing
+	tooltip_label.scroll_active = true  # Enable scrolling
 	tooltip_label.bbcode_enabled = true
 	tooltip_label.add_theme_color_override("default_color", Color.WHITE)
+	# Ensure RichTextLabel can receive mouse input for scrolling
+	tooltip_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	tooltip_panel.add_child(tooltip_label)
+	
+	# Make tooltip panel intercept mouse events for scrolling
+	tooltip_panel.mouse_entered.connect(_on_tooltip_mouse_entered)
+	tooltip_panel.mouse_exited.connect(_on_tooltip_mouse_exited)
+	tooltip_label.mouse_entered.connect(_on_tooltip_mouse_entered)
+	tooltip_label.mouse_exited.connect(_on_tooltip_mouse_exited)
+
+# NEW: Handle mouse entering tooltip area
+func _on_tooltip_mouse_entered():
+	tooltip_locked = true
+	print("Mouse entered tooltip - locking tooltip")
+	
+	# Find the associated ClickArea and tell it to keep hover active
+	var click_areas = get_tree().get_nodes_in_group("click_areas")
+	for click_area in click_areas:
+		if click_area.associated_pit == current_target:
+			click_area.keep_hover_active()
+			break
+
+# NEW: Handle mouse exiting tooltip area  
+func _on_tooltip_mouse_exited():
+	# Add a small delay to prevent rapid flickering
+	await get_tree().create_timer(0.2).timeout
+	
+	# Check if mouse is still inside tooltip bounds
+	var mouse_pos = get_global_mouse_position()
+	var tooltip_rect = Rect2(global_position, tooltip_panel.size)
+	
+	if not tooltip_rect.has_point(mouse_pos):
+		tooltip_locked = false
+		print("Mouse actually exited tooltip - unlocking tooltip")
+		
+		# Check if mouse is also not over the original target
+		var mouse_over_target = false
+		if current_target:
+			# Find the associated ClickArea
+			var click_areas = get_tree().get_nodes_in_group("click_areas")
+			for click_area in click_areas:
+				if click_area.associated_pit == current_target:
+					# Check if mouse is over the ClickArea
+					var overlaps = click_area.get_overlapping_areas()
+					var overlaps_bodies = click_area.get_overlapping_bodies()
+					# Simple check: see if the click area is still detecting hover
+					if click_area.is_hovering:
+						mouse_over_target = true
+						break
+		
+		# Only hide tooltip if mouse is not over target either
+		if not mouse_over_target and not is_hovering:
+			print("Mouse not over target or tooltip - hiding tooltip")
+			stop_hover()
+		else:
+			print("Mouse still over target - keeping tooltip visible")
+	else:
+		print("Mouse still inside tooltip bounds - keeping locked")
 
 func start_hover(target: Node2D):
 	if current_target == target and is_hovering:
 		return
-		
+	
+	# If switching to a new target, clean up the old one first
+	if current_target != target and visible:
+		print("Switching targets - cleaning up old tooltip")
+		visible = false
+		tooltip_locked = false
+	
 	current_target = target
 	is_hovering = true
 	hover_timer.start()
 	print("Started hover for: ", target.name)
 
 func stop_hover():
+	# Don't hide tooltip if it's locked (mouse is over it)
+	if tooltip_locked:
+		print("Tooltip locked - not hiding")
+		return
+		
 	is_hovering = false
 	hover_timer.stop()
 	visible = false
 	current_target = null
+	tooltip_locked = false  # Ensure we reset the lock state
 	print("Stopped hover")
 
 func _on_hover_timer_timeout():
@@ -145,14 +219,26 @@ func format_shell_analysis(shells_data: Dictionary, target: Node2D) -> String:
 	
 	# Add pit type information at the top
 	content += format_pit_info(target)
-	content += "\n"
 	
 	if shells_data.is_empty():
+		content += "\n"
 		content += format_empty_content_only()
 		return content
 	
 	var total_shells = 0
 	var total_points = 0
+	
+	# First pass: calculate totals
+	for shell_type in shells_data.keys():
+		var shell_info = shells_data[shell_type]
+		var shell_scores = shell_info["shells"]
+		
+		total_shells += shell_scores.size()
+		for score in shell_scores:
+			total_points += score
+	
+	# Add totals at the top, right after pit info
+	content += "[color=white][b]Total: %d shells, %d points[/b][/color]\n\n" % [total_shells, total_points]
 	
 	# Sort shell types for consistent display
 	var sorted_types = shells_data.keys()
@@ -163,12 +249,9 @@ func format_shell_analysis(shells_data: Dictionary, target: Node2D) -> String:
 		var shell_name = shell_info["name"]
 		var shell_scores = shell_info["shells"]
 		
-		total_shells += shell_scores.size()
-		
 		# Group shells by score for cleaner display
 		var score_groups = {}
 		for score in shell_scores:
-			total_points += score
 			if not score_groups.has(score):
 				score_groups[score] = 0
 			score_groups[score] += 1
@@ -190,9 +273,6 @@ func format_shell_analysis(shells_data: Dictionary, target: Node2D) -> String:
 				var count = score_groups[score]
 				var type_total = score * count
 				content += "[color=cyan]%dx %s: %d points[/color]\n" % [count, shell_name, type_total]
-	
-	# Add totals
-	content += "\n[color=white]Total: %d shells, %d points[/color]" % [total_shells, total_points]
 	
 	return content
 
@@ -233,11 +313,18 @@ func get_target_name(target: Node2D) -> String:
 func display_tooltip(content: String, world_position: Vector2):
 	tooltip_label.text = content
 	
-	# Calculate tooltip size
+	# Set fixed tooltip dimensions with scrolling
+	var tooltip_width = 350  # Fixed width for pit type info
+	var max_tooltip_height = 300  # Maximum height before scrolling kicks in
+	var min_tooltip_height = 80   # Minimum height
+	
+	# Calculate actual content height
 	await get_tree().process_frame
 	var content_height = tooltip_label.get_content_height()
-	var tooltip_width = 350  # Increased width for pit type info
-	var tooltip_height = max(content_height + 30, 80)
+	var needed_height = content_height + 30  # Add padding
+	
+	# Use max height if content is too tall, otherwise use needed height
+	var tooltip_height = min(max_tooltip_height, max(needed_height, min_tooltip_height))
 	
 	# Position tooltip near target but keep it on screen
 	var viewport_size = get_viewport().get_visible_rect().size
@@ -255,13 +342,27 @@ func display_tooltip(content: String, world_position: Vector2):
 	tooltip_panel.position = Vector2.ZERO
 	tooltip_panel.size = Vector2(tooltip_width, tooltip_height)
 	
-	tooltip_label.position = Vector2(15, 15)
-	tooltip_label.size = Vector2(tooltip_width - 30, tooltip_height - 30)
+	tooltip_label.position = Vector2(10, 10)
+	tooltip_label.size = Vector2(tooltip_width - 20, tooltip_height - 20)
+	
+	# If content is taller than available space, enable scrolling
+	if needed_height > max_tooltip_height:
+		tooltip_label.scroll_active = true
+		# Force focus on the RichTextLabel to ensure scroll events work
+		tooltip_label.grab_focus()
+		print("Tooltip content is tall (", needed_height, "px) - scrolling enabled")
+	else:
+		tooltip_label.scroll_active = false
+		print("Tooltip content fits (", needed_height, "px) - no scrolling needed")
 	
 	# Position the entire tooltip
 	position = tooltip_pos
 	visible = true
-	print("Tooltip displayed at position: ", tooltip_pos)
+	
+	# Ensure tooltip is on top
+	move_to_front()
+	
+	print("Tooltip displayed at position: ", tooltip_pos, " with size: ", Vector2(tooltip_width, tooltip_height))
 
 func get_gamemode() -> String:
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
