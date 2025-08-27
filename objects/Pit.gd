@@ -335,7 +335,7 @@ func pit_endround():
 		effect_shells_in_area("ANCHOR")
 	elif PitType == 3:
 		effect_shells_in_area("ECHO")
-	elif PitType == 5:
+	if PitType == 5:
 		effect_shells_in_area("LOOT")
 	elif PitType == 7:
 		effect_shells_in_area("GOLDEN")
@@ -365,11 +365,7 @@ func effect_shells_in_area(Effect: String):
 	var campaign = get_tree().root.get_node_or_null("Campaign")
 	var GameManager = pvp.get_node_or_null("GameManager")
 	var current_turn: int = GameManager.current_turn
-	var Player: int = 0
-	if current_turn != 0:
-		Player = current_turn
-	else:
-		Player = 0
+	var Player: int = current_turn
 	var pits = get_tree().get_nodes_in_group("pits")
 	var pit_index = pits.find(self)
 	Player += 1
@@ -418,7 +414,6 @@ func effect_shells_in_area(Effect: String):
 						Shell1 = child
 						TotalEffectChance += 2.5 * child.LuckStacks
 					elif Effect == "LOOT":
-						Shell1 = child
 						Effect1Chance = 25.0
 						Effect2Chance = 75.0
 						Effect1Chance += 2.5 * child.LuckStacks
@@ -427,14 +422,18 @@ func effect_shells_in_area(Effect: String):
 							Effect1Chance = 100.0
 							Effect2Chance = 0.0
 						var roll = randf() * 100.0  # Random float from 0-100
-						if roll <= Effect1Chance:	
+						if roll <= Effect1Chance:
 							count += 1
-							if Player == 0:
-								child.Pit = 7
-								child.assign_move(1, Player)
-							elif Player == 1:
-								child.Pit = 14
-								child.assign_move(1, Player)
+							if Player == 1:
+								if child.Pit >= 8 and child.Pit <= 14:
+									child.Pit = 14
+									child.assign_move(1, 2)
+									Shell1 = child
+							elif Player == 2:
+								if child.Pit >= 1 and child.Pit <= 7:
+									child.Pit = 7
+									child.assign_move(1, 1)
+									Shell1 = child
 					elif Effect == "CHAIN":
 						Shell1 = child
 						TotalEffectChance += 2.5 * child.LuckStacks
