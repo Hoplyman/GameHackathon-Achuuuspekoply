@@ -3,6 +3,7 @@ extends Area2D
 var pit_index: int = -1
 var associated_pit: Node2D
 var original_color: Color = Color.WHITE  # Store the original color
+var is_main_house: bool = false  # NEW: Track if this is attached to a MainHouse
 
 # Hover functionality
 var hover_timer: Timer
@@ -67,28 +68,43 @@ func find_tooltip_system():
 		else:
 			print("Found existing tooltip system for ", associated_pit.name if associated_pit else "unknown pit")
 
-func setup(pit: Node2D, index: int):
-	associated_pit = pit
+func setup(target: Node2D, index: int):
+	associated_pit = target
 	pit_index = index
-	print("ClickArea setup for pit: ", pit.name, " with index: ", index)
+	
+	# NEW: Check if this is a MainHouse
+	is_main_house = target.is_in_group("main_houses")
+	
+	if is_main_house:
+		print("ClickArea setup for MainHouse: ", target.name, " with index: ", index)
+	else:
+		print("ClickArea setup for pit: ", target.name, " with index: ", index)
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			# Handle left click - notify GameManager
+			# NEW: Disable left click for MainHouses
+			if is_main_house:
+				print("Left click on MainHouse ", pit_index, " (", associated_pit.name, ") - left click disabled for MainHouse")
+				# Do nothing - don't call GameManager for MainHouses
+				return
+			
+			# Handle left click for regular pits - notify GameManager
 			var game_manager = get_tree().get_first_node_in_group("game_manager")
 			if game_manager and pit_index >= 0:
 				print("Left click on pit ", pit_index, " (", associated_pit.name, ")")
 				game_manager.handle_pit_click(pit_index)
 		
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
-			# Handle right click - show detailed tooltip
+			# Handle right click - show detailed tooltip (works for both pits and MainHouses)
 			if tooltip_system and associated_pit:
-				print("Right click on pit ", pit_index, " (", associated_pit.name, ") - showing detailed tooltip")
+				var target_type = "MainHouse" if is_main_house else "pit"
+				print("Right click on ", target_type, " ", pit_index, " (", associated_pit.name, ") - showing detailed tooltip")
 				tooltip_system.show_detailed_tooltip_for_target(associated_pit)
 
 func _on_mouse_entered():
-	print("Mouse entered pit: ", associated_pit.name if associated_pit else "unknown")
+	var target_type = "MainHouse" if is_main_house else "pit"
+	print("Mouse entered ", target_type, ": ", associated_pit.name if associated_pit else "unknown")
 	
 	# Cancel any pending mouse exit
 	mouse_exit_timer.stop()
@@ -118,7 +134,8 @@ func _on_mouse_entered():
 			tooltip_system.start_hover(associated_pit)
 
 func _on_mouse_exited():
-	print("Mouse exited pit: ", associated_pit.name if associated_pit else "unknown")
+	var target_type = "MainHouse" if is_main_house else "pit"
+	print("Mouse exited ", target_type, ": ", associated_pit.name if associated_pit else "unknown")
 	# Restore the original color (which could be the player highlight color)
 	if associated_pit:
 		associated_pit.modulate = original_color
@@ -141,11 +158,12 @@ func _on_mouse_exit_timeout():
 	print("ClickArea hover ended for: ", associated_pit.name if associated_pit else "unknown")
 
 func _on_hover_timer_timeout():
-	print("Hover timer timeout for: ", associated_pit.name if associated_pit else "unknown")
+	var target_type = "MainHouse" if is_main_house else "pit"
+	print("Hover timer timeout for ", target_type, ": ", associated_pit.name if associated_pit else "unknown")
 	if is_hovering and tooltip_system and associated_pit:
 		tooltip_system.show_tooltip_for_target(associated_pit)
 	else:
-		print("Cannot show tooltip - hover: ", is_hovering, ", tooltip_system: ", tooltip_system != null, ", pit: ", associated_pit != null)
+		print("Cannot show tooltip - hover: ", is_hovering, ", tooltip_system: ", tooltip_system != null, ", target: ", associated_pit != null)
 
 # New function: allow tooltip to keep ClickArea "alive" when mouse is over tooltip
 func keep_hover_active():

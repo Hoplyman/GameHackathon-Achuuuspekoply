@@ -13,6 +13,7 @@ script = ExtResource("1_yhywh")
 
 [node name="ClickArea" parent="." instance=ExtResource("3_gvsfr")]
 show_behind_parent = true
+scale = Vector2(0.9, 0.9)
 
 [node name="PitSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_gvsfr")
