@@ -94,11 +94,6 @@ func update_turn_display():
 			var tween = create_tween()
 			tween.tween_interval(0.05)
 			await tween.finished
-		if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-			var tween = create_tween()
-			tween.tween_interval(0.05)
-			await tween.finished
-			child.shell_startround()
 	if not turn_indicator:
 		print("Turn indicator not found!")
 		return

@@ -35,6 +35,7 @@ func _ready() -> void:
 	# Wait a frame to ensure all nodes are ready
 	# Update appearance and score
 	scoretimer.start()
+	Type = 9
 	update_shell_frame()
 	set_score()
 	set_pit()
@@ -71,16 +72,9 @@ func shell_status():
 		cTotalScore = int(cTotalScore * curse_reduction)
 	TotalScore = cTotalScore
 
-func shell_startround():
-	var pvp = get_tree().root.get_node_or_null("Gameplay")
-	if Type == 5 and (Pit == 15 or Pit == 16): #var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
-		var randomType = randi_range(1, 12)  #get_parent().add_child(Echo_Dup)
-		pvp.spawn_shell(randomType, Pit)
-		effect_text("SPIRIT SPAWN", Color(0.5, 0.0, 1.0, 0.0))
-	elif Type == 8:
-		effect_nearbyshells("SR-MIRROR")
 		
 func shell_endround():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	if Type == 1:
 		if Pit == 15 or Pit == 16:
 			Score += 1
@@ -103,6 +97,10 @@ func shell_endround():
 			var Mulipliertext: int = 0.5 * MultiplierStacks
 			Mulipliertext += 1
 			effect_text("ANCHOR X"+ str(Mulipliertext), Color(0.0, 0.5, 1.0, 0.0))
+	elif Type == 5 and (Pit == 15 or Pit == 16): #var Echo_Dup = self.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
+		var randomType = randi_range(1, 12)  #get_parent().add_child(Echo_Dup)
+		pvp.spawn_shell(randomType, Pit)
+		effect_text("SPIRIT SPAWN", Color(0.5, 0.0, 1.0, 0.0))
 	elif Type == 6:
 		if Pit == 15 or Pit == 16:
 			Score += 2
@@ -113,6 +111,8 @@ func shell_endround():
 		effect_nearbyshells("ER-LUCK")
 		LuckStacks += 1
 		effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
+	elif Type == 8:
+		effect_nearbyshells("ER-MIRROR")
 	elif Type == 9:
 		pass
 		effect_nearbyshells("ER-FLAME")
@@ -226,7 +226,7 @@ func effect_nearbyshells(Effect:String):
 					elif Effect == "ER-LUCK":
 						child.LuckStacks += 1
 						child.effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
-					elif Effect == "SR-MIRROR":
+					elif Effect == "ER-MIRROR":
 						Shell1 = child
 					elif Effect == "DROP-MIRROR":
 						if Shell1 == null:
@@ -519,6 +519,75 @@ func calculate_next_position(current_pit: int, player: int) -> int:
 
 func _physics_process(delta):
 	if Moving and Move >= 0:
+		var total_moveshells = get_tree().get_nodes_in_group("MoveShells").size()
+		if total_moveshells <= 5:
+			move_speed = 200.0
+		elif total_moveshells >= 6 and total_moveshells <= 10:
+			move_speed = 300.0
+		elif total_moveshells >= 11 and total_moveshells <= 15:
+			if move_speed <= 300.0:
+				move_speed = 300.0
+			else:
+				move_speed = 400.0
+		elif total_moveshells >= 16 and total_moveshells <= 20:
+			if move_speed <= 300.0:
+				move_speed = 300.0
+			elif move_speed <= 400.0:
+				move_speed = 400.0
+			else:
+				move_speed = 500.0
+		elif total_moveshells >= 21 and total_moveshells <= 25:
+			if move_speed <= 400.0:
+				move_speed = 400.0
+			elif move_speed <= 500.0:
+				move_speed = 500.0
+			else:
+				move_speed = 600.0
+		elif total_moveshells >= 26 and total_moveshells <= 30:
+			if move_speed <= 500.0:
+				move_speed = 500.0
+			elif move_speed <= 600.0:
+				move_speed = 600.0
+			else:
+				move_speed = 700.0
+		elif total_moveshells >= 31 and total_moveshells <= 35:
+			if move_speed <= 600.0:
+				move_speed = 600.0
+			elif move_speed <= 700.0:
+				move_speed = 700.0
+			else:
+				move_speed = 800.0
+		elif total_moveshells >= 36 and total_moveshells <= 40:
+			if move_speed <= 700.0:
+				move_speed = 700.0
+			elif move_speed <= 800.0:
+				move_speed = 800.0
+			else:
+				move_speed = 900.0
+		elif total_moveshells >= 41 and total_moveshells <= 50 :
+			if move_speed <= 800.0:
+				move_speed = 800.0
+			elif move_speed <= 900.0:
+				move_speed = 900.0
+			elif move_speed >= 1750.0:
+				move_speed = 1750.0
+			elif move_speed >= 1500.0:
+				move_speed = 1500.0
+			elif move_speed >= 1250.0:
+				move_speed = 1250.0
+			else:
+				move_speed = 1000.0
+		elif total_moveshells >= 51:
+			if move_speed <= 1000.0:
+				move_speed = 1000.0
+			elif move_speed <= 1250.0:
+				move_speed = 1250.0
+			elif move_speed <= 1500.0:
+				move_speed = 1500.0
+			elif move_speed <= 1750.0:
+				move_speed = 1750.0
+			else:
+				move_speed = 2000.0
 		var distance_to_target = global_position.distance_to(move_target)
 		
 		if distance_to_target > arrival_threshold:
@@ -560,5 +629,6 @@ func _on_move_timer_timeout() -> void:
 
 func _on_score_timer_timeout() -> void:
 	shell_status()
+	update_shell_frame()
 	labelscore.text = str(TotalScore)  # Fixed: was labelscore.Text (capital T)
 	scoretimer.start()
