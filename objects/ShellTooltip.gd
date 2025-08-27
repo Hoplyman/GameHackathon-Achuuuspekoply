@@ -40,7 +40,7 @@ func _ready():
 func setup_tooltip_ui():
 	# Create panel background
 	tooltip_panel = Panel.new()
-	tooltip_panel.modulate = Color(0.1, 0.1, 0.1, 0.9)  # Dark semi-transparent background
+	tooltip_panel.modulate = Color(1, 1, 1, 0.9)  # Dark semi-transparent background
 	add_child(tooltip_panel)
 	
 	# Create RichTextLabel for text

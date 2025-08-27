@@ -9,9 +9,9 @@ var TotalScore: int = 0
 var Type: int = 1 # CHANGED: Start with normal shell type (1)
 var shellsprite: Sprite2D # the sprite of Shell
 var waiting_for_timer: bool = false  # New variable to track timer waiting
-var EffectBool: bool = false
 
 var MultiplierStacks: int = 0
+var LuckStacks: int = 0
 var DecayStacks: int = 0
 var BurnStacks: int = 0
 var FreezeStacks: int = 0
@@ -21,8 +21,8 @@ var DisableStacks: int = 0
 
 @onready var movetimer := $MoveTimer
 @onready var scoretimer := $ScoreTimer
-@onready var labelscore := $Container/Score
-@onready var labeleffect := $Container/Effect
+@onready var labelscore := $Score
+@onready var labeleffect := $Effect
 @onready var shell_sprite := $ShellSprite  # Use @onready for proper initialization
 
 # Movement variables
@@ -78,11 +78,6 @@ func shell_startround():
 		effect_text("SPIRIT SPAWN", Color(0.5, 0.0, 1.0, 0.0))
 	elif Type == 8:
 		effect_nearbyshells("SR-MIRROR")
-		if EffectBool == false:
-			Type = randi_range(1,12)
-			effect_text("MIRROR SHATTERED", Color(0.75, 0.75, 0.75, 0.0))
-		else:
-			EffectBool = false
 		
 func shell_endround():
 	if Type == 1:
@@ -114,8 +109,9 @@ func shell_endround():
 		elif Pit >= 1 and Pit <= 14:
 			effect_nearbyshells("TIME")
 	elif Type == 7:
-		pass
-		#add Luck on Pit
+		effect_nearbyshells("ER-LUCK")
+		LuckStacks += 1
+		effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
 	elif Type == 9:
 		pass
 		effect_nearbyshells("ER-FLAME")
@@ -226,6 +222,9 @@ func effect_nearbyshells(Effect:String):
 					elif Effect == "TIME":
 						child.Score += 1
 						child.effect_text("TIME +1", Color(1.0, 0.75, 0.8, 0.0))
+					elif Effect == "ER-LUCK":
+						child.LuckStacks += 1
+						child.effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
 					elif Effect == "SR-MIRROR":
 						Shell1 = child
 					elif Effect == "DROP-MIRROR":
@@ -315,10 +314,13 @@ func effect_nearbyshells(Effect:String):
 			get_parent().add_child(Shell_Dup)
 			Shell_Dup.effect_text("ECHO DUP SHELL", Color(1.0, 0.0, 0.0, 0.0))
 		elif Effect == "SR-MIRROR" and Shell1 != null:
-			EffectBool = true
 			Shell1.Type = randi_range(1,12)
 			Shell1.effect_text("MIRROR CHANGED", Color(0.75, 0.75, 0.75, 0.0))
 			Shell1.update_shell_frame()
+		elif Effect == "SR-MIRROR" and Shell1 == null:
+			Type = randi_range(1,12)
+			effect_text("MIRROR SHATTERED", Color(0.75, 0.75, 0.75, 0.0))
+			update_shell_frame()
 		elif Effect == "DROP-MIRROR" and Shell1 != null:
 			if Shell2 != null:
 				Shell2.Type = Shell1.Type
@@ -400,13 +402,6 @@ func update_shell_frame() -> void:
 	frame_index = clamp(frame_index, 0, 11)
 	
 	shellsprite.frame = frame_index
-	
-	# FIXED: Set color based on shell type
-	if Type == 3:  # Echo shell should be red
-		shellsprite.modulate = Color.RED
-		print("Echo shell set to RED color")
-	else:
-		shellsprite.modulate = Color.WHITE
 
 func assign_move(amount: int, player: int):
 	Move += amount

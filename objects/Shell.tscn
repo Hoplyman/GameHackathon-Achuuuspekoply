@@ -28,25 +28,6 @@ wait_time = 0.1
 
 [node name="ScoreTimer" type="Timer" parent="."]
 
-[node name="Container" type="Container" parent="."]
-layout_direction = 4
-
-[node name="Effect" type="Label" parent="Container"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Effect"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Score" type="Label" parent="Container"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 6
-theme_override_font_sizes/font_size = 16
-text = "1"
-horizontal_alignment = 1
-
 [node name="ShellRange" type="Area2D" parent="."]
 collision_layer = 32
 collision_mask = 2
@@ -55,6 +36,28 @@ collision_mask = 2
 scale = Vector2(6.75, 6.75)
 shape = SubResource("CircleShape2D_4hf8t")
 debug_color = Color(1, 1, 1, 0.42)
+
+[node name="Score" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+offset_right = 10.0
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_font_sizes/font_size = 16
+text = "1"
+horizontal_alignment = 1
+
+[node name="Effect" type="Label" parent="."]
+visible = false
+anchors_preset = -1
+grow_horizontal = 2
+grow_vertical = 2
+text = "Effect"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]

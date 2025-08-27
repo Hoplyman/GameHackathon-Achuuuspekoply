@@ -46,5 +46,14 @@ scale = Vector2(3.4, 3.4)
 shape = SubResource("CircleShape2D_h0pp4")
 debug_color = Color(1, 1, 1, 0.42)
 
+[node name="Effect" type="Label" parent="."]
+visible = false
+offset_bottom = 100.0
+grow_horizontal = 2
+size_flags_horizontal = 8
+text = "Effect"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="body_entered" from="ShellArea" to="." method="_on_shell_area_body_entered"]
 [connection signal="body_exited" from="ShellArea" to="." method="_on_shell_area_body_exited"]

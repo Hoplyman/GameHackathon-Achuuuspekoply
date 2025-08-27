@@ -138,7 +138,7 @@ func count_shells_in_area() -> int:
 				if child in overlapping_bodies:
 					print("Shell overlapping in Campaign:", child.name)
 					cshells += 1
-					cscores += child.Score
+					cscores += child.TotalScore
 		# Update scores before returning
 		scores = cscores
 		return cshells
