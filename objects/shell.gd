@@ -207,108 +207,109 @@ func effect_nearbyshells(Effect:String):
 
 	if gamemode == "Pvp":
 		for child in pvp.get_children():
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child in overlapping_bodies and child != self:
-					var tween = create_tween()
-					tween.tween_interval(0.1)
-					await tween.finished
-					if Effect == "DROP-ECHO":
-						Shell1 = child
-					elif Effect == "DROP-ANCHOR":
-						child.MultiplierStacks += 1 
-						var Mulipliertext: int = 0.5 * child.MultiplierStacks
-						Mulipliertext += 1
-						child.effect_text("SHELL X"+ str(Mulipliertext), Color(0.0, 0.5, 1.0, 0.0))
-					elif Effect == "TIME":
-						child.Score += 1
-						child.effect_text("TIME +1", Color(1.0, 0.75, 0.8, 0.0))
-					elif Effect == "ER-LUCK":
-						child.LuckStacks += 1
-						child.effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
-					elif Effect == "ER-MIRROR":
-						Shell1 = child
-					elif Effect == "DROP-MIRROR":
-						if Shell1 == null:
+			if is_instance_valid(child):
+				if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+					if child in overlapping_bodies and child != self:
+						var tween = create_tween()
+						tween.tween_interval(0.1)
+						await tween.finished
+						if Effect == "DROP-ECHO":
 							Shell1 = child
-						elif Shell2 == null:
-							Shell2 = child
-					elif Effect == "ER-FLAME":
-						child.BurnStacks += 1
-						Score += 1
-						count += 1
-						child.effect_text("BURNED", Color(1.0, 0.65, 0.0, 0.0))
-					elif Effect == "DROP-CHAIN":
-						if child.Type == 10 and child.Pit >= 1 and child.Pit <= 14:
-							child.assign_move(1,Player)
-							rng = 4
-							child.effect_text("CHAIN MOVE", Color(0.0, 0.8, 0.8, 0.0))
-						if child.Type == 1:
+						elif Effect == "DROP-ANCHOR":
+							child.MultiplierStacks += 1 
+							var Mulipliertext: int = 0.5 * child.MultiplierStacks
+							Mulipliertext += 1
+							child.effect_text("SHELL X"+ str(Mulipliertext), Color(0.0, 0.5, 1.0, 0.0))
+						elif Effect == "TIME":
+							child.Score += 1
+							child.effect_text("TIME +1", Color(1.0, 0.75, 0.8, 0.0))
+						elif Effect == "ER-LUCK":
+							child.LuckStacks += 1
+							child.effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
+						elif Effect == "ER-MIRROR":
 							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 2:
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 3:
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 4 and (child.Pit >= 1 or child.Pit <= 14):
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 5:
-							Shell1 = child
-							if child.Pit == 15 or child.Pit == 16:
-								rng = randi_range(1,2)
-								if rng == 2:
+						elif Effect == "DROP-MIRROR":
+							if Shell1 == null:
+								Shell1 = child
+							elif Shell2 == null:
+								Shell2 = child
+						elif Effect == "ER-FLAME":
+							child.BurnStacks += 1
+							Score += 1
+							count += 1
+							child.effect_text("BURNED", Color(1.0, 0.65, 0.0, 0.0))
+						elif Effect == "DROP-CHAIN":
+							if child.Type == 10 and child.Pit >= 1 and child.Pit <= 14:
+								child.assign_move(1,Player)
+								rng = 4
+								child.effect_text("CHAIN MOVE", Color(0.0, 0.8, 0.8, 0.0))
+							if child.Type == 1:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 2:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 3:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 4 and (child.Pit >= 1 or child.Pit <= 14):
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 5:
+								Shell1 = child
+								if child.Pit == 15 or child.Pit == 16:
+									rng = randi_range(1,2)
+									if rng == 2:
+										rng = 3
+								else:
 									rng = 3
-							else:
+							elif child.Type == 6:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 7:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 8:
+								Shell1 = child
+								rng = randi_range(1,2)
+							elif child.Type == 9:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif child.Type == 11:
+								Shell1 = child
 								rng = 3
-						elif child.Type == 6:
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 7:
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 8:
-							Shell1 = child
-							rng = randi_range(1,2)
-						elif child.Type == 9:
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif child.Type == 11:
-							Shell1 = child
-							rng = 3
-						elif child.Type == 12:
-							Shell1 = child
-							rng = randi_range(2,3)
-						elif rng != 4:
-							self.effect_text("CHAIN BREAK", Color(0.0, 0.8, 0.8, 0.0))
-					elif Effect == "DROP-PURIFY":
-						if DecayStacks >= 1:
-							child.DecayStacks = 0
+							elif child.Type == 12:
+								Shell1 = child
+								rng = randi_range(2,3)
+							elif rng != 4:
+								self.effect_text("CHAIN BREAK", Color(0.0, 0.8, 0.8, 0.0))
+						elif Effect == "DROP-PURIFY":
+							if DecayStacks >= 1:
+								child.DecayStacks = 0
+								count += 1
+							if BurnStacks >= 1:
+								child.BurnStacks = 0
+								count += 1
+							if FreezeStacks >= 1:
+								child.FreezeStacks = 0
+								count += 1
+							if RustStacks >= 1:
+								child.RustStacks = 0
+								count += 1
+							if CursedStacks >= 1:
+								child.CursedStacks = 0
+								count += 1
+							if DisableStacks >= 1:
+								child.DisableStacks = 0
+								count += 1
+							if count >= 1:
+								child.effect_text("PURIFIED", Color(1.0, 1.0, 0.8, 0.0))
+						elif Effect == "ER-ICE":
+							child.FreezeStacks += 1
+							Score += 1
 							count += 1
-						if BurnStacks >= 1:
-							child.BurnStacks = 0
-							count += 1
-						if FreezeStacks >= 1:
-							child.FreezeStacks = 0
-							count += 1
-						if RustStacks >= 1:
-							child.RustStacks = 0
-							count += 1
-						if CursedStacks >= 1:
-							child.CursedStacks = 0
-							count += 1
-						if DisableStacks >= 1:
-							child.DisableStacks = 0
-							count += 1
-						if count >= 1:
-							child.effect_text("PURIFIED", Color(1.0, 1.0, 0.8, 0.0))
-					elif Effect == "ER-ICE":
-						child.FreezeStacks += 1
-						Score += 1
-						count += 1
-						child.effect_text("FREEZED", Color(0.0, 1.0, 1.0, 0.0))
-						
+							child.effect_text("FREEZED", Color(0.0, 1.0, 1.0, 0.0))
+							
 		if Effect == "DROP-ECHO" and Shell1 != null:
 			var Shell_Dup = Shell1.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
 			get_parent().add_child(Shell_Dup)
