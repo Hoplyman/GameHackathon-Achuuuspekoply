@@ -43,18 +43,6 @@ theme_override_font_sizes/font_size = 24
 text = "Player X - Choose a Special Shell"
 horizontal_alignment = 1
 
-[node name="ShellButtonsContainer" type="VBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="PitSelectionLabel" type="Label" parent="VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "Click on one of your pits to place this shell."
-horizontal_alignment = 1
-autowrap_mode = 3
-
 [node name="ConfirmButton" type="Button" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
@@ -63,3 +51,20 @@ text = "Confirm"
 [node name="SkipButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Skip Turn"
+
+[node name="TypeButtonsContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="OptionsContainer" type="VBoxContainer" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="TargetSelectionLabel" type="Label" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Click on one of your pits to place this selection."
+horizontal_alignment = 1
+autowrap_mode = 3

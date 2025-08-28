@@ -414,16 +414,7 @@ func move_shell(player: int):
 	# CRITICAL FIX: Proper movement logic that follows the standard Mancala path
 	if Move <= 0:
 		# No more moves, finalize shell position
-		linear_velocity = Vector2.ZERO
-		Moving = false
-		collision_layer = 2
-		collision_mask = 2 | 3
-		gravity_scale = 1
-		freeze = false
-		remove_from_group("MoveShells")
-		add_to_group("Shells")
-		shell_drop()
-		print("Shell movement complete at pit ", Pit)
+		call_deferred("_finalize_movement")
 		return
 	
 	var target: Vector2
@@ -471,22 +462,36 @@ func move_shell(player: int):
 			print("ERROR: Invalid next_pit value: ", next_pit)
 			return
 	
-	# Start the movement
+	# Start the movement using deferred calls
 	if Moving == false and waiting_for_timer == false:
-		remove_from_group("Shells")
-		add_to_group("MoveShells")
-		collision_layer = 0
-		collision_mask = 0
-		gravity_scale = 0
-		freeze = true
-		
-		Move -= 1
-		Pit = next_pit
-		Moving = true
-		move_target = target
-		
-		
-		print("Shell moving from pit ", (next_pit - 1), " to pit ", next_pit, " (", Move, " moves remaining)")
+		call_deferred("_start_movement", target, next_pit)
+
+func _start_movement(target: Vector2, next_pit: int):
+	remove_from_group("Shells")
+	add_to_group("MoveShells")
+	collision_layer = 0
+	collision_mask = 0
+	gravity_scale = 0
+	freeze = true
+	
+	Move -= 1
+	Pit = next_pit
+	Moving = true
+	move_target = target
+	
+	print("Shell moving from pit ", (next_pit - 1), " to pit ", next_pit, " (", Move, " moves remaining)")
+	
+func _finalize_movement():
+	linear_velocity = Vector2.ZERO
+	Moving = false
+	collision_layer = 2
+	collision_mask = 2 | 3
+	gravity_scale = 1
+	freeze = false
+	remove_from_group("MoveShells")
+	add_to_group("Shells")
+	shell_drop()
+	print("Shell movement complete at pit ", Pit)
 
 func calculate_next_position(current_pit: int, player: int) -> int:
 	# Use the exact same logic as GameManager.get_next_position()
@@ -607,18 +612,21 @@ func _physics_process(delta):
 				movetimer.start()
 				print("Arrived at pit ", Pit, " - waiting for timer (", Move, " moves remaining)")
 			else:
-				# All moves complete - NOW we can re-enable physics and collision
-				collision_layer = 2
-				collision_mask = 2 | 3
-				gravity_scale = 1
-				freeze = false
-				linear_velocity = Vector2.ZERO
-				remove_from_group("MoveShells")
-				add_to_group("Shells")
-				shell_drop()
-				if PitNode != null:
-					PitNode.pit_drop()
-				print("All movements complete - final position: pit ", Pit)
+				# All moves complete - use deferred call to re-enable physics
+				call_deferred("_complete_all_movements")
+
+func _complete_all_movements():
+	collision_layer = 2
+	collision_mask = 2 | 3
+	gravity_scale = 1
+	freeze = false
+	linear_velocity = Vector2.ZERO
+	remove_from_group("MoveShells")
+	add_to_group("Shells")
+	shell_drop()
+	if PitNode != null:
+		PitNode.pit_drop()
+	print("All movements complete - final position: pit ", Pit)
 
 func _on_move_timer_timeout() -> void:
 	movetimer.stop()  # Stop the timer

@@ -82,10 +82,23 @@ func create_special_shell_selector():
 	special_shell_selector = get_parent().get_node("SpecialShellSelector")
 	if special_shell_selector:
 		special_shell_selector.special_shell_selected.connect(_on_special_shell_selected)
+		# ADD THIS LINE:
+		special_shell_selector.pit_type_selected.connect(_on_pit_type_selected)
 		print("Special shell selector connected!")
 	else:
 		print("ERROR: SpecialShellSelector not found in scene!")
-
+		
+func _on_pit_type_selected(pit_type: int, pit_index: int):
+	awaiting_special_shell_selection = false
+	
+	if pit_type > 0:
+		print("Player ", current_turn + 1, " selected pit type ", pit_type)
+	else:
+		print("Player ", current_turn + 1, " skipped pit type selection")
+	
+	switch_turn()
+	check_game_over()
+	
 func update_turn_display():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
