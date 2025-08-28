@@ -12,7 +12,7 @@ var initialization_complete: bool = false
 @onready var labeleffect := $Effect
 func _ready():
 	setup_click_area()
-	PitType = randi_range(11 ,11)
+	PitType = randi_range(6 ,6)
 	update_pit_frame()
 	add_to_group("pits")
 	# CRITICAL FIX: Stop timer immediately and disable timer counting from the start
@@ -86,6 +86,7 @@ func add_shells(amount):
 	print("Pit: Added ", amount, " shells. Total: ", shells)
 	
 func move_shells(player: int):
+	pit_click()
 	var gamemode: String = ""
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	var campaign = get_tree().root.get_node_or_null("Campaign")
@@ -127,6 +128,7 @@ func move_shells(player: int):
 			totalmove += 1
 		
 		print("Pit ", name, " - Started moving ", shells_to_remove.size(), " shells")
+		
 		return 0
 	else:
 		shells = 0
@@ -534,6 +536,9 @@ func effect_shells_in_area(Effect: String):
 			elif  Effect == "LOOT":
 				effect_text("Looted " + str(count) + " Shells", Color(1.0, 0.75, 0.8, 0.0))
 			elif Effect == "CHAIN":
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
 				Effect1Chance = 25.0
 				Effect2Chance = 75.0
 				Effect1Chance += TotalEffectChance
@@ -541,10 +546,45 @@ func effect_shells_in_area(Effect: String):
 				if Effect1Chance > 100.0:
 					Effect1Chance = 100.0
 					Effect2Chance = 0.0
+				Effect1Chance = 100.0
 				var roll = randf() * 100.0  # Random float from 0-100
 				if roll <= Effect1Chance:
-				#add chain click code
-					effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+					var AjacentPit: Node2D
+					var AjacentPitShells: int
+					rng = randi_range(1,2)
+					pit_index += 1
+					if rng == 1 and (pit_index == 1 or pit_index == 8):
+						rng = 2
+					elif rng == 2 and (pit_index == 7 or pit_index == 14):
+						rng = 1
+					if rng == 1:
+						AjacentPit = pvp.get_node_or_null("Pit" + str(pit_index-1))
+						AjacentPitShells = AjacentPit.count_shells_in_area()
+						if AjacentPitShells != 0:
+							AjacentPit.move_shells(Player)
+							AjacentPit.effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+							effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+						elif pit_index != 7 and pit_index != 14:
+							AjacentPit = pvp.get_node_or_null("Pit" + str(pit_index+1))
+							AjacentPitShells = AjacentPit.count_shells_in_area()
+							if AjacentPitShells != 0:
+								AjacentPit.move_shells(Player)
+								AjacentPit.effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+								effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+					elif rng == 2:
+						AjacentPit = pvp.get_node_or_null("Pit" + str(pit_index+1))
+						AjacentPitShells = AjacentPit.count_shells_in_area()
+						if AjacentPitShells != 0:
+							AjacentPit.move_shells(Player)
+							AjacentPit.effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+							effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+						elif pit_index != 1 and pit_index != 8:
+							AjacentPit = pvp.get_node_or_null("Pit" + str(pit_index-1))
+							AjacentPitShells = AjacentPit.count_shells_in_area()
+							if AjacentPitShells != 0:
+								AjacentPit.move_shells(Player)
+								AjacentPit.effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
+								effect_text("Chained Pit", Color(0.0, 0.8, 0.8, 0.0))
 			elif Effect == "GOLDEN":
 				var times: int = 0
 				while times <= 5:
