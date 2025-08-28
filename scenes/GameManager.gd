@@ -102,11 +102,12 @@ func _on_pit_type_selected(pit_type: int, pit_index: int):
 func update_turn_display():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
-		if child.is_in_group("pits"):
-			child.pit_startround()
-			var tween = create_tween()
-			tween.tween_interval(0.05)
-			await tween.finished
+		if is_instance_valid(child):
+			if child.is_in_group("pits"):
+				child.pit_startround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
 	if not turn_indicator:
 		print("Turn indicator not found!")
 		return
@@ -394,16 +395,17 @@ func switch_turn():
 	print("Turn switched to player ", current_turn + 1)
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
-		if child.is_in_group("pits"):
-			child.pit_endround()
-			var tween = create_tween()
-			tween.tween_interval(0.05)
-			await tween.finished
-		if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-			child.shell_endround()
-			var tween = create_tween()
-			tween.tween_interval(0.05)
-			await tween.finished
+		if is_instance_valid(child):
+			if child.is_in_group("pits"):
+				child.pit_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
 	update_turn_display()
 
 func check_game_over() -> bool:

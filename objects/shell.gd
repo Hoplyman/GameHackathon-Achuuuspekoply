@@ -35,7 +35,6 @@ func _ready() -> void:
 	# Wait a frame to ensure all nodes are ready
 	# Update appearance and score
 	scoretimer.start()
-	Type = 9
 	update_shell_frame()
 	set_score()
 	set_pit()
@@ -335,7 +334,7 @@ func effect_nearbyshells(Effect:String):
 			self.effect_text("FLAME +" + str(count), Color(1.0, 0.65, 0.0, 0.0))
 		elif Effect == "DROP-CHAIN" and Shell1 != null:
 			if rng == 1:
-				Shell1.shell_startround()
+				Shell1.shell_endround()
 				self.effect_text("CHAIN S-ROUND", Color(0.0, 0.8, 0.8, 0.0))
 			elif rng == 2:
 				Shell1.shell_endround()
@@ -469,6 +468,7 @@ func move_shell(player: int):
 func _start_movement(target: Vector2, next_pit: int):
 	remove_from_group("Shells")
 	add_to_group("MoveShells")
+	
 	collision_layer = 0
 	collision_mask = 0
 	gravity_scale = 0
@@ -621,9 +621,16 @@ func _complete_all_movements():
 	gravity_scale = 1
 	freeze = false
 	linear_velocity = Vector2.ZERO
-	remove_from_group("MoveShells")
-	add_to_group("Shells")
-	shell_drop()
+	if PitNode != null and PitNode.PitType == 9 and get_tree().get_nodes_in_group("MoveShells").size() == 1:
+		assign_move(1,Player)
+		var pvp = get_tree().root.get_node_or_null("Gameplay")
+		var PitEffect = pvp.get_node_or_null("Pit"+ str(Pit))
+		if PitEffect != null:
+			PitEffect.effect_text("Skiped Pit", Color(0.0, 0.0, 0.0, 0.0))
+	else:
+		remove_from_group("MoveShells")
+		add_to_group("Shells")
+		shell_drop()
 	if PitNode != null:
 		PitNode.pit_drop()
 	print("All movements complete - final position: pit ", Pit)

@@ -36,6 +36,7 @@ Shells=""
 Area=""
 MoveShells=""
 pitsC=""
+Move2Shells=""
 
 [layer_names]
 
