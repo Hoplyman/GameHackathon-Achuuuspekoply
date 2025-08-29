@@ -120,7 +120,7 @@ func shell_endround():
 			effect_text("TIME +2", Color(1.0, 0.75, 0.8, 0.0))
 		elif Pit >= 1 and Pit <= 14:
 			effect_nearbyshells("TIME")
-	elif Type == 7:
+	elif Type == 7 and Pit >= 1 and Pit <= 14:
 		effect_nearbyshells("ER-LUCK")
 		LuckStacks += 1
 		effect_text("+LUCK", Color(0.0, 0.8, 0.0, 0.0))
@@ -129,14 +129,14 @@ func shell_endround():
 	elif Type == 9:
 		pass
 		effect_nearbyshells("ER-FLAME")
-	elif Type == 12:
+	elif Type == 12 and Pit >= 1 and Pit <= 14:
 		pass
 		effect_nearbyshells("ER-ICE")
 	if self.DecayStacks >= 1:
 		Score /= 2
 		DecayStacks -= 1
 	if BurnStacks >= 1:
-		Score -= BurnStacks
+		Score -= 1
 		BurnStacks -= 1
 	if FreezeStacks >= 1:
 		FreezeStacks -= 1

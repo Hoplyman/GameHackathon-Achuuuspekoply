@@ -36,7 +36,7 @@ var pit_type_names = {
 	8: {"name": "Healing Pit", "effect": "Removes all debuffs from shells at start of turn"},
 	9: {"name": "Void Pit", "effect": "Shells skip to next pit when dropped"},
 	10: {"name": "Explosive Pit", "effect": "Shells gain Burn and move to random pit at end of turn"},
-	11: {"name": "Random Pit", "effect": "Randomizes shell types at end of turn"}
+	11: {"name": "Random Pit", "effect": "Randomizes shell type or effect at end of turn"}
 }
 
 func _ready():
