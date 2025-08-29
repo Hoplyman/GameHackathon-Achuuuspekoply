@@ -19,6 +19,7 @@ var RustStacks: int = 0
 var CursedStacks: int = 0
 var DisableStacks: int = 0
 
+@onready var audio_player := $AudioStreamPlayer2D
 @onready var movetimer := $MoveTimer
 @onready var scoretimer := $ScoreTimer
 @onready var labelscore := $Score
@@ -30,6 +31,18 @@ var move_target: Vector2
 var move_speed: float = 200.0
 var arrival_threshold: float = 10.0
 var PitNode: Node2D
+
+const SOUND_BASIC = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_GOLDEN = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_ECHO = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_ANCHOR = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_SPIRIT = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_TIME = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_LUCKY = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_BURN = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_ICE = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_PLACEMENT = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+
 
 func _ready() -> void:
 	# Wait a frame to ensure all nodes are ready
@@ -50,6 +63,7 @@ func _ready() -> void:
 	print("Shell initialized with type: ", Type)
 
 func effect_text(Text: String, TextColor: Color):
+		play_shell_effect_sound(Text)
 		labeleffect.text = Text
 		labeleffect.modulate = TextColor  # Red but transparent
 		labeleffect.visible = true
@@ -182,6 +196,46 @@ func set_score():
 		Score = 5
 	shell_status()
 	labelscore.text = str(TotalScore)
+	
+func play_shell_effect_sound(effect_name: String):
+	if not audio_player:
+		return
+	
+	var sound_to_play = null
+	
+	# Match effect names to specific sounds
+	match effect_name.to_upper():
+		"+1":
+			sound_to_play = SOUND_BASIC
+		"GOLDEN":
+			sound_to_play = SOUND_GOLDEN
+		"ECHO":
+			sound_to_play = SOUND_ECHO
+		"ANCHOR X2", "ANCHOR X3", "ANCHOR X4":  # Handle multiplier variations
+			sound_to_play = SOUND_ANCHOR
+		"SPIRIT SPAWN", "SPIRIT":
+			sound_to_play = SOUND_SPIRIT
+		"TIME +1", "TIME +2":
+			sound_to_play = SOUND_TIME
+		"LUCKY +1", "LUCKY +2", "LUCKY +3":
+			sound_to_play = SOUND_LUCKY
+		"BURNED", "FLAME +1", "FLAME +2":
+			sound_to_play = SOUND_BURN
+		"FREEZED", "ICE +1", "ICE +2":
+			sound_to_play = SOUND_ICE
+		_:
+			# Default sound for unmatched effects
+			sound_to_play = SOUND_PLACEMENT
+	
+	if sound_to_play:
+		audio_player.stream = sound_to_play
+		audio_player.play()
+		print("Playing shell effect sound for: ", effect_name)
+
+func play_placement_sound():
+	if audio_player and audio_player.stream:
+		audio_player.play()
+		print("Playing shell placement sound")
 
 func get_score() -> int:
 	var score: int = Score
