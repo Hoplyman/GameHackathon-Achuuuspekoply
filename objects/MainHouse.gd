@@ -10,6 +10,8 @@ var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawn
 @onready var timer := $Timer  # Access the Timer node
 @onready var label = $StoneLabel
 @onready var House_Sprite := $HouseSprite  # NEW: Reference to house sprite node
+@onready var audio_player := $AudioStreamPlayer2D
+const SOUND_SHELL_ENTER_HOUSE = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 
 func _ready():
 	add_to_group("main_houses")
@@ -23,7 +25,12 @@ func _ready():
 		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
 		timer.start()
 	update_label()
-
+	
+func play_shell_enter_sound():
+	if audio_player:
+		audio_player.stream = SOUND_SHELL_ENTER_HOUSE
+		audio_player.play()
+		print("Playing shell enter main house sound")
 # NEW: Setup click area for tooltip functionality
 func setup_click_area():
 	var click_area = get_node_or_null("ClickArea")
@@ -379,6 +386,7 @@ func count_shells_in_area() -> int:
 func _on_shell_area_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D and use_timer_counting:
 		print("RigidBody2D entered:", body.name)
+		play_shell_enter_sound()
 		# Small delay to let physics settle
 		await get_tree().create_timer(0.1).timeout
 		update_label()
