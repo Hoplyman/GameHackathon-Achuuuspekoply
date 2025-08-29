@@ -45,3 +45,5 @@ autostart = true
 
 [node name="ClickArea" parent="." instance=ExtResource("3_8frl5")]
 scale = Vector2(1.6, 1.6)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]

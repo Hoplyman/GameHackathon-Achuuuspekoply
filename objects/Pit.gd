@@ -23,6 +23,7 @@ const SOUND_HEALING_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Pow
 const SOUND_VOID_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_EXPLOSIVE_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_RANDOM_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_SHELL_ENTER = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 
 func _ready():
 	setup_click_area()
@@ -34,6 +35,12 @@ func _ready():
 	timer.stop()
 	# Don't connect timer signal until explicitly enabled
 	update_label()
+	
+func play_shell_enter_sound():
+	if audio_player:
+		audio_player.stream = SOUND_SHELL_ENTER
+		audio_player.play()
+		print("Playing shell enter pit sound")
 
 func setup_click_area():
 	var click_area = get_node_or_null("ClickArea")
@@ -297,6 +304,7 @@ func count_shells_in_area() -> int:
 func _on_shell_area_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D and body.is_in_group("Shells"):
 		print("Shell entered pit ", name, ": ", body.name)
+		play_shell_enter_sound()
 		if body.has_method("play_placement_sound"):
 			body.play_placement_sound()
 		var tween = create_tween()
