@@ -6,10 +6,24 @@ var PitSprite: Sprite2D # the sprite of Shell
 var use_timer_counting: bool = true
 var initialization_complete: bool = false
 
+@onready var audio_player := $AudioStreamPlayer2D
 @onready var Pit_Sprite := $PitSprite
 @onready var timer := $Timer
 @onready var labelshell = $ShellLabel
 @onready var labeleffect := $Effect
+
+const SOUND_BASIC_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_ANCHOR_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_ECHO_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_SPIRIT_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_LOOT_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_CHAIN_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_GOLDEN_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_HEALING_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_VOID_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_EXPLOSIVE_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_RANDOM_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+
 func _ready():
 	setup_click_area()
 	PitType = randi_range(1 ,11)
@@ -31,6 +45,44 @@ func setup_click_area():
 			print("Setup click area with hover for pit ", pit_index)
 	else:
 		print("Warning: No ClickArea found in ", name)
+
+func play_pit_effect_sound(effect_name: String):
+	if not audio_player:
+		return
+	
+	var sound_to_play = null
+	
+	match effect_name.to_upper():
+		"+1 SCORE":
+			sound_to_play = SOUND_BASIC_PIT
+		"+1 MULTIPLIER":
+			sound_to_play = SOUND_ANCHOR_PIT
+		"DUPLICATE 1 SHELLS", "DUPLICATE 2 SHELLS", "DUPLICATE 3 SHELLS":
+			sound_to_play = SOUND_ECHO_PIT
+		"SPAWN SHELL":
+			sound_to_play = SOUND_SPIRIT_PIT
+		"LOOTED 1 SHELLS", "LOOTED 2 SHELLS", "LOOTED 3 SHELLS":
+			sound_to_play = SOUND_LOOT_PIT
+		"CHAINED PIT":
+			sound_to_play = SOUND_CHAIN_PIT
+		"GOLDEN +1 SCORE", "GOLDEN +2 SCORE", "GOLDEN +3 SCORE":
+			sound_to_play = SOUND_GOLDEN_PIT
+		"RESTORED 1 DEBUFFSHELLS", "RESTORED 2 DEBUFFSHELLS":
+			sound_to_play = SOUND_HEALING_PIT
+		"SHELLS VOID", "SKIPED PIT":
+			sound_to_play = SOUND_VOID_PIT
+		"EXPLODE":
+			sound_to_play = SOUND_EXPLOSIVE_PIT
+		"TYPES RANDOMIZED":
+			sound_to_play = SOUND_RANDOM_PIT
+		_:
+			# Default sound
+			sound_to_play = SOUND_BASIC_PIT
+	
+	if sound_to_play:
+		audio_player.stream = sound_to_play
+		audio_player.play()
+		print("Playing pit effect sound for: ", effect_name)
 
 func set_shells(amount: int):
 	# This is called by GameManager during initialization
@@ -245,6 +297,8 @@ func count_shells_in_area() -> int:
 func _on_shell_area_body_entered(body: Node2D) -> void:
 	if body is RigidBody2D and body.is_in_group("Shells"):
 		print("Shell entered pit ", name, ": ", body.name)
+		if body.has_method("play_placement_sound"):
+			body.play_placement_sound()
 		var tween = create_tween()
 		tween.tween_interval(0.05)
 		await tween.finished
@@ -289,6 +343,7 @@ func update_label():
 		print("Warning: ShellLabel not found in Pit")
 		
 func effect_text(Text: String, TextColor: Color):
+	play_pit_effect_sound(Text)
 	labeleffect.text = Text
 	labeleffect.modulate = TextColor  # Red but transparent
 	labeleffect.visible = true
