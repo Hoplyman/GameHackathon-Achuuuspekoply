@@ -13,6 +13,14 @@ var player1_label: Label
 var player2_label: Label
 var special_shell_selector: Control
 
+# END GAME SCREEN ELEMENTS
+var end_game_overlay: Control
+var end_game_background: ColorRect
+var winner_label: Label
+var final_scores_label: Label
+var play_again_button: Button
+var quit_button: Button
+
 # Resolution scaling
 var base_resolution = Vector2(1920, 1080)
 var ui_scale_factor: float = 1.0
@@ -26,6 +34,7 @@ func _ready():
 	call_deferred("create_ui_elements")
 	call_deferred("start_game")
 	call_deferred("create_special_shell_selector")
+	call_deferred("create_end_game_screen")
 
 func calculate_ui_scale():
 	var viewport_size = get_viewport().get_visible_rect().size
@@ -39,6 +48,71 @@ func scaled_font_size(base_size: int) -> int:
 
 func scaled_position(base_pos: Vector2) -> Vector2:
 	return base_pos * ui_scale_factor
+
+# NEW: Create end game overlay screen
+func create_end_game_screen():
+	await get_tree().process_frame
+	
+	# Create overlay container
+	end_game_overlay = Control.new()
+	end_game_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	end_game_overlay.mouse_filter = Control.MOUSE_FILTER_STOP  # Block input to game
+	end_game_overlay.visible = false
+	get_parent().add_child(end_game_overlay)
+	
+	# Semi-transparent background
+	end_game_background = ColorRect.new()
+	end_game_background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	end_game_background.color = Color(0, 0, 0, 0.8)  # Semi-transparent black
+	end_game_overlay.add_child(end_game_background)
+	
+	# Winner announcement
+	winner_label = Label.new()
+	winner_label.text = "GAME OVER"
+	winner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	winner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	winner_label.position = scaled_position(Vector2(460, 300))
+	winner_label.size = scaled_position(Vector2(1000, 150))
+	winner_label.add_theme_font_size_override("font_size", scaled_font_size(72))
+	winner_label.add_theme_color_override("font_color", Color.WHITE)
+	winner_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	winner_label.add_theme_constant_override("shadow_offset_x", 4)
+	winner_label.add_theme_constant_override("shadow_offset_y", 4)
+	end_game_overlay.add_child(winner_label)
+	
+	# Final scores
+	final_scores_label = Label.new()
+	final_scores_label.text = ""
+	final_scores_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	final_scores_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	final_scores_label.position = scaled_position(Vector2(460, 480))
+	final_scores_label.size = scaled_position(Vector2(1000, 200))
+	final_scores_label.add_theme_font_size_override("font_size", scaled_font_size(36))
+	final_scores_label.add_theme_color_override("font_color", Color.WHITE)
+	final_scores_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+	final_scores_label.add_theme_constant_override("shadow_offset_x", 2)
+	final_scores_label.add_theme_constant_override("shadow_offset_y", 2)
+	end_game_overlay.add_child(final_scores_label)
+	
+	# Play Again button
+	play_again_button = Button.new()
+	play_again_button.text = "PLAY AGAIN"
+	play_again_button.position = scaled_position(Vector2(660, 720))
+	play_again_button.size = scaled_position(Vector2(200, 60))
+	play_again_button.add_theme_font_size_override("font_size", scaled_font_size(24))
+	play_again_button.pressed.connect(_on_play_again_pressed)
+	end_game_overlay.add_child(play_again_button)
+	
+	# Quit button
+	quit_button = Button.new()
+	quit_button.text = "QUIT"
+	quit_button.position = scaled_position(Vector2(960, 720))
+	quit_button.size = scaled_position(Vector2(200, 60))
+	quit_button.add_theme_font_size_override("font_size", scaled_font_size(24))
+	quit_button.pressed.connect(_on_quit_pressed)
+	end_game_overlay.add_child(quit_button)
+	
+	print("End game screen created successfully!")
 
 func create_ui_elements():
 	await get_tree().process_frame
@@ -82,7 +156,6 @@ func create_special_shell_selector():
 	special_shell_selector = get_parent().get_node("SpecialShellSelector")
 	if special_shell_selector:
 		special_shell_selector.special_shell_selected.connect(_on_special_shell_selected)
-		# ADD THIS LINE:
 		special_shell_selector.pit_type_selected.connect(_on_pit_type_selected)
 		print("Special shell selector connected!")
 	else:
@@ -151,7 +224,6 @@ func handle_pit_click(pit_index: int):
 	var pit = get_pit(pit_index)
 	if not pit or pit.shells <= 0:
 		print("Cannot select empty pit or invalid pit")
-
 		return
 	
 	var player_pits_range = get_player_pit_range(current_turn)
@@ -178,8 +250,7 @@ func distribute_shells(start_pit_index: int, player: int):
 	# Use the physical shell movement system
 	pit.move_shells(player)
 	
-	# FIXED: Much shorter wait time and better calculation
-	var estimated_duration = shells_to_distribute * 0.15  # Reduced from 0.5 to 0.15
+	var estimated_duration = shells_to_distribute * 0.15
 	await get_tree().create_timer(estimated_duration).timeout
 	
 	# Calculate the final position properly
@@ -188,7 +259,6 @@ func distribute_shells(start_pit_index: int, player: int):
 	is_distributing = false
 	check_end_turn_rules(final_position)
 
-# Function to properly calculate where the last shell will land
 func calculate_final_position(start_pit: int, shell_count: int) -> int:
 	var current_pos = start_pit
 	
@@ -234,7 +304,6 @@ func check_end_turn_rules(last_position: int):
 	# Rule: Extra turn for landing in own main house
 	if (current_turn == 0 and last_position == 14) or (current_turn == 1 and last_position == 15):
 		print("Player ", current_turn + 1, " gets another turn!")
-		# NO special shell selection after extra turn - just continue turn
 		update_turn_display()
 		return
 	
@@ -258,12 +327,10 @@ func _on_special_shell_selected(shell_type: int, pit_index: int):
 	awaiting_special_shell_selection = false
 	
 	if shell_type > 0:
-		# Player selected a special shell (already spawned by SpecialShellSelector)
 		print("Player ", current_turn + 1, " selected special shell type ", shell_type)
 	else:
 		print("Player ", current_turn + 1, " skipped special shell selection")
 	
-	# Now switch turns and continue game
 	switch_turn()
 	check_game_over()
 
@@ -322,13 +389,11 @@ func start_game():
 	# Initialize pits with exactly 7 NORMAL shells each (type 1)
 	for pit in pits:
 		pit.set_shells(7)
-		# Force all starting shells to be normal shells
 		force_normal_shells_in_pit(pit)
 	
-	# Wait longer to ensure all shell spawning is completely finished
 	await get_tree().process_frame
 	await get_tree().process_frame
-	await get_tree().create_timer(0.1).timeout  # Extra delay to ensure shells are settled
+	await get_tree().create_timer(0.1).timeout
 	
 	# Now enable timer counting for all pits
 	for pit in pits:
@@ -340,11 +405,6 @@ func start_game():
 			house.update_label()
 	
 	print("Game initialized with ", pits.size(), " pits and ", main_houses.size(), " main houses")
-	print("All starting shells are normal shells (type 1)")
-	print("Player 1 (BLUE) controls pits 1-7 (bottom row)")
-	print("Player 2 (RED) controls pits 8-14 (top row)")
-	print("Hover over pits/main houses to see shell contents!")
-	print("Right-click for detailed shell information!")
 	
 	if turn_indicator:
 		update_turn_display()
@@ -352,7 +412,6 @@ func start_game():
 		highlight_player_pits(0)
 
 func force_normal_shells_in_pit(pit: Node2D):
-	# Find all shells in this pit and force them to be normal shells
 	var game_scene = get_tree().root.get_node_or_null("Gameplay")
 	if not game_scene:
 		game_scene = get_parent()
@@ -365,7 +424,7 @@ func force_normal_shells_in_pit(pit: Node2D):
 	
 	for child in game_scene.get_children():
 		if child.is_in_group("Shells") and child in overlapping_bodies:
-			child.set_shell_type(1)  # Force to normal shell
+			child.set_shell_type(1)
 
 func get_main_house(player_index: int) -> Node2D:
 	if player_index < main_houses.size():
@@ -408,7 +467,9 @@ func switch_turn():
 				await tween.finished
 	update_turn_display()
 
+# ENHANCED: Better game over checking with multiple win conditions
 func check_game_over() -> bool:
+	# Standard Mancala win condition: One player has no shells left
 	var player1_empty = true
 	var player2_empty = true
 	
@@ -422,18 +483,26 @@ func check_game_over() -> bool:
 			player2_empty = false
 			break
 	
-	if player1_empty or player2_empty:
+	# OPTIONAL: Add score-based win condition (uncomment to enable)
+	# var player1_score = get_main_house_shells(0)
+	# var player2_score = get_main_house_shells(1)
+	# var score_win_threshold = 50  # Adjust as needed
+	
+	if player1_empty or player2_empty: # or player1_score >= score_win_threshold or player2_score >= score_win_threshold:
 		end_game()
 		return true
 	
 	return false
 
+# ENHANCED: Better end game with overlay screen
 func end_game():
 	game_active = false
 	awaiting_special_shell_selection = false
-	special_shell_selector.hide_selection()
+	if special_shell_selector:
+		special_shell_selector.hide_selection()
 	print("Game Over!")
 	
+	# Collect remaining shells from pits
 	var player1_remaining = 0
 	var player2_remaining = 0
 	
@@ -452,15 +521,102 @@ func end_game():
 	add_shells_to_main_house(0, player1_remaining)
 	add_shells_to_main_house(1, player2_remaining)
 	
+	# Calculate final scores
 	var player1_score = get_main_house_shells(0)
 	var player2_score = get_main_house_shells(1)
 	
+	# Show end game screen with results
+	show_end_game_screen(player1_score, player2_score)
+
+# NEW: Display the end game screen
+func show_end_game_screen(player1_score: int, player2_score: int):
+	if not end_game_overlay:
+		print("ERROR: End game overlay not found!")
+		return
+	
+	# Determine winner and set colors
+	var winner_text: String
+	var winner_color: Color
+	
 	if player1_score > player2_score:
-		turn_indicator.text = "PLAYER 1 WINS! (" + str(player1_score) + " shells)"
-		turn_indicator.add_theme_color_override("font_color", Color.CYAN)
+		winner_text = "PLAYER 1 WINS!"
+		winner_color = Color.CYAN
 	elif player2_score > player1_score:
-		turn_indicator.text = "PLAYER 2 WINS! (" + str(player2_score) + " shells)"
-		turn_indicator.add_theme_color_override("font_color", Color.LIGHT_CORAL)
+		winner_text = "PLAYER 2 WINS!"
+		winner_color = Color.LIGHT_CORAL
 	else:
-		turn_indicator.text = "IT'S A TIE! (" + str(player1_score) + " shells each)"
-		turn_indicator.add_theme_color_override("font_color", Color.YELLOW)
+		winner_text = "IT'S A TIE!"
+		winner_color = Color.YELLOW
+	
+	# Update winner label
+	winner_label.text = winner_text
+	winner_label.add_theme_color_override("font_color", winner_color)
+	
+	# Update final scores
+	var scores_text = "FINAL SCORES:\n\nPlayer 1 (Blue): " + str(player1_score) + " shells\nPlayer 2 (Red): " + str(player2_score) + " shells"
+	if player1_score != player2_score:
+		var margin = abs(player1_score - player2_score)
+		scores_text += "\n\nMargin of Victory: " + str(margin) + " shells"
+	
+	final_scores_label.text = scores_text
+	
+	# Show the overlay with animation
+	end_game_overlay.modulate = Color(1, 1, 1, 0)  # Start transparent
+	end_game_overlay.visible = true
+	
+	var tween = create_tween()
+	tween.tween_property(end_game_overlay, "modulate:a", 1.0, 0.5)  # Fade in
+	
+	print("End game screen displayed: ", winner_text)
+
+# NEW: Handle play again button
+func _on_play_again_pressed():
+	print("Restarting game...")
+	
+	# Hide end game screen
+	end_game_overlay.visible = false
+	
+	# Reset game state
+	game_active = true
+	current_turn = 0
+	is_distributing = false
+	awaiting_special_shell_selection = false
+	
+	# Reset main house scores
+	for house in main_houses:
+		if house.has_method("set_shells"):
+			house.set_shells(0)
+	
+	# Restart the game
+	call_deferred("start_game")
+
+# NEW: Handle quit button
+func _on_quit_pressed():
+	print("Quitting game...")
+	get_tree().quit()
+
+# OPTIONAL: Add pause/unpause functionality
+func pause_game():
+	game_active = false
+	print("Game paused")
+
+func unpause_game():
+	game_active = true
+	print("Game unpaused")
+
+# OPTIONAL: Add game statistics tracking
+var games_played: int = 0
+var player1_wins: int = 0
+var player2_wins: int = 0
+var ties: int = 0
+
+func track_game_result(player1_score: int, player2_score: int):
+	games_played += 1
+	if player1_score > player2_score:
+		player1_wins += 1
+	elif player2_score > player1_score:
+		player2_wins += 1
+	else:
+		ties += 1
+	
+	print("Game Statistics - Played: ", games_played, " P1 Wins: ", player1_wins, " P2 Wins: ", player2_wins, " Ties: ", ties)
