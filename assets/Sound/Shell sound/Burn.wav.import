@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://qrmgvkbg7ovw"
+path="res://.godot/imported/Burn.wav-3474b27db6c0f5b074c6b0c1140431bd.sample"
+
+[deps]
+
+source_file="res://assets/Sound/Shell sound/Burn.wav"
+dest_files=["res://.godot/imported/Burn.wav-3474b27db6c0f5b074c6b0c1140431bd.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

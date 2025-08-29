@@ -32,15 +32,15 @@ var move_speed: float = 200.0
 var arrival_threshold: float = 10.0
 var PitNode: Node2D
 
-const SOUND_BASIC = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_GOLDEN = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_ECHO = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_ANCHOR = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_SPIRIT = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_TIME = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_LUCKY = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_BURN = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
-const SOUND_ICE = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
+const SOUND_BASIC = preload("res://assets/Sound/Shell sound/basic.wav")
+const SOUND_GOLDEN = preload("res://assets/Sound/Shell sound/golden.wav")
+const SOUND_ECHO = preload("res://assets/Sound/Shell sound/echo spirit.wav")
+const SOUND_ANCHOR = preload("res://assets/Sound/Shell sound/anchor.wav")
+const SOUND_SPIRIT = preload("res://assets/Sound/Shell sound/echo spirit.wav")
+const SOUND_TIME = preload("res://assets/Sound/Shell sound/time.wav")
+const SOUND_LUCKY = preload("res://assets/Sound/Shell sound/lucky.wav")
+const SOUND_BURN = preload("res://assets/Sound/Shell sound/Burn.wav")
+const SOUND_ICE = preload("res://assets/Sound/Shell sound/Apply Freeze.wav")
 const SOUND_PLACEMENT = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
 
 
