@@ -238,7 +238,8 @@ func play_placement_sound():
 		print("Playing shell placement sound")
 
 func get_score() -> int:
-	var score: int = Score
+	shell_status()
+	var score: int = TotalScore
 	return score
 	
 func effect_nearbyshells(Effect:String):
