@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c8b5u524dbevc"
+path="res://.godot/imported/time.wav-13934625b1ad9e66b2fc45422364a3ba.sample"
+
+[deps]
+
+source_file="res://assets/Sound/Shell sound/time.wav"
+dest_files=["res://.godot/imported/time.wav-13934625b1ad9e66b2fc45422364a3ba.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

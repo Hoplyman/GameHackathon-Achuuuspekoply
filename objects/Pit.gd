@@ -12,17 +12,17 @@ var initialization_complete: bool = false
 @onready var labelshell = $ShellLabel
 @onready var labeleffect := $Effect
 
-const SOUND_BASIC_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_BASIC_PIT = preload("res://assets/Sound/Pit sound/basic pit.wav")
 const SOUND_ANCHOR_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_ECHO_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_SPIRIT_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_LOOT_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_CHAIN_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 const SOUND_GOLDEN_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
-const SOUND_HEALING_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
-const SOUND_VOID_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
-const SOUND_EXPLOSIVE_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
-const SOUND_RANDOM_PIT = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
+const SOUND_HEALING_PIT = preload("res://assets/Sound/Pit sound/healing pit.wav")
+const SOUND_VOID_PIT = preload("res://assets/Sound/Pit sound/Void Shells Deleted.wav")
+const SOUND_EXPLOSIVE_PIT = preload("res://assets/Sound/Pit sound/Explosion Pit.wav")
+const SOUND_RANDOM_PIT = preload("res://assets/Sound/Pit sound/random pit.wav")
 const SOUND_SHELL_ENTER = preload("res://assets/Sound/Pit sound/Retro - Chip Power.wav")
 
 func _ready():
