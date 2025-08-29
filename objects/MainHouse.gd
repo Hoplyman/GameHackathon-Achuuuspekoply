@@ -2,8 +2,6 @@ extends Node2D
 
 var shells: int = 0
 var scores: int = 0
-var HouseType: int = 0  # NEW: House type variable
-var HouseSprite: Sprite2D  # NEW: Reference to house sprite
 var use_timer_counting: bool = true  # Flag to control counting method
 var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawning
 
@@ -13,10 +11,6 @@ var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawn
 
 func _ready():
 	add_to_group("main_houses")
-	# NEW: Initialize house type and update sprite
-	HouseType = randi_range(1, 11)  # Random house type between 1-11 (adjust range as needed)
-	update_house_frame()
-	
 	setup_click_area()  # NEW: Setup click area for tooltip
 	# Only connect timer if we're using timer-based counting
 	if use_timer_counting:
@@ -35,34 +29,6 @@ func setup_click_area():
 			print("Setup click area with hover for MainHouse ", house_index)
 	else:
 		print("Warning: No ClickArea found in MainHouse ", name)
-
-# NEW: Set house type function
-func set_house_type(new_type: int) -> void:
-	# Ensure the type is within valid range (1-11 for house types)
-	if new_type >= 1 and new_type <= 11:
-		HouseType = new_type
-		update_house_frame()
-		print("House type set to: ", HouseType)
-	else:
-		print("Invalid house type:", new_type)
-
-# NEW: Update house sprite frame based on type
-func update_house_frame() -> void:
-	# Safety check: Make sure HouseSprite exists before trying to use it
-	if not HouseSprite:
-		await get_tree().process_frame  # Wait for sprite to be ready
-		if House_Sprite:
-			HouseSprite = House_Sprite
-		else:
-			print("Warning: HouseSprite is still null")
-			return
-	
-	# Ensure frame index is within bounds (0-10 for 11 frames)
-	var frame_index = HouseType - 1 if HouseType >= 1 else 0
-	frame_index = clamp(frame_index, 0, 10)
-	
-	HouseSprite.frame = frame_index
-	print("House frame updated to: ", frame_index, " (Type: ", HouseType, ")")
 
 func set_shells(amount: int):
 	var oldshell = shells
@@ -85,9 +51,6 @@ func add_shells(amount: int):
 	# CRITICAL FIX: Don't spawn visual shells when physical shells are being used
 	# The physical shells already exist and moved here, we just need to update the counter
 	print("MainHouse: Added ", amount, " shells. Total: ", shells, " (no visual spawning)")
-	
-	# NEW: Trigger house effect when shells are added
-	house_shells_added(amount)
 	
 	update_label()
 
@@ -153,170 +116,6 @@ func disable_visual_spawning():
 	print("Visual spawning disabled for MainHouse")
 
 # NEW: House effect functions (similar to pit effects)
-func house_round_start():
-	"""Called at the start of each round"""
-	match HouseType:
-		1:
-			house_effect_basic_start()
-		2:
-			house_effect_fortress_start()
-		3:
-			house_effect_mystic_start()
-		4:
-			house_effect_merchant_start()
-		5:
-			house_effect_warrior_start()
-		# Add more house types as needed
-
-func house_round_end():
-	"""Called at the end of each round"""
-	match HouseType:
-		6:
-			house_effect_harvest_end()
-		7:
-			house_effect_blessed_end()
-		8:
-			house_effect_cursed_end()
-		9:
-			house_effect_void_end()
-		10:
-			house_effect_golden_end()
-		11:
-			house_effect_random_end()
-
-func house_shells_added(amount: int):
-	"""Called when shells are added to the house"""
-	match HouseType:
-		1:
-			house_effect_basic_added(amount)
-		2:
-			house_effect_fortress_added(amount)
-		3:
-			house_effect_mystic_added(amount)
-		# Add more as needed
-
-# NEW: Individual house effect implementations
-func house_effect_basic_start():
-	effect_text("Basic House Ready", Color(0.8, 0.8, 0.8, 0.0))
-
-func house_effect_fortress_start():
-	# Fortress house: Provides protection
-	effect_text("Fortress Shield", Color(0.0, 0.5, 1.0, 0.0))
-
-func house_effect_mystic_start():
-	# Mystic house: Magical effects
-	effect_text("Mystic Aura", Color(0.5, 0.0, 1.0, 0.0))
-
-func house_effect_merchant_start():
-	# Merchant house: Economic benefits
-	effect_text("Trade Bonus", Color(1.0, 0.84, 0.0, 0.0))
-
-func house_effect_warrior_start():
-	# Warrior house: Combat benefits
-	effect_text("Battle Ready", Color(1.0, 0.0, 0.0, 0.0))
-
-func house_effect_harvest_end():
-	# Harvest house: Bonus shells at round end
-	var bonus_shells = min(shells / 10, 3)  # 10% of shells, max 3
-	if bonus_shells > 0:
-		shells += bonus_shells
-		effect_text("Harvest +" + str(bonus_shells), Color(0.0, 0.8, 0.0, 0.0))
-		update_label()
-
-func house_effect_blessed_end():
-	# Blessed house: Score multiplier
-	var bonus_score = shells / 5  # 20% of shells as bonus score
-	if bonus_score > 0:
-		scores += bonus_score
-		effect_text("Blessed +" + str(bonus_score), Color(1.0, 1.0, 0.0, 0.0))
-		update_label()
-
-func house_effect_cursed_end():
-	# Cursed house: Risk/reward mechanic
-	var roll = randf() * 100.0
-	if roll <= 30.0:  # 30% chance to lose shells
-		var lost_shells = shells / 4  # Lose 25% of shells
-		shells = max(0, shells - lost_shells)
-		effect_text("Cursed -" + str(lost_shells), Color(0.5, 0.0, 0.5, 0.0))
-	else:  # 70% chance to gain bonus score
-		var bonus_score = shells / 3
-		scores += bonus_score
-		effect_text("Dark Blessing +" + str(bonus_score), Color(0.8, 0.0, 0.8, 0.0))
-	update_label()
-
-func house_effect_void_end():
-	# Void house: Removes some shells but grants big score bonus
-	if shells >= 5:
-		var consumed_shells = min(shells / 3, 5)  # Consume up to 5 shells
-		shells -= consumed_shells
-		scores += consumed_shells * 3  # 3x score for consumed shells
-		effect_text("Void Consume +" + str(consumed_shells * 3), Color(0.0, 0.0, 0.0, 0.0))
-		update_label()
-
-func house_effect_golden_end():
-	# Golden house: Score multiplier based on shell count
-	if shells >= 10:
-		var multiplier = 2
-		scores *= multiplier
-		effect_text("Golden x" + str(multiplier), Color(1.0, 0.84, 0.0, 0.0))
-		update_label()
-
-func house_effect_random_end():
-	# Random house: Apply random effect
-	var random_effect = randi_range(1, 5)
-	match random_effect:
-		1:
-			house_effect_harvest_end()
-		2:
-			house_effect_blessed_end()
-		3:
-			house_effect_cursed_end()
-		4:
-			house_effect_void_end()
-		5:
-			house_effect_golden_end()
-
-func house_effect_basic_added(amount: int):
-	# Basic house: Small score bonus when shells added
-	scores += amount
-	effect_text("Basic +" + str(amount), Color(0.8, 0.8, 0.8, 0.0))
-
-func house_effect_fortress_added(amount: int):
-	# Fortress house: Defensive bonus
-	if amount >= 3:
-		var bonus = amount / 3
-		scores += bonus
-		effect_text("Fortress +" + str(bonus), Color(0.0, 0.5, 1.0, 0.0))
-
-func house_effect_mystic_added(amount: int):
-	# Mystic house: Magical conversion
-	var roll = randf() * 100.0
-	if roll <= 25.0:  # 25% chance
-		var bonus = amount * 2
-		scores += bonus
-		effect_text("Mystic +" + str(bonus), Color(0.5, 0.0, 1.0, 0.0))
-
-# NEW: Effect text display function (similar to pit's effect_text)
-func effect_text(text: String, text_color: Color):
-	# Create a temporary label for the effect if one doesn't exist
-	var effect_label = get_node_or_null("EffectLabel")
-	if not effect_label:
-		effect_label = Label.new()
-		effect_label.name = "EffectLabel"
-		add_child(effect_label)
-		effect_label.position = Vector2(0, -50)  # Position above the house
-		effect_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	
-	effect_label.text = text
-	effect_label.modulate = text_color
-	effect_label.modulate.a = 0.0  # Start transparent
-	effect_label.visible = true
-	
-	var tween = create_tween()
-	tween.tween_property(effect_label, "modulate:a", 1.0, 0.2)  # Fade in
-	tween.tween_interval(2.0)  # Wait for 2 seconds
-	tween.tween_property(effect_label, "modulate:a", 0.0, 0.6)  # Fade out
-	tween.tween_callback(func(): effect_label.visible = false)  # Hide
 
 func _on_timer_timeout():
 	# Only count if timer counting is enabled
@@ -395,6 +194,6 @@ func update_label():
 	var totalscores = scores
 	if label:
 		# NEW: Include house type in the label display
-		label.text = "House " + str(HouseType) + " | Shells: " + str(shell_count) + " | Score: " + str(totalscores)
+		label.text = "Shells: " + str(shell_count) + " Points: " + str(totalscores)
 	else:
 		print("Warning: StoneLabel not found in MainHouse")
