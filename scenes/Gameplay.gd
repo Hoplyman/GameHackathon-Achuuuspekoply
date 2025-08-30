@@ -1,8 +1,13 @@
 extends Node2D
 
+@onready var Roundslabel = $RoundsLabel
+
 # Shell distribution settings
 const SHELL_MOVE_SPEED = 600.0     # Increased from 400 pixels per second
 const SHELL_DROP_DELAY = 0.05   # seconds between each shell drop
+
+func updateRoundlabel(TotalRounds: int):
+	Roundslabel.text = "Round: " + str(TotalRounds)
 
 func spawn_shell(type: int, pit: int):
 	var game_manager = get_tree().get_nodes_in_group("game_manager")

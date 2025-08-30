@@ -1,6 +1,7 @@
 extends Node
 
 var current_turn: int = 0
+var total_turns: int = 0
 var pits: Array
 var main_houses: Array
 var game_active: bool = true
@@ -12,6 +13,7 @@ var turn_indicator: Label
 var player1_label: Label
 var player2_label: Label
 var special_shell_selector: Control
+
 
 # END GAME SCREEN ELEMENTS
 var end_game_overlay: Control
@@ -174,6 +176,8 @@ func _on_pit_type_selected(pit_type: int, pit_index: int):
 	
 func update_turn_display():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	total_turns += 1
+	pvp.updateRoundlabel(total_turns)
 	for child in pvp.get_children():
 		if is_instance_valid(child):
 			if child.is_in_group("pits"):
