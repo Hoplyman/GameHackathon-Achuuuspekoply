@@ -64,6 +64,7 @@ func spawn_shell(type: int, pit: int):
 	print("Spawned special shell type ", type, " at pit ", pit, " position: ", PitPosition)
 
 func set_shells(Shells: int, NewShells: int, x: int, y: int):
+	var Game_Manager: Node = get_node_or_null("GameManager")
 	var game_manager = get_tree().get_nodes_in_group("game_manager")
 	if game_manager.size() > 0 and game_manager[0].is_distributing:
 		print("Game is distributing - skipping visual shell creation")
@@ -92,6 +93,11 @@ func set_shells(Shells: int, NewShells: int, x: int, y: int):
 		var RemoveShells = Shells - NewShells
 		print("Removing ", RemoveShells, " shells from position (", x, ", ", y, ")")
 		remove_shells_near(RemoveShells, x, y, 30)
+	var tween = create_tween()
+	tween.tween_interval(0.3)
+	await tween.finished
+	Game_Manager.total_turns = 0
+	Game_Manager.update_turn_display()
 		
 func remove_shells_near(RemoveShells: int, x: int, y: int, radius: float):
 	var center = Vector2(x, y)
