@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://crgh76dqr0wvu"]
+[gd_scene load_steps=6 format=3 uid="uid://crgh76dqr0wvu"]
 
-[ext_resource type="Script" path="res://objects/Pit.gd" id="1_yhywh"]
+[ext_resource type="Script" uid="uid://duhh6hoogsog" path="res://objects/Pit.gd" id="1_yhywh"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_gvsfr"]
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_gvsfr"]
+[ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="4_u1ng0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_h0pp4"]
 
@@ -13,6 +14,7 @@ script = ExtResource("1_yhywh")
 
 [node name="ClickArea" parent="." instance=ExtResource("3_gvsfr")]
 show_behind_parent = true
+scale = Vector2(0.9, 0.9)
 
 [node name="PitSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_gvsfr")
@@ -28,12 +30,17 @@ autostart = true
 
 [node name="ShellLabel" type="Label" parent="."]
 offset_left = -50.0
-offset_top = -50.0
+offset_top = -60.0
 offset_right = -10.0
-offset_bottom = -27.0
+offset_bottom = -32.0
+theme_override_constants/shadow_offset_y = 0
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = ExtResource("4_u1ng0")
+theme_override_font_sizes/font_size = 20
+text = "0"
 
 [node name="ShellArea" type="Area2D" parent="."]
-collision_layer = 0
+collision_layer = 16
 collision_mask = 2
 gravity_space_override = 3
 gravity_point = true
@@ -45,6 +52,24 @@ gravity = 100.0
 scale = Vector2(3.4, 3.4)
 shape = SubResource("CircleShape2D_h0pp4")
 debug_color = Color(1, 1, 1, 0.42)
+
+[node name="Effect" type="Label" parent="."]
+visible = false
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.0
+offset_right = 22.0
+offset_bottom = 100.0
+grow_horizontal = 2
+size_flags_horizontal = 8
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+text = "Effect"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 
 [connection signal="body_entered" from="ShellArea" to="." method="_on_shell_area_body_entered"]
 [connection signal="body_exited" from="ShellArea" to="." method="_on_shell_area_body_exited"]

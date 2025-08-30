@@ -247,7 +247,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_ft8e8")
 theme_override_styles/hover = SubResource("StyleBoxTexture_glbon")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ft8e8")
 theme_override_styles/normal = SubResource("StyleBoxTexture_nlkkf")
-text = "Start Game"
+text = "Tutorial"
 metadata/_edit_use_anchors_ = true
 
 [node name="Versus" type="Button" parent="Button_Container"]
