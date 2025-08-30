@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://b5v0f74gyw0mk"]
+[gd_scene load_steps=7 format=3 uid="uid://b5v0f74gyw0mk"]
 
 [ext_resource type="Script" uid="uid://b3vvq5tna3oo7" path="res://scenes/Gameplay.gd" id="1_a8mty"]
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
 [ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_gnmmn"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4rwr5"]
 [ext_resource type="PackedScene" uid="uid://dni16xmjr8sb5" path="res://objects/SpecialShellSelector.tscn" id="5_jfxgp"]
+[ext_resource type="PackedScene" uid="uid://dsowvbb74dtk4" path="res://objects/board.tscn" id="6_gnmmn"]
 
 [node name="Gameplay" type="Node2D"]
 script = ExtResource("1_a8mty")
@@ -62,10 +63,17 @@ position = Vector2(1500, 675)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(869, 672)
-zoom = Vector2(0.9, 0.9)
+zoom = Vector2(0.8, 0.8)
 
 [node name="SpecialShellSelector" parent="." instance=ExtResource("5_jfxgp")]
 offset_left = 869.929
 offset_top = 345.571
 offset_right = 869.929
 offset_bottom = 345.571
+
+[node name="Board" parent="." instance=ExtResource("6_gnmmn")]
+light_mask = 0
+z_index = -1
+position = Vector2(860, 640)
+scale = Vector2(1.3, 1.3)
+frame = 1

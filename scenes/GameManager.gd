@@ -499,7 +499,7 @@ func Shell_Order():
 				if child.Type == 7:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.1)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -507,7 +507,7 @@ func Shell_Order():
 				if child.Type == 4:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.1)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -515,7 +515,7 @@ func Shell_Order():
 				if child.Type == 6:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.1)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
