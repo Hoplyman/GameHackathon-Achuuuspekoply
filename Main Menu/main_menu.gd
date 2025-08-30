@@ -15,7 +15,7 @@ func _on_settings_pressed():
 	settings_panel.visible = true
 
 func _on_quit_pressed(): 
-	get_tree().quit()
+	get_tree().quit(0)
 
 func _on_back_pressed():
 	button_container.visible = true 
