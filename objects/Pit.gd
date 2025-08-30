@@ -27,7 +27,7 @@ const SOUND_SHELL_ENTER = preload("res://assets/Sound/Pit sound/Retro - Chip Pow
 
 func _ready():
 	setup_click_area()
-	PitType = randi_range(1 ,11)
+	PitType = randi_range(1 ,1)
 	update_pit_frame()
 	add_to_group("pits")
 	# CRITICAL FIX: Stop timer immediately and disable timer counting from the start
@@ -470,6 +470,7 @@ func effect_shells_in_area(Effect: String):
 								Shell1 = child
 						elif Effect == "ANCHOR":
 							if Player == 1 and child.Pit >= 8 and child.Pit <= 14:
+								print("AAAAAAAAAAAAAAAAAAAAA")
 								child.MultiplierStacks += 1
 								Shell1 = child
 							if Player == 2 and child.Pit >= 1 and child.Pit <= 7:

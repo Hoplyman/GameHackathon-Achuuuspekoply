@@ -449,22 +449,99 @@ func get_pit(pit_index: int) -> Node2D:
 		return pits[pit_index]
 	return null
 
-func switch_turn():
-	current_turn = 1 - current_turn
-	print("Turn switched to player ", current_turn + 1)
+func Pit_Order():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
 		if is_instance_valid(child):
 			if child.is_in_group("pits"):
-				child.pit_endround()
-				var tween = create_tween()
-				tween.tween_interval(0.05)
-				await tween.finished
+				if child.PitType == 5 or child.PitType == 9 or child.PitType == 10:
+					child.pit_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.1)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("pits"):
+				if child.PitType == 3 or child.PitType == 4 or child.PitType == 8 or child.PitType == 11:
+					child.pit_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.1)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("pits"):
+				if child.PitType == 1 or child.PitType == 2 or child.PitType == 7:
+					child.pit_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.1)
+					await tween.finished
+func Shell_Order():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	for child in pvp.get_children():
+		if is_instance_valid(child):
 			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				child.shell_endround()
-				var tween = create_tween()
-				tween.tween_interval(0.05)
-				await tween.finished
+				if child.Type == 3 or child.Type == 5 or child.Type == 8:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child.Type == 1 or child.Type == 2:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child.Type == 7:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child.Type == 4:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child.Type == 6:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child.Type == 9:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+				if child.Type == 12:
+					child.shell_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+
+func switch_turn():
+	current_turn = 1 - current_turn
+	print("Turn switched to player ", current_turn + 1)
+	Pit_Order()
+	var tween = create_tween()
+	tween.tween_interval(0.5)
+	await tween.finished
+	Shell_Order()
 	update_turn_display()
 
 # ENHANCED: Better game over checking with multiple win conditions
