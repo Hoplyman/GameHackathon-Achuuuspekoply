@@ -40,83 +40,88 @@ func scaled_size(base_size: Vector2) -> Vector2:
 func setup_tutorial_steps():
 	tutorial_steps = [
 		{
-			"title": "Game Objective",
-			"description": "Win by collecting the most shells!\n\nHow to Win:\n• The game ends when one player has no shells left in their pits\n• All remaining shells go to their owner's main house\n• Player with most shells in their main house wins\n\nYour Goal:\n• Collect shells in your main house (scoring area)\n• Use strategy to capture opponent shells\n• Empty opponent's pits while protecting your own",
+			"title": "What is Shell Masters?",
+			"description": "Welcome to Tangka!\n\nTangka is based on traditional Filipino board games called Sungka. These are ancient mancala-style games where players distribute shells or seeds around a board with strategic objectives.\n\nThe digital version adds fantasy elements with:\n• Special shells with unique abilities\n• Magical pit types with special effects\n• Enhanced scoring systems\n• Strategic shell placement mechanics\n\nWhile maintaining the core strategic gameplay of traditional mancala.",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Board Layout & Starting Setup",
-			"description": "Understanding the Game Board\n\nBoard Components:\n• 14 Small Pits: 7 for each player\n• 2 Main Houses: Your scoring areas on the sides\n• Starting shells: 7 normal shells in each pit\n\nPlayer Areas:\n• Player 1 (Blue): Bottom row (pits 1-7)\n• Player 2 (Red): Top row (pits 8-14)\n• Each player's main house is on their side",
+			"title": "Game Objective & Victory",
+			"description": "How to Win Shell Masters\n\nVictory Condition:\n• First player to reach 100 SCORE wins!\n• Score = Shell Amount × Total Shell Points in your Main House\n• This creates a race-to-target gameplay\n\nKey Strategies:\n• Collect shells in your Main House (safe storage)\n• Enhance shell point values through special abilities\n• Balance quantity collection with quality enhancement\n• Use special shells and pit effects strategically\n• Control the board to deny opponent opportunities",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Basic Shell Movement",
-			"description": "How to Move Shells\n\nMovement Rules:\n• Pick up ALL shells from one of YOUR pits\n• Drop shells one-by-one, counter-clockwise\n• Include your own main house in the path\n• Skip opponent's main house completely\n• Continue around the board if you have more shells\n\nImportant: You can only select pits on your side that contain shells!",
+			"title": "Board Layout & Components",
+			"description": "Understanding the Shell Masters Board\n\nBoard Structure:\n• 14 Pits arranged in two rows of 7\n• Pits 1-7 belong to Player 1 (bottom row)\n• Pits 8-14 belong to Player 2 (top row)\n• 2 Main Houses (Store Houses) at the ends\n\nMain Houses:\n• Primary collection areas for shells\n• Shells here are safe from capture\n• Contribute to final score calculation\n• Located at the ends of each player's pit row\n\nPit Types:\n• Each pit has a PitType (1-11) with special effects\n• Pits start as Basic type but can be enhanced\n• Different pit types activate at end of rounds",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Extra Turn Rule",
-			"description": "Get Bonus Turns!\n\nExtra Turn Trigger:\n• When your last shell lands exactly in YOUR main house\n• You immediately get another turn\n• No special shell selection after extra turns\n• Can chain multiple extra turns together\n\nStrategy:\n• Count shells to land in your main house\n• Extra turns give huge advantages\n• Plan moves to maximize bonus turns",
+			"title": "Shell Distribution Mechanics",
+			"description": "Core Gameplay: Moving Shells Around the Board\n\nDistribution Rules:\n• Select a pit on YOUR side containing at least one shell\n• Pick up ALL shells from that pit\n• Distribute them ONE BY ONE to subsequent pits\n• Move COUNTER-CLOCKWISE around the board\n• Include your own Main House in the path\n• Skip opponent's Main House completely\n\nMovement Pattern:\n• Continue around the board if you have more shells\n• Follow the traditional mancala movement rules\n• Strategic counting is crucial for planning moves\n• Consider where your last shell will land",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Capture Mechanics",
-			"description": "Steal Opponent Shells!\n\nCapture Conditions:\n• Your last shell lands in an EMPTY pit on YOUR side\n• The opposite pit (opponent's side) contains shells\n• You capture shells from BOTH pits\n• All captured shells go to YOUR main house\n\nStrategy Tips:\n• Look for empty pits opposite full opponent pits\n• Plan moves to create capture opportunities\n• Defend against opponent captures",
+			"title": "Extra Turns & Bonus Actions",
+			"description": "Get Additional Turns for Strategic Advantage\n\nExtra Turn Trigger:\n• When your LAST shell lands exactly in YOUR Main House\n• You immediately get another turn\n• Can chain multiple extra turns together\n• No special shell selection after extra turns\n\nStrategic Benefits:\n• Extra turns provide huge advantages\n• Plan shell counts to land in your Main House\n• Use extra turns to set up combinations\n• Control game tempo with bonus actions\n• Essential for advanced play strategies\n\nTip: Count shells carefully to maximize extra turn opportunities!",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Special Shell System Overview",
-			"description": "12 Unique Special Shells!\n\nSpecial Shell Mechanics:\n• After each normal turn, select a special shell type (1-12)\n• Choose any pit to place the special shell\n• Special shells have unique abilities and timing\n• They activate at different phases of the game\n\nShell Categories:\n• Combat Shells: Destroy and damage\n• Defensive Shells: Protect and block\n• Utility Shells: Transform and manipulate\n• Strategic Shells: Control and enhance",
+			"title": "Shell Types & Abilities Overview",
+			"description": "12 Unique Special Shell Types with Magical Abilities\n\nShell Mechanics:\n• Shells have Type (1-12), Points (1-5 base), and Status Effects\n• Basic shells start as Type 1 with 1 point\n• Enhanced through gameplay and Card Selector\n• Each type has unique Drop and End Round effects\n\nShell Categories:\n• Foundation Shells (Types 1-2): Basic building blocks\n• Multiplication Shells (Types 3-4): Duplication and enhancement\n• Generation Shells (Types 5-6): Spawning and support\n• Utility Shells (Types 7-8): Luck and transformation\n• Combat Shells (Types 9-10): Damage and chain reactions\n• Control Shells (Types 11-12): Cleansing and freezing\n\nActivation Order: Basic → Golden → Echo → Anchor → Spirit → Time → Lucky → Mirror → Flame → Chain → Purify → Ice",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Normal & Golden Shells (Types 1-2)",
-			"description": "Foundation Shells\n\nType 1 - Normal Shell (Base Score: 1):\n• In houses: Gains +1 score each end round\n• In pits: Resets to 1 score if not already 1\n• Basic building block of the game\n• Safe and reliable for movement\n\nType 2 - Golden Shell (Base Score: 5):\n• Always gains +1 score each end round\n• In houses: +5 score when dropped\n• High value shell for scoring\n• Consistent growth over time",
+			"title": "Basic & Golden Shells (Types 1-2)",
+			"description": "Foundation Shells - Your Core Building Blocks\n\nBasic Shell (Type 1):\n• Base Points: 1\n• Drop Effect: Gains +1 points\n• End Round in Main House: Gains +1 points\n• End Round in Pits: Resets to 1 points if not already 1\n• Reliable foundation for shell distribution\n• Safe choice for movement planning\n\nGolden Shell (Type 2):\n• Base Points: 1\n• Drop Effect: Gains +1 points (pits) or +5 points (Main House)\n• End Round: Always gains +1 points regardless of location\n• High-value shell for consistent scoring\n• Excellent for long-term point accumulation\n• Strategic placement in Main House gives massive drop bonus",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Echo & Anchor Shells (Types 3-4)",
-			"description": "Duplication & Multiplication\n\nType 3 - Echo Shell (Base Score: 1):\n• End round: Creates a duplicate of itself\n• Drop: Affects nearby shells with echo effect\n• Can rapidly multiply your shell count\n• Strategic for late game advantage\n\nType 4 - Anchor Shell (Base Score: 1):\n• In pits: Gains multiplier stacks (+50% per stack)\n• Affects nearby shells on drop\n• Powerful for score multiplication\n• Best placed in stable pit positions",
+			"description": "Multiplication Shells - Duplication and Enhancement\n\nEcho Shell (Type 3):\n• Base Points: 1\n• Drop Effect: Duplicates 1 nearby shell\n• End Round: Creates a duplicate copy of itself, resets points to 1\n• Rapidly multiply your shell count\n• Strategic for overwhelming opponents\n• Best placed in stable pit positions\n\nAnchor Shell (Type 4):\n• Base Points: 1\n• Drop Effect: Grants +1 multiplier to nearby shells (pits), +1 to self\n• End Round: Gains +1 multiplier stack if in pit\n• Multiplier stacks increase points by 50% each (x1.5, x2, x2.5...)\n• Powerful for exponential score growth\n• Synergizes well with high-point shells",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Spirit & Time Shells (Types 5-6)",
-			"description": "Spawning & Enhancement\n\nType 5 - Spirit Shell (Base Score: 1):\n• Drop: Spawns random shell (1-12) in same pit\n• End round in houses: Also spawns random shell\n• Creates unpredictable advantages\n• Good for resource generation\n\nType 6 - Time Shell (Base Score: 2):\n• In houses end round: +2 score bonus\n• In pits end round: Affects nearby shells with +1 score\n• Drop: Gives nearby shells +1 score immediately\n• Excellent support shell",
+			"description": "Generation Shells - Spawning and Support\n\nSpirit Shell (Type 5):\n• Base Points: 1\n• Drop Effect: Gains +1 points and spawns random shell (Type 1-12)\n• Start Round: Spawns random shell if in Main House\n• Creates unpredictable advantages\n• Excellent for resource generation\n• Can spawn powerful high-tier shells\n\nTime Shell (Type 6):\n• Base Points: 1\n• Drop Effect: Grants +1 points to all nearby shells\n• End Round in Pits: Grants +1 points to nearby shells\n• End Round in Main House: Gains +(1×Rounds) points bonus\n• Outstanding support shell for team enhancement\n• Scales with game length when in Main House",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Lucky & Mirror Shells (Types 7-8)",
-			"description": "Luck & Reflection Effects\n\nType 7 - Lucky Shell (Base Score: 2):\n• Drop: Gains 1-3 random score bonus\n• End round in pits: Gives nearby shells luck stacks\n• Gains luck stacks for score bonuses\n• Unpredictable but potentially powerful\n\nType 8 - Mirror Shell (Base Score: 1):\n• End round: Affects nearby shells with mirror\n• Drop: Copies one nearby shell type to another\n• Can transform shell types strategically\n• Versatile adaptation tool",
+			"description": "Utility Shells - Luck and Transformation\n\nLucky Shell (Type 7):\n• Base Points: 1\n• Drop Effect: Variable points (100%/60%/20%/-20%/-60%/-100% for 1/2/3/4/5/6 points)\n• End Round: Gains +1 luck effect, grants luck to nearby shells\n• Luck stacks improve probability of positive effects\n• High risk, high reward gameplay element\n• Synergizes with percentage-based pit effects\n\nMirror Shell (Type 8):\n• Base Points: 1\n• Drop Effect: Copies nearby shell type and transforms another shell\n• Start Round: Changes nearby shell to random type, or self if alone\n• Versatile adaptation and transformation tool\n• Can copy powerful shell types strategically\n• Useful for disrupting opponent formations",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Flame & Chain Shells (Types 9-10)",
-			"description": "Damage & Chain Reactions\n\nType 9 - Flame Shell (Base Score: 3):\n• End round: Burns nearby shells (reduces their score)\n• Gains +1 score per shell burned\n• Offensive area-of-effect shell\n• Good for weakening opponent positions\n\nType 10 - Chain Shell:\n• Drop: Triggers complex chain reactions on nearby shells\n• Can cause different effects based on nearby shell types\n• May trigger movement or other shell abilities\n• Advanced combo potential",
+			"description": "Combat Shells - Damage and Chain Reactions\n\nFlame Shell (Type 9):\n• Base Points: 1\n• Drop Effect: Gains +2 points\n• End Round: Burns nearby shells, gains +(1×burned shells) points\n• Offensive area-of-effect capabilities\n• Weakens opponent shell formations\n• Gains power from damaging others\n\nChain Shell (Type 10):\n• Base Points: 1\n• Drop Effect: Gains +1 points, activates 1 nearby shell ability, moves all nearby chain shells to next pit\n• End Round: No special effect\n• Complex chain reaction potential\n• Can trigger cascading combinations\n• Advanced combo setup tool\n• Mobile shell that can relocate strategically",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Purify & Ice Shells (Types 11-12)",
-			"description": "Cleansing & Freezing\n\nType 11 - Purify Shell (Base Score: 5):\n• Drop: Removes all negative effects from nearby shells\n• Cleanses burn, freeze, decay, curse, and disable stacks\n• High base score with utility\n• Essential counter to debuff strategies\n\nType 12 - Ice Shell (Base Score: 3):\n• End round: Freezes nearby shells (reduces actions)\n• Gains +1 score per shell frozen\n• Control shell that limits opponent options\n• Defensive area denial",
+			"description": "Control Shells - Cleansing and Freezing\n\nPurify Shell (Type 11):\n• Base Points: 1\n• Drop Effect: Gains +3 points, removes effects from nearby shells\n• Passive: Immune to all negative effects\n• Essential counter to debuff strategies\n• High immediate point gain on drop\n• Cleanses burn, freeze, decay, curse, and disable\n• Ultimate defensive utility shell\n\nIce Shell (Type 12):\n• Base Points: 1\n• Drop Effect: Gains +2 points\n• End Round: Freezes nearby shells, gains +(1×frozen shells) points\n• Control shell that limits opponent options\n• Defensive area denial capabilities\n• Freeze prevents shell actions and movement\n• Strategic positioning can lock down areas",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Shell Status Effects & Stacks",
-			"description": "Advanced Shell Mechanics\n\nStack Effects:\n• Multiplier Stacks: +50% score per stack (Type 4 shells)\n• Luck Stacks: Bonus effects from lucky interactions\n• Burn Stacks: -1 score per stack at end round\n• Freeze Stacks: Reduces shell actions, shows ice particle\n• Decay Stacks: Halves score at end round\n• Rust Stacks: Affects multiplier calculations\n• Cursed Stacks: -50% base score, +10% penalty per stack\n• Disable Stacks: Prevents certain shell abilities\n\nScore Calculation:\n• Base score modified by shell type\n• Multiplier stacks applied (except rust-affected shells)\n• Curse reduction applied (except types 7 & 11)\n• Final TotalScore displayed on shell",
+			"title": "Pit Types & Environmental Effects",
+			"description": "11 Magical Pit Types with Special Powers\n\nPit Mechanics:\n• Each pit has a PitType (1-11) that grants special effects\n• Pit effects activate at End Round phase\n• Effects apply based on shell ownership and conditions\n• Strategic pit placement is crucial\n\nPit Types Overview:\n• Basic Pit (1): +1 points to owned shells\n• Anchor Pit (2): +1 multiplier to owned shells\n• Echo Pit (3): 10% chance (+2.5% per luck) to duplicate shells\n• Spirit Pit (4): 25% chance (+2.5% per luck) to spawn shells\n• Loot Pit (5): 25% chance to move shells to opponent's house\n• Chain Pit (6): 25% chance to trigger chain effects\n• Golden Pit (7): Multiple +1 point bonuses based on luck\n• Healing Pit (8): Removes negative status effects\n• Void Pit (9): Immediately removes shells from game\n• Explosive Pit (10): Burns and randomly moves shells\n• Random Pit (11): Randomly changes shell types",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Turn Phases & Activation Order",
-			"description": "Understanding Game Timing\n\nShell Activation Phases:\n1. Shell Drop: When shell lands in a pit\n2. End Round: After all moves complete\n3. Status Updates: Stack effects applied\n\nEffect Timing:\n• Drop Effects: Immediate when shell lands\n• End Round Effects: After movement phase\n• Stack Decay: Automatic each end round\n• Score Updates: Continuous via timer\n\nArea of Effect:\n• Shells use ShellRange area to detect nearby shells\n• Effects apply to overlapping shells only\n• Different shells have different effect ranges\n• Chain reactions can cascade through multiple shells",
+			"title": "Status Effects & Stack System",
+			"description": "Advanced Shell Modification System\n\nStatus Effect Types:\n• Multiplier Stacks: +50% points per stack (x1.5, x2, x2.5...)\n• Luck Stacks: Increase probability of positive random effects\n• Burn Stacks: -1 points each round, stack decreases by 1\n• Freeze Stacks: Prevents shell movement for stack count rounds\n• Decay Stacks: Halves points at end round\n• Rust Stacks: Affects multiplier calculations negatively\n• Cursed Stacks: -50% base score, additional penalties\n• Disable Stacks: Prevents certain shell abilities\n\nScore Calculation Priority:\n1. Base shell points by type\n2. Multiplier stacks applied (except rust-affected)\n3. Curse reduction applied (Types 7 & 11 immune)\n4. Final TotalScore displayed on shell\n\nStack Management:\n• Most stacks decay naturally over time\n• Some effects are permanent until cleansed\n• Strategic timing of effects is crucial",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Special Shell Selection Interface",
-			"description": "How to Place Special Shells\n\nSelection Process:\n1. After your turn, the selector appears\n2. Choose shell type (1-12) or click 'Skip'\n3. Click on any pit to place the shell\n4. Special shell is added to that pit's contents\n\nStrategic Considerations:\n• Consider pit location and contents\n• Think about activation timing\n• Plan for opponent reactions\n• Balance offense and defense",
+			"title": "Card Selector System",
+			"description": "Strategic Shell & Pit Enhancement\n\nSelection Process:\n1. After each normal turn (not extra turns)\n2. Choose from randomly generated special options\n3. Select shell types (1-12) or pit types (1-11)\n4. Place enhancement on any pit of your choice\n5. Can skip selection if no good options\n\nStrategic Considerations:\n• Consider current board state and shell positions\n• Plan for activation timing and synergies\n• Balance offensive and defensive enhancements\n• Think about opponent's potential reactions\n• Control key board positions with strategic placement\n\nTiming is Everything:\n• Effects activate at different phases\n• Plan combinations for maximum impact\n• Consider shell movement patterns\n• Anticipate opponent responses",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Advanced Strategies & Tips",
-			"description": "Master Level Play\n\nKey Strategies:\n• Shell Counting: Calculate exact landing positions\n• Chain Planning: Set up multiple extra turns\n• Trap Setting: Use special shells to create traps\n• Resource Control: Manage shell distribution\n• Timing Mastery: Coordinate special effects\n\nPro Tips:\n• Always think 2-3 moves ahead\n• Watch for opponent weaknesses\n• Balance aggression with defense\n• Control the pace of the endgame",
+			"title": "Game Phases & Activation Order",
+			"description": "Understanding Turn Structure and Timing\n\nTurn Sequence:\n1. Player selects pit and distributes shells\n2. Shell Drop effects activate as shells land\n3. End Round phase begins\n4. Status effects and pit effects activate\n5. Card Selector appears (if not extra turn)\n6. Turn passes to opponent\n\nActivation Priorities:\n• Shell Drop Effects: Immediate when shell lands\n• Shell End Round Effects: Type 1 → 2 → 3... → 12\n• Pit End Round Effects: After shell effects\n• Status Stack Updates: Automatic decay/application\n• Score Calculations: Continuous updates\n\nArea of Effect Rules:\n• Effects use ShellRange to detect nearby shells\n• Only overlapping shells are affected\n• Chain reactions can cascade through multiple shells\n• Range varies by shell type and effect",
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
+		},
+		{
+			"title": "Advanced Strategies & Master Tips",
+			"description": "Elevate Your Shell Masters Gameplay\n\nCore Strategies:\n• Shell Counting: Calculate exact landing positions for precision\n• Extra Turn Chains: Set up multiple consecutive bonus turns\n• Combination Planning: Coordinate shell effects for maximum impact\n• Board Control: Dominate key positions with strategic placements\n• Resource Management: Balance shell quantity with quality enhancement\n\nMaster Level Techniques:\n• Tempo Control: Manage the pace and rhythm of the game\n• Defensive Positioning: Protect valuable shells and formations\n• Offensive Pressure: Create multiple threatening scenarios\n• Effect Timing: Coordinate activation phases for optimal results\n• Adaptation: Read opponent strategies and counter effectively\n\nPro Tips:\n• Always think 2-3 moves ahead\n• Watch for opponent weaknesses and capitalize\n• Balance aggression with sustainable defense\n• Master the endgame scoring calculations\n• Practice shell type combinations and synergies",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		}
 	]
@@ -360,7 +365,7 @@ func create_footer():
 	
 	# Tutorial completion indicator
 	var completion_label = Label.new()
-	completion_label.text = "Scroll through all sections to master Shell Masters!"
+	completion_label.text = "Master the ancient art of Shell Masters - Strategic Mancala!"
 	completion_label.position = Vector2(50, 35)
 	completion_label.add_theme_font_size_override("font_size", scaled_font_size(16))
 	completion_label.add_theme_color_override("font_color", Color.WHITE)
