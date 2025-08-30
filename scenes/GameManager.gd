@@ -330,7 +330,6 @@ func check_end_turn_rules(last_position: int):
 	# Rule: Extra turn for landing in own main house
 	if (current_turn == 0 and last_position == 14) or (current_turn == 1 and last_position == 15):
 		print("Player ", current_turn + 1, " gets another turn!")
-		update_turn_display()
 		return
 	
 	# Rule: Capture for landing in own empty pit
