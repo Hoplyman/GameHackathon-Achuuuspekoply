@@ -24,7 +24,21 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("3_14ewc")
 theme_override_font_sizes/font_size = 25
-text = "0"
+text = "Shells: 0 Points: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -160.0
+offset_right = 60.0
+offset_bottom = -125.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_14ewc")
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+text = "TOTAL SCORE: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 

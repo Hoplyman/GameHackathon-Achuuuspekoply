@@ -2,22 +2,24 @@ extends Node2D
 
 var shells: int = 0
 var scores: int = 0
+var total_score: int = 0  # NEW: Total winning score (shells × points)
 var use_timer_counting: bool = true  # Flag to control counting method
-var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawning
+var use_visual_spawning: bool = false  # Flag to control visual shell spawning
 
 @onready var timer := $Timer  # Access the Timer node
 @onready var label = $StoneLabel
+@onready var score_label = $ScoreLabel  # NEW: Score label for winning calculation
 
 func _ready():
 	add_to_group("main_houses")
-	setup_click_area()  # NEW: Setup click area for tooltip
+	setup_click_area()  # Setup click area for tooltip
 	# Only connect timer if we're using timer-based counting
 	if use_timer_counting:
 		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
 		timer.start()
-	update_label()
+	update_labels()  # Updated to handle both labels
 
-# NEW: Setup click area for tooltip functionality
+# Setup click area for tooltip functionality
 func setup_click_area():
 	var click_area = get_node_or_null("ClickArea")
 	if click_area and click_area.has_method("setup"):
@@ -35,7 +37,7 @@ func set_shells(amount: int):
 	# Only spawn visual shells if we're in visual spawning mode
 	if use_visual_spawning:
 		spawn_shells(oldshell, shells)
-	update_label()  # Update label immediately
+	update_labels()  # Update both labels immediately
 	
 func add_shells(amount: int):
 	# This is called by GameManager - disable timer counting to avoid double counting
@@ -51,21 +53,39 @@ func add_shells(amount: int):
 	# The physical shells already exist and moved here, we just need to update the counter
 	print("MainHouse: Added ", amount, " shells. Total: ", shells, " (no visual spawning)")
 	
-	update_label()
+	update_labels()
+
+# NEW: Get total winning score
+func get_total_score() -> int:
+	return total_score
+
+# NEW: Calculate and update total score
+func calculate_total_score():
+	total_score = shells * scores
+	print("MainHouse total score calculated: ", shells, " shells × ", scores, " points = ", total_score)
 
 # Take all shells (used at end of game to collect remaining pits)
 func take_all_shells() -> int:
 	var temp = shells
 	shells = 0
 	scores = 0  # Also reset scores when taking all shells
-	update_label()
+	total_score = 0  # NEW: Reset total score too
+	update_labels()
 	return temp
 
 # Take all scores (useful for game end calculations)
 func take_all_scores() -> int:
 	var temp = scores
 	scores = 0
-	update_label()
+	total_score = 0  # NEW: Reset total score when taking scores
+	update_labels()
+	return temp
+
+# NEW: Take total score (for final game calculations)
+func take_total_score() -> int:
+	var temp = total_score
+	total_score = 0
+	update_labels()
 	return temp
 
 func spawn_shells(old_shells: int, new_shells: int):
@@ -104,24 +124,22 @@ func spawn_shells(old_shells: int, new_shells: int):
 		print("MainHouse not found in group")
 		return 0
 
-# NEW: Function to enable visual spawning mode (for initialization only)
+# Function to enable visual spawning mode (for initialization only)
 func enable_visual_spawning():
 	use_visual_spawning = true
 	print("Visual spawning enabled for MainHouse")
 
-# NEW: Function to disable visual spawning mode (for gameplay)
+# Function to disable visual spawning mode (for gameplay)
 func disable_visual_spawning():
 	use_visual_spawning = false
 	print("Visual spawning disabled for MainHouse")
-
-# NEW: House effect functions (similar to pit effects)
 
 func _on_timer_timeout():
 	# Only count if timer counting is enabled AND initialization is complete
 	if not use_timer_counting:
 		return
 		
-	update_label()
+	update_labels()
 	timer.start()
 
 func count_shells_in_area() -> int:
@@ -174,21 +192,47 @@ func _on_shell_area_body_entered(body: Node2D) -> void:
 		print("RigidBody2D entered:", body.name)
 		# Small delay to let physics settle
 		await get_tree().create_timer(0.1).timeout
-		update_label()
+		update_labels()
 
 func _on_shell_area_body_exited(body: Node2D) -> void:
 	if body is RigidBody2D and use_timer_counting:
 		print("RigidBody2D exited:", body.name)
 		# Small delay to let physics settle
 		await get_tree().create_timer(0.1).timeout
-		update_label()
-		
-func update_label():
-	var shell_count = shells
-	count_shells_in_area()
-	var totalscores = scores
+		update_labels()
+
+# UPDATED: Now updates both labels and calculates total score		
+func update_labels():
+	# FIXED: Actually use the return value from count_shells_in_area()
+	var shell_count = count_shells_in_area()  # This now gets the actual counted shells
+	shells = shell_count  # Update the stored shells value
+	var totalscores = scores  # This gets updated inside count_shells_in_area()
+	
+	# Calculate total winning score
+	calculate_total_score()
+	
+	# Update main label (shells and points)
 	if label:
-		# NEW: Include house type in the label display
 		label.text = "Shells: " + str(shell_count) + " Points: " + str(totalscores)
 	else:
 		print("Warning: StoneLabel not found in MainHouse")
+	
+	# NEW: Update score label (winning calculation)
+	if score_label:
+		score_label.text = "TOTAL SCORE: " + str(total_score)
+		
+		# Optional: Add color coding based on score ranges
+		if total_score >= 100:
+			score_label.add_theme_color_override("font_color", Color.GOLD)
+		elif total_score >= 50:
+			score_label.add_theme_color_override("font_color", Color.LIME_GREEN)
+		elif total_score >= 25:
+			score_label.add_theme_color_override("font_color", Color.YELLOW)
+		else:
+			score_label.add_theme_color_override("font_color", Color.WHITE)
+	else:
+		print("Warning: ScoreLabel not found in MainHouse")
+
+# UPDATED: Legacy function name kept for compatibility
+func update_label():
+	update_labels()

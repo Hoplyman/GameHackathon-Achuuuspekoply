@@ -20,7 +20,7 @@ var option_types: Array = []  # Will track whether each option is "shell" or "pi
 
 # Individual complete card image paths for shells
 var shell_card_paths = {
-	1: "res://cards/shells/normal_shell_card.png",
+	1: "res://assets/Shell and pit cards/Normal shell.png",
 	2: "res://assets/Shell and pit cards/golden shell.png",
 	3: "res://assets/Shell and pit cards/echo shell.png",
 	4: "res://assets/Shell and pit cards/anchor shell.png",
@@ -36,14 +36,14 @@ var shell_card_paths = {
 
 # Individual complete card image paths for pits
 var pit_card_paths = {
-	1: "res://cards/pits/basic_pit_card.png",
+	1: "res://assets/Shell and pit cards/Normal shell.png",
 	2: "res://assets/Shell and pit cards/anchor shell.png",
 	3: "res://assets/Shell and pit cards/echo shell.png",
 	4: "res://assets/Shell and pit cards/spirit shell.png",
 	5: "res://cards/pits/loot_pit_card.png",
 	6: "res://assets/Shell and pit cards/chain shell.png",
 	7: "res://assets/Shell and pit cards/golden shell.png",
-	8: "res://cards/pits/healing_pit_card.png",
+	8: "res://assets/Shell and pit cards/purify shell.png",
 	9: "res://cards/pits/void_pit_card.png",
 	10: "res://assets/Shell and pit cards/fire shell.png",
 	11: "res://cards/pits/random_pit_card.png"
