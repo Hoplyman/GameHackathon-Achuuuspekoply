@@ -207,25 +207,9 @@ func update_turn_display():
 	if current_turn == 0:
 		turn_indicator.text = "PLAYER 1's Turn (BLUE)"
 		turn_indicator.add_theme_color_override("font_color", Color.CYAN)
-		highlight_player_pits(0)
 	else:
 		turn_indicator.text = "PLAYER 2's Turn (RED)"
 		turn_indicator.add_theme_color_override("font_color", Color.LIGHT_CORAL)
-		highlight_player_pits(1)
-
-func highlight_player_pits(player: int):
-	for i in range(pits.size()):
-		var pit = pits[i]
-		if pit:
-			pit.modulate = Color.WHITE
-	
-	var player_range = get_player_pit_range(player)
-	var highlight_color = Color.CYAN if player == 0 else Color.LIGHT_CORAL
-	
-	for i in range(player_range[0], player_range[1] + 1):
-		var pit = get_pit(i)
-		if pit:
-			pit.modulate = highlight_color
 
 func handle_pit_click(pit_index: int):
 	# First check if we're in special shell selection mode
@@ -322,22 +306,11 @@ func _on_timer_timeout():
 		var camera = pvp.get_node_or_null("Camera2D")
 		camera.move_to_position("Top")
 		is_distributing = false
-		End_Round()
+		Pit_Order()
 		show_special_shell_selection()
 		timer.stop()
 	else:
 		timer.start()
-
-func End_Round():
-	Pit_Order()
-	var tween = create_tween()
-	tween.tween_interval(0.5)
-	await tween.finished
-	Shell_Order()
-	var tween2 = create_tween()
-	tween2.tween_interval(0.5)
-	await tween2.finished
-	Pit_Heal()
 
 func check_end_turn_rules(last_position: int):
 	print("Checking end turn rules. Last position: ", last_position)
@@ -450,8 +423,6 @@ func start_game():
 	
 	if turn_indicator:
 		update_turn_display()
-	else:
-		highlight_player_pits(0)
 
 func force_normal_shells_in_pit(pit: Node2D):
 	var game_scene = get_tree().root.get_node_or_null("Gameplay")
@@ -527,6 +498,8 @@ func Pit_Order():
 					var tween = create_tween()
 					tween.tween_interval(0.1)
 					await tween.finished
+	Shell_Order()
+	
 func Shell_Order():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
@@ -535,7 +508,7 @@ func Shell_Order():
 				if child.Type == 3 or child.Type == 5 or child.Type == 8:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.075)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -543,7 +516,7 @@ func Shell_Order():
 				if child.Type == 1 or child.Type == 2:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.075)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -551,7 +524,7 @@ func Shell_Order():
 				if child.Type == 7:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.1)
+					tween.tween_interval(0.075)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -559,7 +532,7 @@ func Shell_Order():
 				if child.Type == 4:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.1)
+					tween.tween_interval(0.075)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -567,7 +540,7 @@ func Shell_Order():
 				if child.Type == 6:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.1)
+					tween.tween_interval(075)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -575,7 +548,7 @@ func Shell_Order():
 				if child.Type == 9:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.075)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -583,8 +556,9 @@ func Shell_Order():
 				if child.Type == 12:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.075)
 					await tween.finished
+	Pit_Heal()
 
 func switch_turn():
 	current_turn = 1 - current_turn

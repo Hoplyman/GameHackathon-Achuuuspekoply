@@ -42,6 +42,7 @@ shape = SubResource("CircleShape2D_4hf8t")
 debug_color = Color(1, 1, 1, 0.42)
 
 [node name="Score" type="Label" parent="."]
+visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
