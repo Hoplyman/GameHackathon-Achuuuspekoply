@@ -62,12 +62,12 @@ func get_total_score() -> int:
 # NEW: Calculate and update total score
 func calculate_total_score():
 	var old_total = total_score
-	var new_total = shells * total_score
-	print("MainHouse total score calculated: ", shells, " shells × ", total_score, " points = ", new_total)
+	total_score = shells * scores
+	print("MainHouse total score calculated: ", shells, " shells × ", scores, " points = ", total_score)
 	
 	# NEW: Check for instant win condition when score reaches 100
-	if new_total >= 100 and old_total < 100:
-		print("INSTANT WIN! MainHouse reached ", new_total, " points!")
+	if total_score >= 100 and old_total < 100:
+		print("INSTANT WIN! MainHouse reached ", total_score, " points!")
 		# Get the GameManager and trigger immediate game over
 		var game_manager = get_tree().get_first_node_in_group("game_manager")
 		if game_manager and game_manager.has_method("check_game_over"):

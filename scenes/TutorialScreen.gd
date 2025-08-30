@@ -40,7 +40,7 @@ func scaled_size(base_size: Vector2) -> Vector2:
 func setup_tutorial_steps():
 	tutorial_steps = [
 		{
-			"title": "What is Shell Masters?",
+			"title": "What is Tangka?",
 			"description": "Welcome to Tangka!\n\nTangka is based on traditional Filipino board games called Sungka. These are ancient mancala-style games where players distribute shells or seeds around a board with strategic objectives.\n\nThe digital version adds fantasy elements with:\n• Special shells with unique abilities\n• Magical pit types with special effects\n• Enhanced scoring systems\n• Strategic shell placement mechanics\n\nWhile maintaining the core strategic gameplay of traditional mancala.",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},

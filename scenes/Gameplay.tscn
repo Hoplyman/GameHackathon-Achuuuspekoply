@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
 [ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_gnmmn"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4rwr5"]
-[ext_resource type="Script" uid="uid://1evp0w3dbbu7" path="res://scenes/camera_2d.gd" id="5_4j5yk"]
+[ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4j5yk"]
 [ext_resource type="PackedScene" uid="uid://dni16xmjr8sb5" path="res://objects/SpecialShellSelector.tscn" id="5_jfxgp"]
 [ext_resource type="PackedScene" uid="uid://dsowvbb74dtk4" path="res://objects/board.tscn" id="6_gnmmn"]
 [ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="7_4rwr5"]
