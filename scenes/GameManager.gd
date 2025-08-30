@@ -34,7 +34,6 @@ func _ready():
 	add_to_group("game_manager")
 	pits = get_tree().get_nodes_in_group("pits")
 	main_houses = get_tree().get_nodes_in_group("main_houses")
-	
 	timer = Timer.new()
 	add_child(timer)
 	timer.wait_time = 0.5
@@ -173,6 +172,9 @@ func create_ui_elements():
 	get_parent().add_child(player2_label)
 	
 	await get_tree().process_frame
+	total_turns = 1
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	pvp.updateRoundlabel(total_turns)
 	update_turn_display()
 	print("UI Elements created successfully!")
 
@@ -199,8 +201,6 @@ func _on_pit_type_selected(pit_type: int, pit_index: int):
 	
 func update_turn_display():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
-	total_turns += 1
-	pvp.updateRoundlabel(total_turns)
 	for child in pvp.get_children():
 		if is_instance_valid(child):
 			if child.is_in_group("pits"):
@@ -577,6 +577,8 @@ func switch_turn():
 	var camera = pvp.get_node_or_null("Camera2D")
 	camera.move_to_position("Center")
 	print("Turn switched to player ", current_turn + 1)
+	total_turns += 1
+	pvp.updateRoundlabel(total_turns)
 	update_turn_display()
 
 # ENHANCED: Better game over checking with multiple win conditions
