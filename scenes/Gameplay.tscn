@@ -64,13 +64,13 @@ position = Vector2(1500, 675)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(869, 672)
-zoom = Vector2(0.7, 0.7)
+zoom = Vector2(0.8, 0.8)
 
 [node name="SpecialShellSelector" parent="." instance=ExtResource("5_jfxgp")]
-offset_left = 869.929
-offset_top = 345.571
-offset_right = 869.929
-offset_bottom = 345.571
+offset_left = 870.0
+offset_top = 430.0
+offset_right = 870.0
+offset_bottom = 430.0
 
 [node name="Board" parent="." instance=ExtResource("6_gnmmn")]
 light_mask = 0
@@ -84,9 +84,9 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 845.0
-offset_top = 900.0
-offset_right = 889.0
+offset_left = 769.5
+offset_top = 893.0
+offset_right = 964.5
 offset_bottom = 935.0
 grow_horizontal = 2
 grow_vertical = 0
