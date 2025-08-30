@@ -181,8 +181,6 @@ func move_shells(player: int):
 					shells_to_remove.append(child)
 		
 		for child in shells_to_remove:
-			child.remove_from_group("Shells")
-			child.add_to_group("MoveShells")
 			if child.FreezeStacks >= 1:
 				child.effect_text("UNFREEZED", Color(0.0, 1.0, 1.0, 0.0))
 				child.FreezeStacks = 0
@@ -190,6 +188,8 @@ func move_shells(player: int):
 				tween.tween_interval(0.05)
 				await tween.finished
 			else:
+				child.remove_from_group("Shells")
+				child.add_to_group("MoveShells")
 				child.assign_move(totalmove, player)
 				totalmove += 1
 		
