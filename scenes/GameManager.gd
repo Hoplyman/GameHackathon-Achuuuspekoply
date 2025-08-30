@@ -301,7 +301,7 @@ func get_position_node(position: int) -> Node2D:
 	elif position == 15:
 		return get_main_house(1)
 	return null
-
+		
 func check_end_turn_rules(last_position: int):
 	print("Checking end turn rules. Last position: ", last_position)
 	
@@ -320,9 +320,11 @@ func check_end_turn_rules(last_position: int):
 				capture_opposite_pit(last_position)
 	
 	# Show special shell selection before switching turns
+	End_Round()
 	show_special_shell_selection()
 
 func show_special_shell_selection():
+	
 	awaiting_special_shell_selection = true
 	update_turn_display()
 	special_shell_selector.show_selection(current_turn)
@@ -495,7 +497,7 @@ func Shell_Order():
 				if child.Type == 1 or child.Type == 2:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.025)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -527,7 +529,7 @@ func Shell_Order():
 				if child.Type == 9:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.1)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -535,17 +537,18 @@ func Shell_Order():
 				if child.Type == 12:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.05)
+					tween.tween_interval(0.1)
 					await tween.finished
-
+func End_Round():
+	Pit_Order()
+	var tween = create_tween()
+	tween.tween_interval(0.25)
+	await tween.finished
+	Shell_Order()
+	
 func switch_turn():
 	current_turn = 1 - current_turn
 	print("Turn switched to player ", current_turn + 1)
-	Pit_Order()
-	var tween = create_tween()
-	tween.tween_interval(0.5)
-	await tween.finished
-	Shell_Order()
 	update_turn_display()
 
 # ENHANCED: Better game over checking with multiple win conditions
