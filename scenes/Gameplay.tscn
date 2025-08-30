@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b5v0f74gyw0mk"]
+[gd_scene load_steps=11 format=3 uid="uid://b5v0f74gyw0mk"]
 
 [ext_resource type="Script" uid="uid://b3vvq5tna3oo7" path="res://scenes/Gameplay.gd" id="1_a8mty"]
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
@@ -8,6 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://dsowvbb74dtk4" path="res://objects/board.tscn" id="6_gnmmn"]
 [ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="7_4rwr5"]
 [ext_resource type="AudioStream" uid="uid://cyxxqawc5a0vf" path="res://assets/music/Magical Adventure 8 Bit Game Music - Mana Trail By HeatleyBros.mp3" id="8_xbw1n"]
+[ext_resource type="Texture2D" uid="uid://cvjcxf2d7lg26" path="res://assets/Boards/Table Initial.png" id="9_hsn8a"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_4j5yk"]
+texture = ExtResource("9_hsn8a")
 
 [node name="Gameplay" type="Node2D"]
 script = ExtResource("1_a8mty")
@@ -104,3 +108,11 @@ vertical_alignment = 1
 stream = ExtResource("8_xbw1n")
 volume_db = 1.0
 autoplay = true
+
+[node name="Panel" type="Panel" parent="."]
+z_index = -14
+offset_left = -282.0
+offset_top = -21.0
+offset_right = 2101.0
+offset_bottom = 1327.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_4j5yk")
