@@ -30,8 +30,8 @@ var shell_card_paths = {
 	8: "res://assets/Shell and pit cards/mirror shell.png",
 	9: "res://assets/Shell and pit cards/fire shell.png",
 	10: "res://assets/Shell and pit cards/chain shell.png",
-	11: "res://cards/shells/purify_shell_card.png",
-	12: "res://cards/shells/freeze_shell_card.png"
+	11: "res://assets/Shell and pit cards/purify shell.png",
+	12: "res://assets/Shell and pit cards/ice shell.png"
 }
 
 # Individual complete card image paths for pits
