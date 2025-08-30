@@ -7,7 +7,6 @@ var use_visual_spawning: bool = false  # NEW: Flag to control visual shell spawn
 
 @onready var timer := $Timer  # Access the Timer node
 @onready var label = $StoneLabel
-@onready var House_Sprite := $HouseSprite  # NEW: Reference to house sprite node
 
 func _ready():
 	add_to_group("main_houses")
