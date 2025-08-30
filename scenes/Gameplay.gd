@@ -85,7 +85,7 @@ func set_shells(Shells: int, NewShells: int, x: int, y: int):
 		for j in range(AddShells):
 			var shell_instance = shell_scene.instantiate()
 			shell_instance.position = Vector2(x, y)
-			shell_instance.Type = randi_range(1,12)
+			shell_instance.Type = 1 #randi_range(1,12)
 			Pvp.add_child(shell_instance)
 			print("Created shell ", j + 1, " of ", AddShells)
 			

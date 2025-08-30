@@ -153,8 +153,8 @@ func create_ui_elements():
 	
 	player1_label = Label.new()
 	player1_label.text = "PLAYER 1 (BLUE)"
-	player1_label.position = Vector2(170, 800)
-	player1_label.add_theme_font_size_override("font_size", scaled_font_size(24))
+	player1_label.position = Vector2(150, 500)
+	player1_label.add_theme_font_size_override("font_size", scaled_font_size(30))
 	player1_label.add_theme_color_override("font_color", Color.CYAN)
 	player1_label.add_theme_color_override("font_shadow_color", Color.BLACK)
 	player1_label.add_theme_constant_override("shadow_offset_x", 2)
@@ -163,8 +163,8 @@ func create_ui_elements():
 	
 	player2_label = Label.new()
 	player2_label.text = "PLAYER 2 (RED)"
-	player2_label.position = Vector2(1450, 800)
-	player2_label.add_theme_font_size_override("font_size", scaled_font_size(24))
+	player2_label.position = Vector2(1440, 500)
+	player2_label.add_theme_font_size_override("font_size", scaled_font_size(30))
 	player2_label.add_theme_color_override("font_color", Color.LIGHT_CORAL)
 	player2_label.add_theme_color_override("font_shadow_color", Color.BLACK)
 	player2_label.add_theme_constant_override("shadow_offset_x", 2)

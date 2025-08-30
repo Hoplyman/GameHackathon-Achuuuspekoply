@@ -103,7 +103,6 @@ func show_selection(player: int):
 	
 	show_type_selection()
 	visible = true
-	highlight_player_pits(player)
 
 func show_type_selection():
 	selection_phase = "type"
@@ -314,7 +313,7 @@ func _on_card_selected(option_id: int, option_type: String):
 		selected_pit_type = option_id
 		var pit_info = pit_types[option_id]
 		title_label.text = "Player " + str(current_player + 1) + " - Set " + pit_info["name"]
-		target_selection_label.text = pit_info["description"] + "\n\nClick on one of your pits to change it to this type."
+		target_selection_label.text = pit_info["description"] + "\n\nClick on one of the pits to change it to this type."
 	
 	selection_phase = "target"
 	type_buttons_container.visible = false
@@ -367,25 +366,9 @@ func spawn_special_shell(shell_type: int, pit_index: int):
 
 func get_player_pit_range(player: int) -> Array:
 	if player == 0:
-		return [0, 6]
+		return [0, 13]
 	else:
-		return [7, 13]
+		return [0, 13]
 
 func hide_selection():
 	visible = false
-	clear_pit_highlights()
-
-func highlight_player_pits(player: int):
-	var pits = get_tree().get_nodes_in_group("pits")
-	var player_range = get_player_pit_range(player)
-	var highlight_color = Color.CYAN if player == 0 else Color.LIGHT_CORAL
-	
-	for i in range(player_range[0], player_range[1] + 1):
-		if i < pits.size() and pits[i]:
-			pits[i].modulate = highlight_color
-
-func clear_pit_highlights():
-	var pits = get_tree().get_nodes_in_group("pits")
-	for pit in pits:
-		if pit:
-			pit.modulate = Color.WHITE
