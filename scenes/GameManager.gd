@@ -8,6 +8,8 @@ var game_active: bool = true
 var is_distributing: bool = false
 var awaiting_special_shell_selection: bool = false
 
+var timer: Timer
+
 # UI Elements
 var turn_indicator: Label
 var player1_label: Label
@@ -33,11 +35,19 @@ func _ready():
 	pits = get_tree().get_nodes_in_group("pits")
 	main_houses = get_tree().get_nodes_in_group("main_houses")
 	
+	timer = Timer.new()
+	add_child(timer)
+	timer.wait_time = 0.5
+	# Connect timer timeout to our check function
+	timer.timeout.connect(_on_timer_timeout)
+	
 	calculate_ui_scale()
 	call_deferred("create_ui_elements")
 	call_deferred("start_game")
 	call_deferred("create_special_shell_selector")
 	call_deferred("create_end_game_screen")
+	
+	
 
 func calculate_ui_scale():
 	var viewport_size = get_viewport().get_visible_rect().size
@@ -303,6 +313,21 @@ func get_position_node(position: int) -> Node2D:
 		return get_main_house(1)
 	return null
 
+func _on_timer_timeout():
+	
+	var moving_shells = get_tree().get_nodes_in_group("MoveShells")
+	
+	if moving_shells.size() == 0:
+		var pvp = get_tree().root.get_node_or_null("Gameplay")
+		var camera = pvp.get_node_or_null("Camera2D")
+		camera.move_to_position("Top")
+		is_distributing = false
+		End_Round()
+		show_special_shell_selection()
+		timer.stop()
+	else:
+		timer.start()
+
 func End_Round():
 	Pit_Order()
 	var tween = create_tween()
@@ -313,7 +338,6 @@ func End_Round():
 	tween2.tween_interval(0.5)
 	await tween2.finished
 	Pit_Heal()
-
 
 func check_end_turn_rules(last_position: int):
 	print("Checking end turn rules. Last position: ", last_position)
@@ -333,8 +357,8 @@ func check_end_turn_rules(last_position: int):
 				capture_opposite_pit(last_position)
 	
 	# Show special shell selection before switching turns
-	End_Round()
-	show_special_shell_selection()
+	timer.start()
+	is_distributing = true
 
 func show_special_shell_selection():
 	awaiting_special_shell_selection = true
@@ -564,6 +588,9 @@ func Shell_Order():
 
 func switch_turn():
 	current_turn = 1 - current_turn
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var camera = pvp.get_node_or_null("Camera2D")
+	camera.move_to_position("Center")
 	print("Turn switched to player ", current_turn + 1)
 	update_turn_display()
 
