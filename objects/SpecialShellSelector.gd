@@ -20,33 +20,33 @@ var option_types: Array = []  # Will track whether each option is "shell" or "pi
 
 # Individual complete card image paths for shells
 var shell_card_paths = {
-	1: "res://assets/Shell and pit cards/Normal shell.png",
-	2: "res://assets/Shell and pit cards/golden shell.png",
-	3: "res://assets/Shell and pit cards/echo shell.png",
-	4: "res://assets/Shell and pit cards/anchor shell.png",
-	5: "res://assets/Shell and pit cards/spirit shell.png",
-	6: "res://assets/Shell and pit cards/time shell.png",
-	7: "res://assets/Shell and pit cards/lucky shell.png",
-	8: "res://assets/Shell and pit cards/mirror shell.png",
-	9: "res://assets/Shell and pit cards/fire shell.png",
-	10: "res://assets/Shell and pit cards/chain shell.png",
-	11: "res://assets/Shell and pit cards/purify shell.png",
-	12: "res://assets/Shell and pit cards/ice shell.png"
+	1: "res://assets/Cards/Basic Card.png",
+	2: "res://assets/Cards/Golden Card.png",
+	3: "res://assets/Cards/Echo Card.png",
+	4: "res://assets/Cards/Anchor Card.png",
+	5: "res://assets/Cards/Spirit Card.png",
+	6: "res://assets/Cards/Time Card.png",
+	7: "res://assets/Cards/Lucky Card.png",
+	8: "res://assets/Cards/Mirror Card.png",
+	9: "res://assets/Cards/Flame Card.png",
+	10: "res://assets/Cards/Chain Card.png",
+	11: "res://assets/Cards/Purify Card.png",
+	12: "res://assets/Cards/Ice Card.png"
 }
 
 # Individual complete card image paths for pits
 var pit_card_paths = {
-	1: "res://assets/Shell and pit cards/Normal shell.png",
-	2: "res://assets/Shell and pit cards/anchor shell.png",
-	3: "res://assets/Shell and pit cards/echo shell.png",
-	4: "res://assets/Shell and pit cards/spirit shell.png",
-	5: "res://assets/Shell and pit cards/loot pit.png",
-	6: "res://assets/Shell and pit cards/chain shell.png",
-	7: "res://assets/Shell and pit cards/golden shell.png",
-	8: "res://assets/Shell and pit cards/purify shell.png",
-	9: "res://assets/Shell and pit cards/void pit.png",
-	10: "res://assets/Shell and pit cards/fire shell.png",
-	11: "res://assets/Shell and pit cards/random pit.png"
+	1: "res://assets/Cards/Basic Card.png",
+	2: "res://assets/Cards/Anchor Card.png",
+	3: "res://assets/Cards/Echo Card.png",
+	4: "res://assets/Cards/Spirit Card.png",
+	5: "res://assets/Cards/Loot Card.png",
+	6: "res://assets/Cards/Chain Card.png",
+	7: "res://assets/Cards/Golden Card.png",
+	8: "res://assets/Cards/Purify Card.png",
+	9: "res://assets/Cards/Void Card.png",
+	10: "res://assets/Cards/Flame Card.png",
+	11: "res://assets/Cards/Random Card.png"
 }
 
 var shell_types = {
