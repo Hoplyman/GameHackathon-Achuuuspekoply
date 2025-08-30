@@ -66,25 +66,32 @@ func scaled_position(base_pos: Vector2) -> Vector2:
 func create_end_game_screen():
 	await get_tree().process_frame
 	
+	# SINGLE CONTROL POINT - Change these values to move everything
+	var ui_offset_x = 390   # Negative = left, Positive = right
+	var ui_offset_y = 200   # Negative = up, Positive = down
+	
+	# BACKGROUND OPACITY CONTROL - Change this single value
+	var background_opacity = 0.7  # 0.0 = transparent, 1.0 = completely black
+	
 	# Create overlay container
 	end_game_overlay = Control.new()
 	end_game_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	end_game_overlay.mouse_filter = Control.MOUSE_FILTER_STOP  # Block input to game
+	end_game_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 	end_game_overlay.visible = false
 	get_parent().add_child(end_game_overlay)
 	
-	# Semi-transparent background
+	# *** THIS IS THE KEY PART - Semi-transparent BLACK background ***
 	end_game_background = ColorRect.new()
 	end_game_background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	end_game_background.color = Color(0, 0, 0, 0.8)  # Semi-transparent black
+	end_game_background.color = Color(0, 0, 0, background_opacity)  # BLACK with opacity
 	end_game_overlay.add_child(end_game_background)
 	
-	# Winner announcement
+	# Winner announcement - APPLY OFFSET
 	winner_label = Label.new()
 	winner_label.text = "GAME OVER"
 	winner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	winner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	winner_label.position = scaled_position(Vector2(460, 300))
+	winner_label.position = scaled_position(Vector2(460 + ui_offset_x, 300 + ui_offset_y))
 	winner_label.size = scaled_position(Vector2(1000, 150))
 	winner_label.add_theme_font_size_override("font_size", scaled_font_size(72))
 	winner_label.add_theme_color_override("font_color", Color.WHITE)
@@ -93,12 +100,12 @@ func create_end_game_screen():
 	winner_label.add_theme_constant_override("shadow_offset_y", 4)
 	end_game_overlay.add_child(winner_label)
 	
-	# Final scores
+	# Final scores - APPLY OFFSET
 	final_scores_label = Label.new()
 	final_scores_label.text = ""
 	final_scores_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	final_scores_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	final_scores_label.position = scaled_position(Vector2(460, 480))
+	final_scores_label.position = scaled_position(Vector2(460 + ui_offset_x, 480 + ui_offset_y))
 	final_scores_label.size = scaled_position(Vector2(1000, 200))
 	final_scores_label.add_theme_font_size_override("font_size", scaled_font_size(36))
 	final_scores_label.add_theme_color_override("font_color", Color.WHITE)
@@ -107,25 +114,30 @@ func create_end_game_screen():
 	final_scores_label.add_theme_constant_override("shadow_offset_y", 2)
 	end_game_overlay.add_child(final_scores_label)
 	
-	# Play Again button
+	# Play Again button - APPLY OFFSET
 	play_again_button = Button.new()
 	play_again_button.text = "PLAY AGAIN"
-	play_again_button.position = scaled_position(Vector2(660, 720))
-	play_again_button.size = scaled_position(Vector2(200, 60))
+	play_again_button.position = scaled_position(Vector2(705 + ui_offset_x, 1020 + ui_offset_y))
+	play_again_button.size = scaled_position(Vector2(220, 100))
 	play_again_button.add_theme_font_size_override("font_size", scaled_font_size(24))
 	play_again_button.pressed.connect(_on_play_again_pressed)
 	end_game_overlay.add_child(play_again_button)
 	
-	# Quit button
+	# Quit button - APPLY OFFSET
 	quit_button = Button.new()
 	quit_button.text = "MAIN MENU"
-	quit_button.position = scaled_position(Vector2(960, 720))
-	quit_button.size = scaled_position(Vector2(200, 60))
+	quit_button.position = scaled_position(Vector2(1005 + ui_offset_x, 1020 + ui_offset_y))
+	quit_button.size = scaled_position(Vector2(220, 100))
 	quit_button.add_theme_font_size_override("font_size", scaled_font_size(24))
 	quit_button.pressed.connect(_on_quit_pressed)
 	end_game_overlay.add_child(quit_button)
 	
-	print("End game screen created successfully!")
+	print("End game screen created successfully with black overlay!")
+
+# QUICK REFERENCE FOR ADJUSTMENTS:
+# ui_offset_x = 390     # Current right offset
+# ui_offset_y = 200     # Current down offset  
+# background_opacity = 0.8  # Current darkness level
 
 func create_ui_elements():
 	await get_tree().process_frame
