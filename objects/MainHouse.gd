@@ -118,16 +118,11 @@ func disable_visual_spawning():
 # NEW: House effect functions (similar to pit effects)
 
 func _on_timer_timeout():
-	# Only count if timer counting is enabled
+	# Only count if timer counting is enabled AND initialization is complete
 	if not use_timer_counting:
 		return
 		
-	# No need to check timer.value – the timeout already means 1 second passed
-	var new_shell_count = count_shells_in_area()
-	if new_shell_count != shells:
-		shells = new_shell_count
-		update_label()
-	# Restart the timer to loop
+	update_label()
 	timer.start()
 
 func count_shells_in_area() -> int:
