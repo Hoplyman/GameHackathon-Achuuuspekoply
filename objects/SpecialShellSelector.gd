@@ -40,13 +40,13 @@ var pit_card_paths = {
 	2: "res://assets/Shell and pit cards/anchor shell.png",
 	3: "res://assets/Shell and pit cards/echo shell.png",
 	4: "res://assets/Shell and pit cards/spirit shell.png",
-	5: "res://cards/pits/loot_pit_card.png",
+	5: "res://assets/Shell and pit cards/loot pit.png",
 	6: "res://assets/Shell and pit cards/chain shell.png",
 	7: "res://assets/Shell and pit cards/golden shell.png",
 	8: "res://assets/Shell and pit cards/purify shell.png",
-	9: "res://cards/pits/void_pit_card.png",
+	9: "res://assets/Shell and pit cards/void pit.png",
 	10: "res://assets/Shell and pit cards/fire shell.png",
-	11: "res://cards/pits/random_pit_card.png"
+	11: "res://assets/Shell and pit cards/random pit.png"
 }
 
 var shell_types = {
