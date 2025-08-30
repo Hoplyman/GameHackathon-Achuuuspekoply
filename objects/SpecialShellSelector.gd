@@ -172,11 +172,12 @@ func setup_card_selection():
 	type_buttons_container.add_child(cards_container)
 
 # Main method - uses complete pre-made card images
+# Main method - uses complete pre-made card images with better description overlay
 func create_complete_card(option_id: int, option_type: String) -> Control:
-	# Create button container
-	var card_button = Button.new()
-	card_button.custom_minimum_size = Vector2(200, 280)
-	card_button.flat = true
+	# Create main card container (not a button)
+	var card_container = Control.new()
+	card_container.custom_minimum_size = Vector2(200, 280)
+	card_container.size = Vector2(200, 280)
 	
 	# Get the complete card image path
 	var card_image_path: String
@@ -188,25 +189,102 @@ func create_complete_card(option_id: int, option_type: String) -> Control:
 	# Load the complete card texture
 	var card_texture: Texture2D = load(card_image_path)
 	
-	# Create texture rect to display the complete card
+	# Create texture rect to display the complete card (as background)
 	var card_display = TextureRect.new()
 	card_display.texture = card_texture
 	card_display.size = Vector2(200, 280)
+	card_display.position = Vector2(0, 0)
 	card_display.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
 	card_display.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	card_display.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
-	# Connect button functionality
-	card_button.pressed.connect(_on_card_selected.bind(option_id, option_type))
+	# Calculate the actual card visual size (based on your card design)
+	# Your cards appear to be more like 180x260 within the 200x280 container
+	var visual_card_size = Vector2(180, 260)
+	var visual_card_offset = Vector2(17, 10)  # Exact hitbox alignment with the card
 	
-	# Add hover effects
-	card_button.mouse_entered.connect(_on_card_hover_enter.bind(card_button))
-	card_button.mouse_exited.connect(_on_card_hover_exit.bind(card_button))
+	# Create clickable button overlay (invisible but clickable) - matched to visual card size
+	var click_button = Button.new()
+	click_button.size = visual_card_size  # Match the actual visual card size
+	click_button.position = visual_card_offset  # Offset to center on the visual card
+	click_button.flat = true
+	click_button.modulate = Color(1, 1, 1, 0)  # Completely transparent but still clickable
+	click_button.mouse_filter = Control.MOUSE_FILTER_PASS  # Ensure proper mouse handling
 	
-	# Add the complete card image to the button
-	card_button.add_child(card_display)
+	# Create name label with outline/shadow effect - positioned in top area
+	var name_label = Label.new()
+	name_label.size = Vector2(160, 25)
+	name_label.position = Vector2(30, 30)  # Centered within the visual card area (17+20, 10+12)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	
-	return card_button
+	# Get name text based on type
+	var name_text: String
+	if option_type == "shell":
+		name_text = shell_types[option_id]["name"]
+	else:
+		name_text = pit_types[option_id]["name"]
+	
+	name_label.text = name_text
+	name_label.add_theme_color_override("font_color", Color.WHITE)
+	name_label.add_theme_font_size_override("font_size", 12)
+	# Add outline for better readability
+	name_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	name_label.add_theme_constant_override("outline_size", 2)
+	
+	# Create description label - positioned in bottom area and properly contained
+	var desc_label = Label.new()
+	desc_label.size = Vector2(160, 70)
+	desc_label.position = Vector2(30, 150)  # Centered within the visual card area (17+20, 200+10)
+	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER  # Center align description
+	desc_label.clip_contents = true  # Ensure text doesn't overflow
+	
+	# Get description text based on type
+	var description_text: String
+	if option_type == "shell":
+		description_text = shell_types[option_id]["description"]
+	else:
+		description_text = pit_types[option_id]["description"]
+	
+	desc_label.text = description_text
+	desc_label.add_theme_color_override("font_color", Color.WHITE)
+	desc_label.add_theme_font_size_override("font_size", 10)  # Slightly smaller font
+	# Add outline for better readability
+	desc_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	desc_label.add_theme_constant_override("outline_size", 2)
+	
+	# Assemble the card (layered properly)
+	card_container.add_child(card_display)      # Background card image
+	card_container.add_child(name_label)        # Name text with outline
+	card_container.add_child(desc_label)        # Description text with outline
+	card_container.add_child(click_button)      # Invisible clickable overlay on top
+	
+	# Connect button functionality to the invisible button
+	click_button.pressed.connect(_on_card_selected.bind(option_id, option_type))
+	
+	# Add hover effects - fix the signal binding issue
+	click_button.mouse_entered.connect(_on_card_hover_enter_fixed.bind(card_container))
+	click_button.mouse_exited.connect(_on_card_hover_exit_fixed.bind(card_container))
+	
+	return card_container
+
+# Fixed hover functions to avoid signal binding errors
+func _on_card_hover_enter_fixed(card_container: Control):
+	# Scale up slightly on hover with smooth animation
+	var tween = card_container.create_tween()
+	if tween:
+		tween.set_ease(Tween.EASE_OUT)
+		tween.set_trans(Tween.TRANS_BACK)
+		tween.tween_property(card_container, "scale", Vector2(1.05, 1.05), 0.15)
+func _on_card_hover_exit_fixed(card_container: Control):
+	# Scale back to normal with smooth animation
+	var tween = card_container.create_tween()
+	if tween:
+		tween.set_ease(Tween.EASE_OUT)
+		tween.set_trans(Tween.TRANS_BACK)
+		tween.tween_property(card_container, "scale", Vector2(1.0, 1.0), 0.15)
 
 func _on_card_hover_enter(card_button: Button):
 	# Scale up slightly on hover with smooth animation
