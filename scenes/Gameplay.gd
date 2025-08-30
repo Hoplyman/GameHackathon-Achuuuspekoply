@@ -1,10 +1,18 @@
 extends Node2D
 
 @onready var Roundslabel = $RoundsLabel
+@onready var background_music = get_node_or_null("BackgroundMusic")
 
 # Shell distribution settings
 const SHELL_MOVE_SPEED = 600.0     # Increased from 400 pixels per second
 const SHELL_DROP_DELAY = 0.05   # seconds between each shell drop
+
+func _ready():
+	var background_music = get_node_or_null("BackgroundMusic")
+	if background_music:
+		background_music.play()
+	else:
+		print("BackgroundMusic node not found")
 
 func updateRoundlabel(TotalRounds: int):
 	Roundslabel.text = "Round: " + str(TotalRounds)
