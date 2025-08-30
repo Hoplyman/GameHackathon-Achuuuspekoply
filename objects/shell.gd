@@ -24,6 +24,7 @@ var DisableStacks: int = 0
 @onready var scoretimer := $ScoreTimer
 @onready var labelscore := $Score
 @onready var labeleffect := $Effect
+@onready var Freezeparticle := $FreezeParticle
 @onready var shell_sprite := $ShellSprite  # Use @onready for proper initialization
 
 # Movement variables
@@ -41,6 +42,7 @@ const SOUND_TIME = preload("res://assets/Sound/Shell sound/time.wav")
 const SOUND_LUCKY = preload("res://assets/Sound/Shell sound/lucky.wav")
 const SOUND_BURN = preload("res://assets/Sound/Shell sound/Burn.wav")
 const SOUND_ICE = preload("res://assets/Sound/Shell sound/Apply Freeze.wav")
+const SOUND_ICE_BREAK = preload("res://assets/Sound/Shell sound/Freeze Break.wav")
 const SOUND_PLACEMENT = preload("res://assets/Sound/Shell sound/Retro - Magic Respawn.wav")
 
 
@@ -223,6 +225,8 @@ func play_shell_effect_sound(effect_name: String):
 			sound_to_play = SOUND_BURN
 		"FREEZED", "ICE +1", "ICE +2":
 			sound_to_play = SOUND_ICE
+		"UNFREEZED":
+			sound_to_play = SOUND_ICE_BREAK
 		_:
 			# Default sound for unmatched effects
 			sound_to_play = SOUND_PLACEMENT
@@ -702,4 +706,8 @@ func _on_score_timer_timeout() -> void:
 	shell_status()
 	update_shell_frame()
 	labelscore.text = str(TotalScore)  # Fixed: was labelscore.Text (capital T)
+	if FreezeStacks >= 1:
+		Freezeparticle.visible = true
+	else:
+		Freezeparticle.visible = false
 	scoretimer.start()

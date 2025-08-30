@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://ddb2cc8rptbwo"]
+[gd_scene load_steps=6 format=3 uid="uid://ddb2cc8rptbwo"]
 
 [ext_resource type="Texture2D" uid="uid://cacstupdpj3bt" path="res://assets/Sprites/ShellSprites.png" id="1_r6mts"]
 [ext_resource type="Script" uid="uid://chihm8wg1872a" path="res://objects/shell.gd" id="2_uej0b"]
@@ -6,6 +6,9 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_uej0b"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4hf8t"]
+
+[sub_resource type="Gradient" id="Gradient_uej0b"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
 [node name="Shell" type="RigidBody2D" groups=["Shells"]]
 collision_layer = 2
@@ -63,6 +66,23 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="FreezeParticle" type="CPUParticles2D" parent="."]
+visible = false
+amount = 25
+emission_shape = 3
+emission_rect_extents = Vector2(1, 1)
+direction = Vector2(0, 0)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 50.0
+damping_min = 80.0
+damping_max = 100.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color = Color(0.666667, 1, 1, 1)
+color_ramp = SubResource("Gradient_uej0b")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="MoveTimer" to="." method="_on_move_timer_timeout"]
