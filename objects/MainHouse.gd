@@ -61,9 +61,23 @@ func get_total_score() -> int:
 
 # NEW: Calculate and update total score
 func calculate_total_score():
+	var old_total = total_score
 	total_score = shells * scores
 	print("MainHouse total score calculated: ", shells, " shells × ", scores, " points = ", total_score)
-
+	
+	# NEW: Check for instant win condition when score reaches 100
+	if total_score >= 100 and old_total < 100:
+		print("INSTANT WIN! MainHouse reached ", total_score, " points!")
+		# Get the GameManager and trigger immediate game over
+		var game_manager = get_tree().get_first_node_in_group("game_manager")
+		if game_manager and game_manager.has_method("check_game_over"):
+			# Call it on the next frame to avoid potential conflicts
+			call_deferred("_trigger_instant_win", game_manager)
+			
+func _trigger_instant_win(game_manager):
+	if game_manager.game_active:  # Only trigger if game is still active
+		print("Triggering instant win check...")
+		game_manager.check_game_over()
 # Take all shells (used at end of game to collect remaining pits)
 func take_all_shells() -> int:
 	var temp = shells
@@ -208,7 +222,7 @@ func update_labels():
 	shells = shell_count  # Update the stored shells value
 	var totalscores = scores  # This gets updated inside count_shells_in_area()
 	
-	# Calculate total winning score
+	# Calculate total winning score AND check for instant win
 	calculate_total_score()
 	
 	# Update main label (shells and points)
@@ -217,7 +231,7 @@ func update_labels():
 	else:
 		print("Warning: StoneLabel not found in MainHouse")
 	
-	# NEW: Update score label (winning calculation)
+	# Update score label (winning calculation)
 	if score_label:
 		score_label.text = "TOTAL SCORE: " + str(total_score)
 		

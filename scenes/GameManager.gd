@@ -22,6 +22,7 @@ var winner_label: Label
 var final_scores_label: Label
 var play_again_button: Button
 var quit_button: Button
+var WINNING_SCORE: int = 100
 
 # Resolution scaling
 var base_resolution = Vector2(1920, 1080)
@@ -107,7 +108,7 @@ func create_end_game_screen():
 	
 	# Quit button
 	quit_button = Button.new()
-	quit_button.text = "QUIT"
+	quit_button.text = "MAIN MENU"
 	quit_button.position = scaled_position(Vector2(960, 720))
 	quit_button.size = scaled_position(Vector2(200, 60))
 	quit_button.add_theme_font_size_override("font_size", scaled_font_size(24))
@@ -550,7 +551,27 @@ func switch_turn():
 
 # ENHANCED: Better game over checking with multiple win conditions
 func check_game_over() -> bool:
-	# Standard Mancala win condition: One player has no shells left
+	# NEW: Score-based win condition - check if any player reached 100 total score
+	var player1_total_score = 0
+	var player2_total_score = 0
+	
+	if main_houses.size() >= 2:
+		# Get total scores from main houses
+		if main_houses[0] and main_houses[0].has_method("get_total_score"):
+			player1_total_score = main_houses[0].get_total_score()
+		
+		if main_houses[1] and main_houses[1].has_method("get_total_score"):
+			player2_total_score = main_houses[1].get_total_score()
+		
+		print("Current total scores - Player 1: ", player1_total_score, ", Player 2: ", player2_total_score)
+		
+		# Check if either player reached the winning score
+		if player1_total_score >= WINNING_SCORE or player2_total_score >= WINNING_SCORE:
+			print("Score-based win condition met!")
+			end_game_score_based(player1_total_score, player2_total_score)
+			return true
+	
+	# Fallback: Standard Mancala win condition if no one reached 100 points yet
 	var player1_empty = true
 	var player2_empty = true
 	
@@ -564,20 +585,85 @@ func check_game_over() -> bool:
 			player2_empty = false
 			break
 	
-	# OPTIONAL: Add score-based win condition (uncomment to enable)
-	# var player1_score = get_main_house_shells(0)
-	# var player2_score = get_main_house_shells(1)
-	# var score_win_threshold = 50  # Adjust as needed
-	
-	if player1_empty or player2_empty: # or player1_score >= score_win_threshold or player2_score >= score_win_threshold:
+	if player1_empty or player2_empty:
+		print("Standard win condition met - one player has no shells left")
 		end_game()
 		return true
 	
 	return false
+	
+func end_game_score_based(player1_score: int, player2_score: int):
+	game_active = false  # This stops new moves but keeps everything else running
+	awaiting_special_shell_selection = false
+	if special_shell_selector:
+		special_shell_selector.hide_selection()
+	print("Game Over - Score-based victory!")
+	
+	# Show end game screen with current scores (no stopping activities)
+	show_end_game_screen_score_based(player1_score, player2_score)
 
+func show_end_game_screen_score_based(player1_score: int, player2_score: int):
+	if not end_game_overlay:
+		print("ERROR: End game overlay not found!")
+		return
+	
+	# Determine winner and set colors
+	var winner_text: String
+	var winner_color: Color
+	
+	if player1_score >= WINNING_SCORE and player2_score >= WINNING_SCORE:
+		# Both reached 100, higher score wins
+		if player1_score > player2_score:
+			winner_text = "PLAYER 1 WINS!"
+			winner_color = Color.CYAN
+		elif player2_score > player1_score:
+			winner_text = "PLAYER 2 WINS!"
+			winner_color = Color.LIGHT_CORAL
+		else:
+			winner_text = "IT'S A TIE!"
+			winner_color = Color.YELLOW
+	elif player1_score >= WINNING_SCORE:
+		winner_text = "PLAYER 1 WINS!"
+		winner_color = Color.CYAN
+	elif player2_score >= WINNING_SCORE:
+		winner_text = "PLAYER 2 WINS!"
+		winner_color = Color.LIGHT_CORAL
+	else:
+		winner_text = "GAME OVER"
+		winner_color = Color.WHITE
+	
+	# Update winner label
+	winner_label.text = winner_text
+	winner_label.add_theme_color_override("font_color", winner_color)
+	
+	# Update final scores
+	var scores_text = "FINAL TOTAL SCORES:\n\nPlayer 1 (Blue): " + str(player1_score) + " points"
+	if player1_score >= WINNING_SCORE:
+		scores_text += " ★ WINNER!"
+	
+	scores_text += "\nPlayer 2 (Red): " + str(player2_score) + " points"
+	if player2_score >= WINNING_SCORE:
+		scores_text += " ★ WINNER!"
+	
+	if player1_score != player2_score:
+		var margin = abs(player1_score - player2_score)
+		scores_text += "\n\nMargin of Victory: " + str(margin) + " points"
+	
+	scores_text += "\n\nFirst to " + str(WINNING_SCORE) + " points wins!"
+	
+	final_scores_label.text = scores_text
+	
+	# Show the overlay with animation
+	end_game_overlay.modulate = Color(1, 1, 1, 0)  # Start transparent
+	end_game_overlay.visible = true
+	
+	var tween = create_tween()
+	tween.tween_property(end_game_overlay, "modulate:a", 1.0, 0.5)  # Fade in
+	
+	print("Score-based end game screen displayed: ", winner_text)
 # ENHANCED: Better end game with overlay screen
 func end_game():
-	game_active = false
+	game_active = false  # This stops new moves but keeps everything else running
 	awaiting_special_shell_selection = false
 	if special_shell_selector:
 		special_shell_selector.hide_selection()
@@ -673,8 +759,9 @@ func _on_play_again_pressed():
 
 # NEW: Handle quit button
 func _on_quit_pressed():
-	print("Quitting game...")
-	get_tree().quit()
+	print("Returning to main menu...")
+	# Change scene to main menu
+	get_tree().change_scene_to_file("res://Main Menu/main_menu.tscn")
 
 # OPTIONAL: Add pause/unpause functionality
 func pause_game():

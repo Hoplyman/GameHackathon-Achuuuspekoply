@@ -191,6 +191,7 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_qe12f")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 position = Vector2(573, 280)
+scale = Vector2(1.19, 1.19)
 amount = 95
 texture = ExtResource("3_ev4s5")
 lifetime = 50.0
