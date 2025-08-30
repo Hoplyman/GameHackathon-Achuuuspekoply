@@ -73,9 +73,9 @@ zoom = Vector2(0.8, 0.8)
 
 [node name="SpecialShellSelector" parent="." instance=ExtResource("5_jfxgp")]
 offset_left = 870.0
-offset_top = 430.0
+offset_top = 350.0
 offset_right = 870.0
-offset_bottom = 430.0
+offset_bottom = 350.0
 
 [node name="Board" parent="." instance=ExtResource("6_gnmmn")]
 light_mask = 0

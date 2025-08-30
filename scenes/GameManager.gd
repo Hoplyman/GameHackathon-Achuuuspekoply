@@ -131,7 +131,7 @@ func create_ui_elements():
 	
 	player1_label = Label.new()
 	player1_label.text = "PLAYER 1 (BLUE)"
-	player1_label.position = Vector2(600, 520)
+	player1_label.position = Vector2(170, 800)
 	player1_label.add_theme_font_size_override("font_size", scaled_font_size(24))
 	player1_label.add_theme_color_override("font_color", Color.CYAN)
 	player1_label.add_theme_color_override("font_shadow_color", Color.BLACK)
@@ -141,7 +141,7 @@ func create_ui_elements():
 	
 	player2_label = Label.new()
 	player2_label.text = "PLAYER 2 (RED)"
-	player2_label.position = Vector2(600, 800)
+	player2_label.position = Vector2(1450, 800)
 	player2_label.add_theme_font_size_override("font_size", scaled_font_size(24))
 	player2_label.add_theme_color_override("font_color", Color.LIGHT_CORAL)
 	player2_label.add_theme_color_override("font_shadow_color", Color.BLACK)
@@ -302,6 +302,18 @@ func get_position_node(position: int) -> Node2D:
 		return get_main_house(1)
 	return null
 
+func End_Round():
+	Pit_Order()
+	var tween = create_tween()
+	tween.tween_interval(0.5)
+	await tween.finished
+	Shell_Order()
+	var tween2 = create_tween()
+	tween2.tween_interval(0.5)
+	await tween2.finished
+	Pit_Heal()
+
+
 func check_end_turn_rules(last_position: int):
 	print("Checking end turn rules. Last position: ", last_position)
 	
@@ -320,6 +332,7 @@ func check_end_turn_rules(last_position: int):
 				capture_opposite_pit(last_position)
 	
 	# Show special shell selection before switching turns
+	End_Round()
 	show_special_shell_selection()
 
 func show_special_shell_selection():
@@ -453,6 +466,16 @@ func get_pit(pit_index: int) -> Node2D:
 		return pits[pit_index]
 	return null
 
+func Pit_Heal():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	for child in pvp.get_children():
+		if is_instance_valid(child):
+			if child.is_in_group("pits"):
+				if child.PitType == 8:
+					child.pit_endround()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
 func Pit_Order():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
@@ -466,7 +489,7 @@ func Pit_Order():
 	for child in pvp.get_children():
 		if is_instance_valid(child):
 			if child.is_in_group("pits"):
-				if child.PitType == 3 or child.PitType == 4 or child.PitType == 8 or child.PitType == 11:
+				if child.PitType == 3 or child.PitType == 4 or child.PitType == 11:
 					child.pit_endround()
 					var tween = create_tween()
 					tween.tween_interval(0.1)
@@ -541,11 +564,6 @@ func Shell_Order():
 func switch_turn():
 	current_turn = 1 - current_turn
 	print("Turn switched to player ", current_turn + 1)
-	Pit_Order()
-	var tween = create_tween()
-	tween.tween_interval(0.5)
-	await tween.finished
-	Shell_Order()
 	update_turn_display()
 
 # ENHANCED: Better game over checking with multiple win conditions

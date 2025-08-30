@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctyyyyrfmi8ce"
-path="res://.godot/imported/Mirror Card.png-a4d25921fb495d4c9f990637fa3b760b.ctex"
+uid="uid://dksrik3k3w5aq"
+path="res://.godot/imported/Normal shell-Picsart-ImageResizer (3).png-5ad43e167fd9658554e54eb5b6beb4a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Cards/Mirror Card.png"
-dest_files=["res://.godot/imported/Mirror Card.png-a4d25921fb495d4c9f990637fa3b760b.ctex"]
+source_file="res://assets/Shell and pit cards/Normal shell-Picsart-ImageResizer (3).png"
+dest_files=["res://.godot/imported/Normal shell-Picsart-ImageResizer (3).png-5ad43e167fd9658554e54eb5b6beb4a9.ctex"]
 
 [params]
 
