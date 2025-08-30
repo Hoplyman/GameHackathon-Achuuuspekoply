@@ -432,5 +432,6 @@ stretch_mode = 4
 [connection signal="pressed" from="Button_Container/Versus" to="." method="_on_versus_pressed"]
 [connection signal="pressed" from="Button_Container/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="Button_Container/Settings" to="Settings Panel" method="_on_settings_pressed"]
+[connection signal="pressed" from="Button_Container/Quit" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="Settings Panel/Back" to="." method="_on_back_pressed"]
 [connection signal="value_changed" from="Settings Panel/Label/AudioControl" to="Settings Panel/Label/AudioControl" method="_on_value_changed"]
