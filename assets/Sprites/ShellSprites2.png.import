@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ibrgh0y1m6mg"
-path="res://.godot/imported/NewShellsSprites.png-e68b0c19a687820bd575ee797c95ca79.ctex"
+uid="uid://n7l23tm05feo"
+path="res://.godot/imported/ShellSprites2.png-1e2079b4bf5503851669a90dc3a8f674.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprites/NewShellsSprites.png"
-dest_files=["res://.godot/imported/NewShellsSprites.png-e68b0c19a687820bd575ee797c95ca79.ctex"]
+source_file="res://assets/Sprites/ShellSprites2.png"
+dest_files=["res://.godot/imported/ShellSprites2.png-1e2079b4bf5503851669a90dc3a8f674.ctex"]
 
 [params]
 

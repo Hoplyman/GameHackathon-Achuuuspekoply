@@ -1,12 +1,14 @@
 [gd_scene load_steps=7 format=3 uid="uid://ddb2cc8rptbwo"]
 
-[ext_resource type="Texture2D" uid="uid://nijw0lyby3k5" path="res://assets/Sprites/NewShellsSprites.png" id="2_4hf8t"]
+[ext_resource type="Texture2D" uid="uid://ibrgh0y1m6mg" path="res://assets/Sprites/NewShellsSprites.png" id="2_4hf8t"]
 [ext_resource type="Script" uid="uid://chihm8wg1872a" path="res://objects/shell.gd" id="2_uej0b"]
 [ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="3_4hf8t"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uej0b"]
+radius = 13.3333
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4hf8t"]
+radius = 10.0
 
 [sub_resource type="Gradient" id="Gradient_uej0b"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
@@ -19,6 +21,7 @@ script = ExtResource("2_uej0b")
 [node name="ShellSprite" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_4hf8t")
+offset = Vector2(-1, 0)
 hframes = 12
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["Shells"]]
