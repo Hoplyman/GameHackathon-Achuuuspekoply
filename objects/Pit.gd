@@ -469,18 +469,17 @@ func effect_shells_in_area(Effect: String):
 				if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
 					if child in overlapping_bodies:
 						if Effect == "BASIC":
-							if Player == 1 and child.Pit >= 8 and child.Pit <= 14:
+							if Player == 2 and child.Pit >= 8 and child.Pit <= 14:
 								child.Score += 1
 								Shell1 = child
-							if Player == 2 and child.Pit >= 1 and child.Pit <= 7:
+							if Player == 1 and child.Pit >= 1 and child.Pit <= 7:
 								child.Score += 1
 								Shell1 = child
 						elif Effect == "ANCHOR":
-							if Player == 1 and child.Pit >= 8 and child.Pit <= 14:
-								print("AAAAAAAAAAAAAAAAAAAAA")
+							if Player == 2 and child.Pit >= 8 and child.Pit <= 14:
 								child.MultiplierStacks += 1
 								Shell1 = child
-							if Player == 2 and child.Pit >= 1 and child.Pit <= 7:
+							if Player == 1 and child.Pit >= 1 and child.Pit <= 7:
 								child.MultiplierStacks += 1
 								Shell1 = child
 						elif Effect == "ECHO":
@@ -493,13 +492,13 @@ func effect_shells_in_area(Effect: String):
 								Effect2Chance = 0.0
 							var roll = randf() * 100.0  # Random float from 0-100
 							if roll <= Effect1Chance:	
-								if Player == 1 and child.Pit >= 8 and child.Pit <= 14:
+								if Player == 2 and child.Pit >= 8 and child.Pit <= 14:
 									if count < 3:
 										count += 1
 										Shell1 = child
 										var Shell_Dup = child.duplicate(Node.DUPLICATE_SIGNALS | Node.DUPLICATE_GROUPS | Node.DUPLICATE_SCRIPTS)
 										child.get_parent().add_child(Shell_Dup)
-								if Player == 2 and child.Pit >= 1 and child.Pit <= 7:
+								if Player == 1 and child.Pit >= 1 and child.Pit <= 7:
 									if count < 3:
 										count += 1
 										Shell1 = child
@@ -517,13 +516,13 @@ func effect_shells_in_area(Effect: String):
 								Effect2Chance = 0.0
 							var roll = randf() * 100.0  # Random float from 0-100
 							if roll <= Effect1Chance:
-								if Player == 1 and child.Pit >= 8 and child.Pit <= 14:
+								if Player == 2 and child.Pit >= 8 and child.Pit <= 14:
 										if count < 3:
 											count += 1
 											child.Pit = 14
 											child.assign_move(1, 2)
 											Shell1 = child
-								elif Player == 2 and child.Pit >= 1 and child.Pit <= 7:
+								elif Player == 1 and child.Pit >= 1 and child.Pit <= 7:
 										if count < 3:
 											count += 1
 											child.Pit = 7
@@ -535,10 +534,10 @@ func effect_shells_in_area(Effect: String):
 							if child.Type == 10:
 								TotalEffectChance = 100.0
 						elif Effect == "GOLDEN":
-							if Player == 1 and child.Pit >= 8 and child.Pit <= 14:
+							if Player == 2 and child.Pit >= 8 and child.Pit <= 14:
 								Shell1 = child
 								TotalEffectChance += 2.5 * child.LuckStacks
-							if Player == 2 and child.Pit >= 1 and child.Pit <= 7:
+							if Player == 1 and child.Pit >= 1 and child.Pit <= 7:
 								Shell1 = child
 								TotalEffectChance += 2.5 * child.LuckStacks
 						elif Effect == "HEALING":

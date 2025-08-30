@@ -508,7 +508,7 @@ func Shell_Order():
 				if child.Type == 3 or child.Type == 5 or child.Type == 8:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.075)
+					tween.tween_interval(0.05)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -516,7 +516,7 @@ func Shell_Order():
 				if child.Type == 1 or child.Type == 2:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.075)
+					tween.tween_interval(0.05)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -524,7 +524,7 @@ func Shell_Order():
 				if child.Type == 7:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.075)
+					tween.tween_interval(0.3)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -532,7 +532,7 @@ func Shell_Order():
 				if child.Type == 4:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.075)
+					tween.tween_interval(0.3)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -540,7 +540,7 @@ func Shell_Order():
 				if child.Type == 6:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(075)
+					tween.tween_interval(0.3)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -548,7 +548,7 @@ func Shell_Order():
 				if child.Type == 9:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.075)
+					tween.tween_interval(0.1)
 					await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -556,7 +556,7 @@ func Shell_Order():
 				if child.Type == 12:
 					child.shell_endround()
 					var tween = create_tween()
-					tween.tween_interval(0.075)
+					tween.tween_interval(0.1)
 					await tween.finished
 	Pit_Heal()
 
