@@ -10,7 +10,7 @@ var selection_phase: String = "type"  # "type", "shell", "pit", or "target"
 var selection_mode: String = "mixed"  # Always "mixed" now - shows both shells and pits
 var available_options: Array = []  # Will contain mixed shell and pit options
 var option_types: Array = []  # Will track whether each option is "shell" or "pit"
-
+var pixel_font = load("res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf")
 @onready var type_buttons_container = $VBoxContainer/TypeButtonsContainer
 @onready var options_container = $VBoxContainer/OptionsContainer
 @onready var target_selection_label = $VBoxContainer/TargetSelectionLabel
@@ -227,7 +227,8 @@ func create_complete_card(option_id: int, option_type: String) -> Control:
 	
 	name_label.text = name_text
 	name_label.add_theme_color_override("font_color", Color.WHITE)
-	name_label.add_theme_font_size_override("font_size", 12)
+	name_label.add_theme_font_size_override("font_size", 16)
+	name_label.add_theme_font_override("font", pixel_font)
 	# Add outline for better readability
 	name_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	name_label.add_theme_constant_override("outline_size", 2)
@@ -250,7 +251,8 @@ func create_complete_card(option_id: int, option_type: String) -> Control:
 	
 	desc_label.text = description_text
 	desc_label.add_theme_color_override("font_color", Color.WHITE)
-	desc_label.add_theme_font_size_override("font_size", 10)  # Slightly smaller font
+	desc_label.add_theme_font_size_override("font_size", 15)  # Slightly smaller font
+	desc_label.add_theme_font_override("font", pixel_font)
 	# Add outline for better readability
 	desc_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	desc_label.add_theme_constant_override("outline_size", 2)
