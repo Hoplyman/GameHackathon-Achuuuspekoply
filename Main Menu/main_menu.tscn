@@ -181,8 +181,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 6.0
-offset_bottom = 9.0
+offset_left = -2.0
+offset_top = -3.0
+offset_right = 4.0
+offset_bottom = 6.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_qe12f")
@@ -200,18 +202,19 @@ script = ExtResource("4_qm7iq")
 
 [node name="Main Menu Panel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 39.0
-offset_top = 42.0
-offset_right = 549.0
-offset_bottom = 596.0
+offset_left = 55.0
+offset_top = 36.0
+offset_right = 604.0
+offset_bottom = 590.0
+scale = Vector2(1.08, 1.12)
 theme_override_styles/panel = SubResource("StyleBoxTexture_8qtwp")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
-offset_left = 155.0
-offset_top = 95.0
-offset_right = 388.0
-offset_bottom = 137.0
+offset_left = 208.0
+offset_top = 108.0
+offset_right = 441.0
+offset_bottom = 150.0
 scale = Vector2(1.28672, 1.49592)
 theme_override_fonts/font = ExtResource("2_fu7sn")
 theme_override_font_sizes/font_size = 50
@@ -295,10 +298,10 @@ text = "Quit"
 
 [node name="About" type="Button" parent="."]
 layout_mode = 0
-offset_left = 1076.0
-offset_top = 561.0
-offset_right = 1125.0
-offset_bottom = 610.0
+offset_left = 1209.0
+offset_top = 656.0
+offset_right = 1258.0
+offset_bottom = 705.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_fu7sn")
 theme_override_font_sizes/font_size = 30
@@ -318,10 +321,11 @@ layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.0138889
 anchor_bottom = 0.0138889
-offset_left = 38.0
-offset_top = 34.0
-offset_right = 544.0
-offset_bottom = 586.0
+offset_left = 59.0
+offset_top = 25.0
+offset_right = 577.0
+offset_bottom = 577.0
+scale = Vector2(1.12, 1.12)
 theme_override_styles/panel = SubResource("StyleBoxTexture_npuod")
 script = ExtResource("8_2ekim")
 
@@ -416,10 +420,10 @@ script = ExtResource("10_b6svo")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 579.0
-offset_top = 124.0
-offset_right = 1130.0
-offset_bottom = 514.0
+offset_left = 638.0
+offset_top = 131.0
+offset_right = 1189.0
+offset_bottom = 521.0
 texture = ExtResource("12_eq6yn")
 expand_mode = 1
 stretch_mode = 4

@@ -13,7 +13,13 @@ var ui_scale_factor: float = 1.0
 var start_game_button: Button
 var back_to_menu_button: Button
 
+# Video players for each step
+var video_players: Array[VideoStreamPlayer] = []
+
 func _ready():
+	# Wait for the scene to be fully ready
+	await get_tree().process_frame
+	
 	calculate_ui_scale()
 	setup_tutorial_steps()
 	create_scrollable_tutorial()
@@ -23,9 +29,10 @@ func calculate_ui_scale():
 	var width_ratio = viewport_size.x / base_resolution.x
 	var height_ratio = viewport_size.y / base_resolution.y
 	ui_scale_factor = min(width_ratio, height_ratio)
+	ui_scale_factor = max(ui_scale_factor, 0.5)  # Minimum scale
 
 func scaled_font_size(base_size: int) -> int:
-	return int(base_size * ui_scale_factor)
+	return max(int(base_size * ui_scale_factor), 12)  # Minimum font size
 
 func scaled_size(base_size: Vector2) -> Vector2:
 	return base_size * ui_scale_factor
@@ -63,38 +70,43 @@ func setup_tutorial_steps():
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Normal & Aggressive Shells (Types 1-2)",
-			"description": "Foundation Shells\n\nType 1 - Normal Shell:\n• Standard shell with no special effects\n• Basic building block of the game\n• Safe and reliable for movement\n\nType 2 - Aggressive Shell:\n• Destroys adjacent shells when activated\n• Activates at end of round\n• Good for clearing opponent defenses\n• Can backfire if placed poorly",
+			"title": "Normal & Golden Shells (Types 1-2)",
+			"description": "Foundation Shells\n\nType 1 - Normal Shell (Base Score: 1):\n• In houses: Gains +1 score each end round\n• In pits: Resets to 1 score if not already 1\n• Basic building block of the game\n• Safe and reliable for movement\n\nType 2 - Golden Shell (Base Score: 5):\n• Always gains +1 score each end round\n• In houses: +5 score when dropped\n• High value shell for scoring\n• Consistent growth over time",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Explosive & Chain Shells (Types 3-4)",
-			"description": "Area Effect Combat\n\nType 3 - Explosive Shell:\n• Destroys shells in a larger radius\n• More powerful than aggressive shells\n• Great for clearing clustered defenses\n\nType 4 - Chain Shell:\n• Triggers other special shells nearby\n• Creates powerful chain reactions\n• Can cascade effects across multiple pits\n• High risk, high reward placement",
+			"title": "Echo & Anchor Shells (Types 3-4)",
+			"description": "Duplication & Multiplication\n\nType 3 - Echo Shell (Base Score: 1):\n• End round: Creates a duplicate of itself\n• Drop: Affects nearby shells with echo effect\n• Can rapidly multiply your shell count\n• Strategic for late game advantage\n\nType 4 - Anchor Shell (Base Score: 1):\n• In pits: Gains multiplier stacks (+50% per stack)\n• Affects nearby shells on drop\n• Powerful for score multiplication\n• Best placed in stable pit positions",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Shield & Barrier Shells (Types 5-6)",
-			"description": "Defensive Protection\n\nType 5 - Shield Shell:\n• Protects nearby shells from destruction\n• Creates a defensive zone around placement\n• Counters aggressive and explosive shells\n\nType 6 - Barrier Shell:\n• Creates stronger protective barriers\n• Blocks more types of attacks\n• Can protect entire pit areas\n• Essential for defensive strategies",
+			"title": "Spirit & Time Shells (Types 5-6)",
+			"description": "Spawning & Enhancement\n\nType 5 - Spirit Shell (Base Score: 1):\n• Drop: Spawns random shell (1-12) in same pit\n• End round in houses: Also spawns random shell\n• Creates unpredictable advantages\n• Good for resource generation\n\nType 6 - Time Shell (Base Score: 2):\n• In houses end round: +2 score bonus\n• In pits end round: Affects nearby shells with +1 score\n• Drop: Gives nearby shells +1 score immediately\n• Excellent support shell",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Healing & Reflection Shells (Types 7-8)",
-			"description": "Advanced Defense\n\nType 7 - Healing Shell:\n• Restores destroyed shells over time\n• Counters destruction-based strategies\n• Can regenerate pit contents\n\nType 8 - Reflection Shell:\n• Bounces enemy effects back to them\n• Turns opponent attacks into advantages\n• Requires careful timing and placement\n• Can reverse game momentum",
+			"title": "Lucky & Mirror Shells (Types 7-8)",
+			"description": "Luck & Reflection Effects\n\nType 7 - Lucky Shell (Base Score: 2):\n• Drop: Gains 1-3 random score bonus\n• End round in pits: Gives nearby shells luck stacks\n• Gains luck stacks for score bonuses\n• Unpredictable but potentially powerful\n\nType 8 - Mirror Shell (Base Score: 1):\n• End round: Affects nearby shells with mirror\n• Drop: Copies one nearby shell type to another\n• Can transform shell types strategically\n• Versatile adaptation tool",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Multiplier & Teleport Shells (Types 9-10)",
-			"description": "Resource Manipulation\n\nType 9 - Multiplier Shell:\n• Doubles the shell count in its pit\n• Creates instant resource advantage\n• Powerful for building large distributions\n\nType 10 - Teleport Shell:\n• Moves shells to different pit locations\n• Enables surprise captures\n• Can disrupt opponent strategies\n• Allows creative redistribution",
+			"title": "Flame & Chain Shells (Types 9-10)",
+			"description": "Damage & Chain Reactions\n\nType 9 - Flame Shell (Base Score: 3):\n• End round: Burns nearby shells (reduces their score)\n• Gains +1 score per shell burned\n• Offensive area-of-effect shell\n• Good for weakening opponent positions\n\nType 10 - Chain Shell:\n• Drop: Triggers complex chain reactions on nearby shells\n• Can cause different effects based on nearby shell types\n• May trigger movement or other shell abilities\n• Advanced combo potential",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
-			"title": "Freeze & Transform Shells (Types 11-12)",
-			"description": "Game Control Shells\n\nType 11 - Freeze Shell:\n• Temporarily prevents opponent actions\n• Can freeze specific pits or areas\n• Disrupts opponent timing and plans\n• Creates strategic advantages\n\nType 12 - Transform Shell:\n• Changes other shells into different types\n• Can convert opponent special shells\n• Ultimate utility for adaptation\n• Requires deep game knowledge",
+			"title": "Purify & Ice Shells (Types 11-12)",
+			"description": "Cleansing & Freezing\n\nType 11 - Purify Shell (Base Score: 5):\n• Drop: Removes all negative effects from nearby shells\n• Cleanses burn, freeze, decay, curse, and disable stacks\n• High base score with utility\n• Essential counter to debuff strategies\n\nType 12 - Ice Shell (Base Score: 3):\n• End round: Freezes nearby shells (reduces actions)\n• Gains +1 score per shell frozen\n• Control shell that limits opponent options\n• Defensive area denial",
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
+		},
+		{
+			"title": "Shell Status Effects & Stacks",
+			"description": "Advanced Shell Mechanics\n\nStack Effects:\n• Multiplier Stacks: +50% score per stack (Type 4 shells)\n• Luck Stacks: Bonus effects from lucky interactions\n• Burn Stacks: -1 score per stack at end round\n• Freeze Stacks: Reduces shell actions, shows ice particle\n• Decay Stacks: Halves score at end round\n• Rust Stacks: Affects multiplier calculations\n• Cursed Stacks: -50% base score, +10% penalty per stack\n• Disable Stacks: Prevents certain shell abilities\n\nScore Calculation:\n• Base score modified by shell type\n• Multiplier stacks applied (except rust-affected shells)\n• Curse reduction applied (except types 7 & 11)\n• Final TotalScore displayed on shell",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Turn Phases & Activation Order",
-			"description": "Understanding Game Timing\n\nEach Round Has Phases:\n1. Start of Round: Certain shells activate\n2. Player Movement: Normal shell distribution\n3. End of Round: Most special effects trigger\n\nActivation Priority Order:\n• Pit effects activate first\n• Shell effects by type priority\n• Multiple shells of same type activate simultaneously\n\nStrategic Timing:\nUnderstanding when effects trigger is crucial for advanced play!",
+			"description": "Understanding Game Timing\n\nShell Activation Phases:\n1. Shell Drop: When shell lands in a pit\n2. End Round: After all moves complete\n3. Status Updates: Stack effects applied\n\nEffect Timing:\n• Drop Effects: Immediate when shell lands\n• End Round Effects: After movement phase\n• Stack Decay: Automatic each end round\n• Score Updates: Continuous via timer\n\nArea of Effect:\n• Shells use ShellRange area to detect nearby shells\n• Effects apply to overlapping shells only\n• Different shells have different effect ranges\n• Chain reactions can cascade through multiple shells",
 			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
@@ -110,6 +122,16 @@ func setup_tutorial_steps():
 	]
 
 func create_scrollable_tutorial():
+	# Clear any existing children
+	for child in get_children():
+		child.queue_free()
+	
+	# Clear video players array
+	video_players.clear()
+	
+	# Wait for children to be cleared
+	await get_tree().process_frame
+	
 	# Set up the main control to fill the screen
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	
@@ -124,32 +146,39 @@ func create_scrollable_tutorial():
 	
 	# Create scrollable content area
 	scroll_container = ScrollContainer.new()
-	scroll_container.position = Vector2(0, 100)
-	scroll_container.size = Vector2(get_viewport().size.x, get_viewport().size.y - 200)
-	scroll_container.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	scroll_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scroll_container.offset_top = 100
 	scroll_container.offset_bottom = -100
+	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	add_child(scroll_container)
 	
 	# Create content container
 	content_container = VBoxContainer.new()
 	content_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content_container.add_theme_constant_override("separation", 20)
 	scroll_container.add_child(content_container)
 	
 	# Add tutorial steps
 	for i in range(tutorial_steps.size()):
 		create_tutorial_step(tutorial_steps[i], i)
+		
+		# Add some space between steps
+		if i < tutorial_steps.size() - 1:
+			var spacer = Control.new()
+			spacer.custom_minimum_size = Vector2(0, 40)
+			content_container.add_child(spacer)
 	
 	# Create footer with action buttons
 	create_footer()
 
 func create_header():
 	var header = Panel.new()
-	header.position = Vector2(0, 0)
-	header.size = Vector2(get_viewport().size.x, 100)
 	header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	header.offset_bottom = 100
-	header.add_theme_color_override("bg_color", Color(0.1, 0.1, 0.2, 0.95))
+	header.custom_minimum_size = Vector2(0, 100)
+	header.size.y = 100
+	var style_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(0.1, 0.1, 0.2, 0.95)
+	header.add_theme_stylebox_override("panel", style_box)
 	add_child(header)
 	
 	# Tutorial title
@@ -163,7 +192,9 @@ func create_header():
 	# Back to menu button
 	back_to_menu_button = Button.new()
 	back_to_menu_button.text = "← BACK TO MENU"
-	back_to_menu_button.position = Vector2(get_viewport().size.x - 200, 25)
+	back_to_menu_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	back_to_menu_button.position.x -= 200
+	back_to_menu_button.position.y = 25
 	back_to_menu_button.size = Vector2(150, 50)
 	back_to_menu_button.add_theme_font_size_override("font_size", scaled_font_size(16))
 	back_to_menu_button.pressed.connect(_on_back_to_menu)
@@ -174,14 +205,29 @@ func create_tutorial_step(step: Dictionary, step_index: int):
 	var step_container = Panel.new()
 	step_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	step_container.custom_minimum_size = Vector2(0, 600)
-	step_container.add_theme_color_override("bg_color", Color(0.08, 0.08, 0.15, 0.9))
+	var style_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(0.08, 0.08, 0.15, 0.9)
+	style_box.corner_radius_top_left = 10
+	style_box.corner_radius_top_right = 10
+	style_box.corner_radius_bottom_left = 10
+	style_box.corner_radius_bottom_right = 10
+	step_container.add_theme_stylebox_override("panel", style_box)
 	content_container.add_child(step_container)
+	
+	# Main vertical layout for the step
+	var main_vbox = VBoxContainer.new()
+	main_vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	main_vbox.offset_left = 20
+	main_vbox.offset_right = -20
+	main_vbox.offset_top = 20
+	main_vbox.offset_bottom = -20
+	main_vbox.add_theme_constant_override("separation", 20)
+	step_container.add_child(main_vbox)
 	
 	# Step number and title
 	var title_container = HBoxContainer.new()
-	title_container.position = Vector2(40, 20)
-	title_container.size = Vector2(get_viewport().size.x - 80, 60)
-	step_container.add_child(title_container)
+	title_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_vbox.add_child(title_container)
 	
 	var step_number = Label.new()
 	step_number.text = "STEP " + str(step_index + 1)
@@ -199,41 +245,79 @@ func create_tutorial_step(step: Dictionary, step_index: int):
 	
 	# Content area with video and description side by side
 	var content_area = HBoxContainer.new()
-	content_area.position = Vector2(40, 100)
-	content_area.size = Vector2(get_viewport().size.x - 80, 480)
-	step_container.add_child(content_area)
+	content_area.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	content_area.add_theme_constant_override("separation", 40)
+	main_vbox.add_child(content_area)
 	
-	# Video placeholder (left side)
+	# Create actual video player (left side)
 	var video_container = Panel.new()
 	video_container.custom_minimum_size = Vector2(600, 400)
-	video_container.add_theme_color_override("bg_color", Color(0.2, 0.2, 0.2, 1.0))
+	var video_style = StyleBoxFlat.new()
+	video_style.bg_color = Color(0.1, 0.1, 0.1, 1.0)
+	video_style.corner_radius_top_left = 8
+	video_style.corner_radius_top_right = 8
+	video_style.corner_radius_bottom_left = 8
+	video_style.corner_radius_bottom_right = 8
+	video_container.add_theme_stylebox_override("panel", video_style)
 	content_area.add_child(video_container)
 	
-	var video_label = Label.new()
-	video_label.text = "VIDEO PLACEHOLDER\n" + step.video_path
-	video_label.position = Vector2(20, 20)
-	video_label.size = Vector2(560, 360)
-	video_label.add_theme_font_size_override("font_size", scaled_font_size(16))
-	video_label.add_theme_color_override("font_color", Color.GRAY)
-	video_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	video_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	video_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	video_container.add_child(video_label)
+	# Create video player
+	var video_player = VideoStreamPlayer.new()
+	video_player.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	video_player.offset_left = 10
+	video_player.offset_right = -10
+	video_player.offset_top = 10
+	video_player.offset_bottom = -10  # No space needed for controls now
 	
-	# Add spacer between video and description
-	var spacer = Control.new()
-	spacer.custom_minimum_size = Vector2(40, 0)
-	content_area.add_child(spacer)
+	# Configure video player for looping without sound
+	video_player.autoplay = false  # We'll start manually after adding to tree
+	video_player.loop = true
+	video_player.volume_db = -80  # Effectively mute the video
+	
+	# Try to load the video stream
+	if FileAccess.file_exists(step.video_path):
+		var video_stream = load(step.video_path)
+		if video_stream:
+			video_player.stream = video_stream
+		else:
+			print("Failed to load video: ", step.video_path)
+	else:
+		print("Video file not found: ", step.video_path)
+	
+	video_container.add_child(video_player)
+	video_players.append(video_player)
+	
+	# Start playing after the video player is in the scene tree
+	if video_player.stream:
+		# Use call_deferred to ensure the node is fully ready
+		video_player.call_deferred("play")
+	
+	# Add simple status overlay if video not found
+	if not FileAccess.file_exists(step.video_path):
+		var status_label = Label.new()
+		status_label.text = "Video Not Found:\n" + step.video_path
+		status_label.add_theme_color_override("font_color", Color.RED)
+		status_label.add_theme_font_size_override("font_size", scaled_font_size(14))
+		status_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		status_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		video_container.add_child(status_label)
 	
 	# Description (right side)
 	var description_container = Panel.new()
 	description_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	description_container.add_theme_color_override("bg_color", Color(0.15, 0.15, 0.25, 0.8))
+	description_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var desc_style = StyleBoxFlat.new()
+	desc_style.bg_color = Color(0.15, 0.15, 0.25, 0.8)
+	desc_style.corner_radius_top_left = 8
+	desc_style.corner_radius_top_right = 8
+	desc_style.corner_radius_bottom_left = 8
+	desc_style.corner_radius_bottom_right = 8
+	description_container.add_theme_stylebox_override("panel", desc_style)
 	content_area.add_child(description_container)
 	
 	var description_scroll = ScrollContainer.new()
-	description_scroll.position = Vector2(20, 20)
-	description_scroll.size = Vector2(description_container.size.x - 40, 440)
 	description_scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	description_scroll.offset_left = 20
 	description_scroll.offset_right = -20
@@ -241,74 +325,33 @@ func create_tutorial_step(step: Dictionary, step_index: int):
 	description_scroll.offset_bottom = -20
 	description_container.add_child(description_scroll)
 	
-	var description_label = RichTextLabel.new()
-	description_label.bbcode_enabled = true
-	description_label.text = format_description(step.description)
+	# Use regular Label instead of RichTextLabel to avoid BBCode issues
+	var description_label = Label.new()
+	description_label.text = step.description
 	description_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	description_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	description_label.add_theme_font_size_override("normal_font_size", scaled_font_size(18))
-	description_label.add_theme_color_override("default_color", Color.WHITE)
+	description_label.add_theme_font_size_override("font_size", scaled_font_size(16))
+	description_label.add_theme_color_override("font_color", Color.WHITE)
+	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	description_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	description_scroll.add_child(description_label)
-	
-	# Add separator
-	if step_index < tutorial_steps.size() - 1:
-		var separator = HSeparator.new()
-		separator.add_theme_constant_override("separation", 40)
-		content_container.add_child(separator)
-
-func format_description(text: String) -> String:
-	# Add basic BBCode formatting
-	var formatted = text
-	
-	# Make headers bold and larger
-	formatted = formatted.replace("How to Win:", "[size=24][b]How to Win:[/b][/size]")
-	formatted = formatted.replace("Your Goal:", "[size=24][b]Your Goal:[/b][/size]")
-	formatted = formatted.replace("Board Components:", "[size=24][b]Board Components:[/b][/size]")
-	formatted = formatted.replace("Player Areas:", "[size=24][b]Player Areas:[/b][/size]")
-	formatted = formatted.replace("Movement Rules:", "[size=24][b]Movement Rules:[/b][/size]")
-	formatted = formatted.replace("Extra Turn Trigger:", "[size=24][b]Extra Turn Trigger:[/b][/size]")
-	formatted = formatted.replace("Strategy:", "[size=24][b]Strategy:[/b][/size]")
-	formatted = formatted.replace("Capture Conditions:", "[size=24][b]Capture Conditions:[/b][/size]")
-	formatted = formatted.replace("Strategy Tips:", "[size=24][b]Strategy Tips:[/b][/size]")
-	formatted = formatted.replace("Special Shell Mechanics:", "[size=24][b]Special Shell Mechanics:[/b][/size]")
-	formatted = formatted.replace("Shell Categories:", "[size=24][b]Shell Categories:[/b][/size]")
-	formatted = formatted.replace("Selection Process:", "[size=24][b]Selection Process:[/b][/size]")
-	formatted = formatted.replace("Strategic Considerations:", "[size=24][b]Strategic Considerations:[/b][/size]")
-	formatted = formatted.replace("Key Strategies:", "[size=24][b]Key Strategies:[/b][/size]")
-	formatted = formatted.replace("Pro Tips:", "[size=24][b]Pro Tips:[/b][/size]")
-	
-	# Color code different shell types
-	formatted = formatted.replace("Type 1 - Normal Shell:", "[color=lightblue]Type 1 - Normal Shell:[/color]")
-	formatted = formatted.replace("Type 2 - Aggressive Shell:", "[color=red]Type 2 - Aggressive Shell:[/color]")
-	formatted = formatted.replace("Type 3 - Explosive Shell:", "[color=orange]Type 3 - Explosive Shell:[/color]")
-	formatted = formatted.replace("Type 4 - Chain Shell:", "[color=purple]Type 4 - Chain Shell:[/color]")
-	formatted = formatted.replace("Type 5 - Shield Shell:", "[color=cyan]Type 5 - Shield Shell:[/color]")
-	formatted = formatted.replace("Type 6 - Barrier Shell:", "[color=blue]Type 6 - Barrier Shell:[/color]")
-	formatted = formatted.replace("Type 7 - Healing Shell:", "[color=green]Type 7 - Healing Shell:[/color]")
-	formatted = formatted.replace("Type 8 - Reflection Shell:", "[color=silver]Type 8 - Reflection Shell:[/color]")
-	formatted = formatted.replace("Type 9 - Multiplier Shell:", "[color=gold]Type 9 - Multiplier Shell:[/color]")
-	formatted = formatted.replace("Type 10 - Teleport Shell:", "[color=magenta]Type 10 - Teleport Shell:[/color]")
-	formatted = formatted.replace("Type 11 - Freeze Shell:", "[color=lightcyan]Type 11 - Freeze Shell:[/color]")
-	formatted = formatted.replace("Type 12 - Transform Shell:", "[color=yellow]Type 12 - Transform Shell:[/color]")
-	
-	# Make important words stand out
-	formatted = formatted.replace("Important:", "[color=yellow][b]Important:[/b][/color]")
-	
-	return formatted
 
 func create_footer():
 	var footer = Panel.new()
-	footer.position = Vector2(0, get_viewport().size.y - 100)
-	footer.size = Vector2(get_viewport().size.x, 100)
 	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	footer.offset_top = -100
-	footer.add_theme_color_override("bg_color", Color(0.1, 0.1, 0.2, 0.95))
+	footer.custom_minimum_size = Vector2(0, 100)
+	footer.size.y = 100
+	var style_box = StyleBoxFlat.new()
+	style_box.bg_color = Color(0.1, 0.1, 0.2, 0.95)
+	footer.add_theme_stylebox_override("panel", style_box)
 	add_child(footer)
 	
 	# Start game button
 	start_game_button = Button.new()
 	start_game_button.text = "START GAME →"
-	start_game_button.position = Vector2(get_viewport().size.x - 200, 25)
+	start_game_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	start_game_button.position.x -= 200
+	start_game_button.position.y = 25
 	start_game_button.size = Vector2(150, 50)
 	start_game_button.add_theme_font_size_override("font_size", scaled_font_size(18))
 	start_game_button.add_theme_color_override("font_color", Color.LIME)
@@ -324,24 +367,31 @@ func create_footer():
 	footer.add_child(completion_label)
 
 func _on_back_to_menu():
+	# Stop all videos before leaving
+	for video_player in video_players:
+		if video_player and is_instance_valid(video_player):
+			video_player.stop()
+	
 	print("Returning to main menu...")
 	get_tree().change_scene_to_file("res://Main Menu/main_menu.tscn")
-	# Add your scene transition logic here
-	# get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
 
 func _on_start_game():
+	# Stop all videos before leaving
+	for video_player in video_players:
+		if video_player and is_instance_valid(video_player):
+			video_player.stop()
+	
 	print("Starting Shell Masters game...")
 	get_tree().change_scene_to_file("res://scenes/Gameplay.tscn")
-	# Add your game start logic here
-	# get_tree().change_scene_to_file("res://scenes/GamePlay.tscn")
 
 # Optional: Add smooth scrolling to specific sections
 func scroll_to_step(step_index: int):
-	if step_index >= 0 and step_index < tutorial_steps.size():
+	if step_index >= 0 and step_index < tutorial_steps.size() and scroll_container:
 		var step_position = step_index * 640  # Approximate height per step
 		scroll_container.scroll_vertical = step_position
 
 # Optional: Track scroll progress
 func _on_scroll_changed():
-	var scroll_progress = float(scroll_container.scroll_vertical) / float(scroll_container.get_v_scroll_bar().max_value)
-	print("Tutorial scroll progress: ", scroll_progress * 100, "%")
+	if scroll_container and scroll_container.get_v_scroll_bar():
+		var scroll_progress = float(scroll_container.scroll_vertical) / float(scroll_container.get_v_scroll_bar().max_value)
+		print("Tutorial scroll progress: ", scroll_progress * 100, "%")
