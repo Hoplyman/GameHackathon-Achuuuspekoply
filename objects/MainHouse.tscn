@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6sjqtnwnp0gx"]
+[gd_scene load_steps=6 format=3 uid="uid://c6sjqtnwnp0gx"]
 
 [ext_resource type="Script" uid="uid://c4qw3bpagmnow" path="res://objects/MainHouse.gd" id="1_cpixq"]
 [ext_resource type="Texture2D" uid="uid://c6epetnvtqb2o" path="res://assets/Sprites/PitSprites.png" id="2_cpixq"]
 [ext_resource type="PackedScene" uid="uid://dwkxkpei0jpnp" path="res://objects/ClickArea.tscn" id="3_8frl5"]
+[ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="3_14ewc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8frl5"]
 
@@ -21,6 +22,7 @@ offset_right = 22.0
 offset_bottom = -165.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_14ewc")
 theme_override_font_sizes/font_size = 25
 text = "0"
 horizontal_alignment = 1

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dni16xmjr8sb5"]
+[gd_scene load_steps=3 format=3 uid="uid://dni16xmjr8sb5"]
 
 [ext_resource type="Script" uid="uid://tfc45qacojm4" path="res://objects/SpecialShellSelector.gd" id="1_specialselector"]
+[ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="2_0leeh"]
 
 [node name="SpecialShellSelector" type="Control"]
 layout_mode = 3
@@ -39,6 +40,7 @@ alignment = 1
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0leeh")
 theme_override_font_sizes/font_size = 24
 text = "Player X - Choose a Special Shell"
 horizontal_alignment = 1
@@ -46,10 +48,12 @@ horizontal_alignment = 1
 [node name="ConfirmButton" type="Button" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0leeh")
 text = "Confirm"
 
 [node name="SkipButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0leeh")
 text = "Skip Turn"
 
 [node name="TypeButtonsContainer" type="VBoxContainer" parent="VBoxContainer"]
@@ -64,6 +68,7 @@ alignment = 1
 [node name="TargetSelectionLabel" type="Label" parent="VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_0leeh")
 theme_override_font_sizes/font_size = 16
 text = "Click on one of your pits to place this selection."
 horizontal_alignment = 1
