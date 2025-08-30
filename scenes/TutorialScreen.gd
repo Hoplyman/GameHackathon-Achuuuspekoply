@@ -35,77 +35,77 @@ func setup_tutorial_steps():
 		{
 			"title": "Game Objective",
 			"description": "Win by collecting the most shells!\n\nHow to Win:\n• The game ends when one player has no shells left in their pits\n• All remaining shells go to their owner's main house\n• Player with most shells in their main house wins\n\nYour Goal:\n• Collect shells in your main house (scoring area)\n• Use strategy to capture opponent shells\n• Empty opponent's pits while protecting your own",
-			"video_path": "res://tutorial/clips/objective.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Board Layout & Starting Setup",
 			"description": "Understanding the Game Board\n\nBoard Components:\n• 14 Small Pits: 7 for each player\n• 2 Main Houses: Your scoring areas on the sides\n• Starting shells: 7 normal shells in each pit\n\nPlayer Areas:\n• Player 1 (Blue): Bottom row (pits 1-7)\n• Player 2 (Red): Top row (pits 8-14)\n• Each player's main house is on their side",
-			"video_path": "res://tutorial/clips/board_layout.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Basic Shell Movement",
 			"description": "How to Move Shells\n\nMovement Rules:\n• Pick up ALL shells from one of YOUR pits\n• Drop shells one-by-one, counter-clockwise\n• Include your own main house in the path\n• Skip opponent's main house completely\n• Continue around the board if you have more shells\n\nImportant: You can only select pits on your side that contain shells!",
-			"video_path": "res://tutorial/clips/shell_movement.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Extra Turn Rule",
 			"description": "Get Bonus Turns!\n\nExtra Turn Trigger:\n• When your last shell lands exactly in YOUR main house\n• You immediately get another turn\n• No special shell selection after extra turns\n• Can chain multiple extra turns together\n\nStrategy:\n• Count shells to land in your main house\n• Extra turns give huge advantages\n• Plan moves to maximize bonus turns",
-			"video_path": "res://tutorial/clips/extra_turn.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Capture Mechanics",
 			"description": "Steal Opponent Shells!\n\nCapture Conditions:\n• Your last shell lands in an EMPTY pit on YOUR side\n• The opposite pit (opponent's side) contains shells\n• You capture shells from BOTH pits\n• All captured shells go to YOUR main house\n\nStrategy Tips:\n• Look for empty pits opposite full opponent pits\n• Plan moves to create capture opportunities\n• Defend against opponent captures",
-			"video_path": "res://tutorial/clips/capture.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Special Shell System Overview",
 			"description": "12 Unique Special Shells!\n\nSpecial Shell Mechanics:\n• After each normal turn, select a special shell type (1-12)\n• Choose any pit to place the special shell\n• Special shells have unique abilities and timing\n• They activate at different phases of the game\n\nShell Categories:\n• Combat Shells: Destroy and damage\n• Defensive Shells: Protect and block\n• Utility Shells: Transform and manipulate\n• Strategic Shells: Control and enhance",
-			"video_path": "res://tutorial/clips/special_system.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Normal & Aggressive Shells (Types 1-2)",
 			"description": "Foundation Shells\n\nType 1 - Normal Shell:\n• Standard shell with no special effects\n• Basic building block of the game\n• Safe and reliable for movement\n\nType 2 - Aggressive Shell:\n• Destroys adjacent shells when activated\n• Activates at end of round\n• Good for clearing opponent defenses\n• Can backfire if placed poorly",
-			"video_path": "res://tutorial/clips/normal_aggressive.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Explosive & Chain Shells (Types 3-4)",
 			"description": "Area Effect Combat\n\nType 3 - Explosive Shell:\n• Destroys shells in a larger radius\n• More powerful than aggressive shells\n• Great for clearing clustered defenses\n\nType 4 - Chain Shell:\n• Triggers other special shells nearby\n• Creates powerful chain reactions\n• Can cascade effects across multiple pits\n• High risk, high reward placement",
-			"video_path": "res://tutorial/clips/explosive_chain.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Shield & Barrier Shells (Types 5-6)",
 			"description": "Defensive Protection\n\nType 5 - Shield Shell:\n• Protects nearby shells from destruction\n• Creates a defensive zone around placement\n• Counters aggressive and explosive shells\n\nType 6 - Barrier Shell:\n• Creates stronger protective barriers\n• Blocks more types of attacks\n• Can protect entire pit areas\n• Essential for defensive strategies",
-			"video_path": "res://tutorial/clips/shield_barrier.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Healing & Reflection Shells (Types 7-8)",
 			"description": "Advanced Defense\n\nType 7 - Healing Shell:\n• Restores destroyed shells over time\n• Counters destruction-based strategies\n• Can regenerate pit contents\n\nType 8 - Reflection Shell:\n• Bounces enemy effects back to them\n• Turns opponent attacks into advantages\n• Requires careful timing and placement\n• Can reverse game momentum",
-			"video_path": "res://tutorial/clips/healing_reflection.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Multiplier & Teleport Shells (Types 9-10)",
 			"description": "Resource Manipulation\n\nType 9 - Multiplier Shell:\n• Doubles the shell count in its pit\n• Creates instant resource advantage\n• Powerful for building large distributions\n\nType 10 - Teleport Shell:\n• Moves shells to different pit locations\n• Enables surprise captures\n• Can disrupt opponent strategies\n• Allows creative redistribution",
-			"video_path": "res://tutorial/clips/multiplier_teleport.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Freeze & Transform Shells (Types 11-12)",
 			"description": "Game Control Shells\n\nType 11 - Freeze Shell:\n• Temporarily prevents opponent actions\n• Can freeze specific pits or areas\n• Disrupts opponent timing and plans\n• Creates strategic advantages\n\nType 12 - Transform Shell:\n• Changes other shells into different types\n• Can convert opponent special shells\n• Ultimate utility for adaptation\n• Requires deep game knowledge",
-			"video_path": "res://tutorial/clips/freeze_transform.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Turn Phases & Activation Order",
 			"description": "Understanding Game Timing\n\nEach Round Has Phases:\n1. Start of Round: Certain shells activate\n2. Player Movement: Normal shell distribution\n3. End of Round: Most special effects trigger\n\nActivation Priority Order:\n• Pit effects activate first\n• Shell effects by type priority\n• Multiple shells of same type activate simultaneously\n\nStrategic Timing:\nUnderstanding when effects trigger is crucial for advanced play!",
-			"video_path": "res://tutorial/clips/turn_phases.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Special Shell Selection Interface",
 			"description": "How to Place Special Shells\n\nSelection Process:\n1. After your turn, the selector appears\n2. Choose shell type (1-12) or click 'Skip'\n3. Click on any pit to place the shell\n4. Special shell is added to that pit's contents\n\nStrategic Considerations:\n• Consider pit location and contents\n• Think about activation timing\n• Plan for opponent reactions\n• Balance offense and defense",
-			"video_path": "res://tutorial/clips/shell_selection.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		},
 		{
 			"title": "Advanced Strategies & Tips",
 			"description": "Master Level Play\n\nKey Strategies:\n• Shell Counting: Calculate exact landing positions\n• Chain Planning: Set up multiple extra turns\n• Trap Setting: Use special shells to create traps\n• Resource Control: Manage shell distribution\n• Timing Mastery: Coordinate special effects\n\nPro Tips:\n• Always think 2-3 moves ahead\n• Watch for opponent weaknesses\n• Balance aggression with defense\n• Control the pace of the endgame",
-			"video_path": "res://tutorial/clips/advanced_strategies.ogv"
+			"video_path": "res://tutorial/clips/a_m_o_g_u_s.ogv"
 		}
 	]
 
