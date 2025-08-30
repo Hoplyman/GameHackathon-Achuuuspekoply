@@ -8,7 +8,7 @@ func _ready():
 	settings_panel.visible = false
 	
 func _on_start_pressed(): 
-	get_tree().change_scene_to_file("res://scenes/Campaign/Campaign.tscn")
+	get_tree().change_scene_to_file("res://scenes/TutorialScreen.tscn")
 
 func _on_settings_pressed(): 
 	button_container.visible = false 

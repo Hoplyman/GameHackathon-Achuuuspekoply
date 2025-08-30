@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkwnxftguw0j"]
+
+[ext_resource type="Script" uid="uid://vvy63jkout2q" path="res://scenes/TutorialScreen.gd" id="1_yvb13"]
+
+[node name="TutorialScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_yvb13")

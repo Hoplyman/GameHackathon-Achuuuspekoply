@@ -1,10 +1,357 @@
-[gd_scene load_steps=6 format=3 uid="uid://i6gqnuq76pna"]
+[gd_scene load_steps=6 format=3 uid="uid://deqwlb4uamuhe"]
 
 [ext_resource type="Script" uid="uid://b3vvq5tna3oo7" path="res://scenes/Gameplay.gd" id="1_288ch"]
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_twv1b"]
-[ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_y0w3d"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_u5f0c"]
 [ext_resource type="PackedScene" uid="uid://dni16xmjr8sb5" path="res://objects/SpecialShellSelector.tscn" id="5_0g6v0"]
+
+[sub_resource type="GDScript" id="GDScript_ebau5"]
+script/source = "extends Control
+
+# Tutorial content data
+var tutorial_steps: Array = []
+var scroll_container: ScrollContainer
+var content_container: VBoxContainer
+
+# Resolution scaling
+var base_resolution = Vector2(1920, 1080)
+var ui_scale_factor: float = 1.0
+
+# Navigation
+var start_game_button: Button
+var back_to_menu_button: Button
+
+func _ready():
+	calculate_ui_scale()
+	setup_tutorial_steps()
+	create_scrollable_tutorial()
+
+func calculate_ui_scale():
+	var viewport_size = get_viewport().get_visible_rect().size
+	var width_ratio = viewport_size.x / base_resolution.x
+	var height_ratio = viewport_size.y / base_resolution.y
+	ui_scale_factor = min(width_ratio, height_ratio)
+
+func scaled_font_size(base_size: int) -> int:
+	return int(base_size * ui_scale_factor)
+
+func scaled_size(base_size: Vector2) -> Vector2:
+	return base_size * ui_scale_factor
+
+func setup_tutorial_steps():
+	tutorial_steps = [
+		{
+			\"title\": \"Game Objective\",
+			\"description\": \"Win by collecting the most shells!\\n\\nHow to Win:\\n• The game ends when one player has no shells left in their pits\\n• All remaining shells go to their owner's main house\\n• Player with most shells in their main house wins\\n\\nYour Goal:\\n• Collect shells in your main house (scoring area)\\n• Use strategy to capture opponent shells\\n• Empty opponent's pits while protecting your own\",
+			\"video_path\": \"res://tutorial/clips/objective.ogv\"
+		},
+		{
+			\"title\": \"Board Layout & Starting Setup\",
+			\"description\": \"Understanding the Game Board\\n\\nBoard Components:\\n• 14 Small Pits: 7 for each player\\n• 2 Main Houses: Your scoring areas on the sides\\n• Starting shells: 7 normal shells in each pit\\n\\nPlayer Areas:\\n• Player 1 (Blue): Bottom row (pits 1-7)\\n• Player 2 (Red): Top row (pits 8-14)\\n• Each player's main house is on their side\",
+			\"video_path\": \"res://tutorial/clips/board_layout.ogv\"
+		},
+		{
+			\"title\": \"Basic Shell Movement\",
+			\"description\": \"How to Move Shells\\n\\nMovement Rules:\\n• Pick up ALL shells from one of YOUR pits\\n• Drop shells one-by-one, counter-clockwise\\n• Include your own main house in the path\\n• Skip opponent's main house completely\\n• Continue around the board if you have more shells\\n\\nImportant: You can only select pits on your side that contain shells!\",
+			\"video_path\": \"res://tutorial/clips/shell_movement.ogv\"
+		},
+		{
+			\"title\": \"Extra Turn Rule\",
+			\"description\": \"Get Bonus Turns!\\n\\nExtra Turn Trigger:\\n• When your last shell lands exactly in YOUR main house\\n• You immediately get another turn\\n• No special shell selection after extra turns\\n• Can chain multiple extra turns together\\n\\nStrategy:\\n• Count shells to land in your main house\\n• Extra turns give huge advantages\\n• Plan moves to maximize bonus turns\",
+			\"video_path\": \"res://tutorial/clips/extra_turn.ogv\"
+		},
+		{
+			\"title\": \"Capture Mechanics\",
+			\"description\": \"Steal Opponent Shells!\\n\\nCapture Conditions:\\n• Your last shell lands in an EMPTY pit on YOUR side\\n• The opposite pit (opponent's side) contains shells\\n• You capture shells from BOTH pits\\n• All captured shells go to YOUR main house\\n\\nStrategy Tips:\\n• Look for empty pits opposite full opponent pits\\n• Plan moves to create capture opportunities\\n• Defend against opponent captures\",
+			\"video_path\": \"res://tutorial/clips/capture.ogv\"
+		},
+		{
+			\"title\": \"Special Shell System Overview\",
+			\"description\": \"12 Unique Special Shells!\\n\\nSpecial Shell Mechanics:\\n• After each normal turn, select a special shell type (1-12)\\n• Choose any pit to place the special shell\\n• Special shells have unique abilities and timing\\n• They activate at different phases of the game\\n\\nShell Categories:\\n• Combat Shells: Destroy and damage\\n• Defensive Shells: Protect and block\\n• Utility Shells: Transform and manipulate\\n• Strategic Shells: Control and enhance\",
+			\"video_path\": \"res://tutorial/clips/special_system.ogv\"
+		},
+		{
+			\"title\": \"Normal & Aggressive Shells (Types 1-2)\",
+			\"description\": \"Foundation Shells\\n\\nType 1 - Normal Shell:\\n• Standard shell with no special effects\\n• Basic building block of the game\\n• Safe and reliable for movement\\n\\nType 2 - Aggressive Shell:\\n• Destroys adjacent shells when activated\\n• Activates at end of round\\n• Good for clearing opponent defenses\\n• Can backfire if placed poorly\",
+			\"video_path\": \"res://tutorial/clips/normal_aggressive.ogv\"
+		},
+		{
+			\"title\": \"Explosive & Chain Shells (Types 3-4)\",
+			\"description\": \"Area Effect Combat\\n\\nType 3 - Explosive Shell:\\n• Destroys shells in a larger radius\\n• More powerful than aggressive shells\\n• Great for clearing clustered defenses\\n\\nType 4 - Chain Shell:\\n• Triggers other special shells nearby\\n• Creates powerful chain reactions\\n• Can cascade effects across multiple pits\\n• High risk, high reward placement\",
+			\"video_path\": \"res://tutorial/clips/explosive_chain.ogv\"
+		},
+		{
+			\"title\": \"Shield & Barrier Shells (Types 5-6)\",
+			\"description\": \"Defensive Protection\\n\\nType 5 - Shield Shell:\\n• Protects nearby shells from destruction\\n• Creates a defensive zone around placement\\n• Counters aggressive and explosive shells\\n\\nType 6 - Barrier Shell:\\n• Creates stronger protective barriers\\n• Blocks more types of attacks\\n• Can protect entire pit areas\\n• Essential for defensive strategies\",
+			\"video_path\": \"res://tutorial/clips/shield_barrier.ogv\"
+		},
+		{
+			\"title\": \"Healing & Reflection Shells (Types 7-8)\",
+			\"description\": \"Advanced Defense\\n\\nType 7 - Healing Shell:\\n• Restores destroyed shells over time\\n• Counters destruction-based strategies\\n• Can regenerate pit contents\\n\\nType 8 - Reflection Shell:\\n• Bounces enemy effects back to them\\n• Turns opponent attacks into advantages\\n• Requires careful timing and placement\\n• Can reverse game momentum\",
+			\"video_path\": \"res://tutorial/clips/healing_reflection.ogv\"
+		},
+		{
+			\"title\": \"Multiplier & Teleport Shells (Types 9-10)\",
+			\"description\": \"Resource Manipulation\\n\\nType 9 - Multiplier Shell:\\n• Doubles the shell count in its pit\\n• Creates instant resource advantage\\n• Powerful for building large distributions\\n\\nType 10 - Teleport Shell:\\n• Moves shells to different pit locations\\n• Enables surprise captures\\n• Can disrupt opponent strategies\\n• Allows creative redistribution\",
+			\"video_path\": \"res://tutorial/clips/multiplier_teleport.ogv\"
+		},
+		{
+			\"title\": \"Freeze & Transform Shells (Types 11-12)\",
+			\"description\": \"Game Control Shells\\n\\nType 11 - Freeze Shell:\\n• Temporarily prevents opponent actions\\n• Can freeze specific pits or areas\\n• Disrupts opponent timing and plans\\n• Creates strategic advantages\\n\\nType 12 - Transform Shell:\\n• Changes other shells into different types\\n• Can convert opponent special shells\\n• Ultimate utility for adaptation\\n• Requires deep game knowledge\",
+			\"video_path\": \"res://tutorial/clips/freeze_transform.ogv\"
+		},
+		{
+			\"title\": \"Turn Phases & Activation Order\",
+			\"description\": \"Understanding Game Timing\\n\\nEach Round Has Phases:\\n1. Start of Round: Certain shells activate\\n2. Player Movement: Normal shell distribution\\n3. End of Round: Most special effects trigger\\n\\nActivation Priority Order:\\n• Pit effects activate first\\n• Shell effects by type priority\\n• Multiple shells of same type activate simultaneously\\n\\nStrategic Timing:\\nUnderstanding when effects trigger is crucial for advanced play!\",
+			\"video_path\": \"res://tutorial/clips/turn_phases.ogv\"
+		},
+		{
+			\"title\": \"Special Shell Selection Interface\",
+			\"description\": \"How to Place Special Shells\\n\\nSelection Process:\\n1. After your turn, the selector appears\\n2. Choose shell type (1-12) or click 'Skip'\\n3. Click on any pit to place the shell\\n4. Special shell is added to that pit's contents\\n\\nStrategic Considerations:\\n• Consider pit location and contents\\n• Think about activation timing\\n• Plan for opponent reactions\\n• Balance offense and defense\",
+			\"video_path\": \"res://tutorial/clips/shell_selection.ogv\"
+		},
+		{
+			\"title\": \"Advanced Strategies & Tips\",
+			\"description\": \"Master Level Play\\n\\nKey Strategies:\\n• Shell Counting: Calculate exact landing positions\\n• Chain Planning: Set up multiple extra turns\\n• Trap Setting: Use special shells to create traps\\n• Resource Control: Manage shell distribution\\n• Timing Mastery: Coordinate special effects\\n\\nPro Tips:\\n• Always think 2-3 moves ahead\\n• Watch for opponent weaknesses\\n• Balance aggression with defense\\n• Control the pace of the endgame\",
+			\"video_path\": \"res://tutorial/clips/advanced_strategies.ogv\"
+		}
+	]
+
+func create_scrollable_tutorial():
+	# Set up the main control to fill the screen
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	
+	# Create background
+	var background = ColorRect.new()
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.color = Color(0.05, 0.05, 0.1, 1.0)
+	add_child(background)
+	
+	# Create header with title and navigation
+	create_header()
+	
+	# Create scrollable content area
+	scroll_container = ScrollContainer.new()
+	scroll_container.position = Vector2(0, 100)
+	scroll_container.size = Vector2(get_viewport().size.x, get_viewport().size.y - 200)
+	scroll_container.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	scroll_container.offset_top = 100
+	scroll_container.offset_bottom = -100
+	add_child(scroll_container)
+	
+	# Create content container
+	content_container = VBoxContainer.new()
+	content_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_container.add_child(content_container)
+	
+	# Add tutorial steps
+	for i in range(tutorial_steps.size()):
+		create_tutorial_step(tutorial_steps[i], i)
+	
+	# Create footer with action buttons
+	create_footer()
+
+func create_header():
+	var header = Panel.new()
+	header.position = Vector2(0, 0)
+	header.size = Vector2(get_viewport().size.x, 100)
+	header.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	header.offset_bottom = 100
+	header.add_theme_color_override(\"bg_color\", Color(0.1, 0.1, 0.2, 0.95))
+	add_child(header)
+	
+	# Tutorial title
+	var title = Label.new()
+	title.text = \"SHELL MASTERS - COMPLETE TUTORIAL\"
+	title.position = Vector2(50, 25)
+	title.add_theme_font_size_override(\"font_size\", scaled_font_size(32))
+	title.add_theme_color_override(\"font_color\", Color.YELLOW)
+	header.add_child(title)
+	
+	# Back to menu button
+	back_to_menu_button = Button.new()
+	back_to_menu_button.text = \"← BACK TO MENU\"
+	back_to_menu_button.position = Vector2(get_viewport().size.x - 200, 25)
+	back_to_menu_button.size = Vector2(150, 50)
+	back_to_menu_button.add_theme_font_size_override(\"font_size\", scaled_font_size(16))
+	back_to_menu_button.pressed.connect(_on_back_to_menu)
+	header.add_child(back_to_menu_button)
+
+func create_tutorial_step(step: Dictionary, step_index: int):
+	# Main step container
+	var step_container = Panel.new()
+	step_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	step_container.custom_minimum_size = Vector2(0, 600)
+	step_container.add_theme_color_override(\"bg_color\", Color(0.08, 0.08, 0.15, 0.9))
+	content_container.add_child(step_container)
+	
+	# Step number and title
+	var title_container = HBoxContainer.new()
+	title_container.position = Vector2(40, 20)
+	title_container.size = Vector2(get_viewport().size.x - 80, 60)
+	step_container.add_child(title_container)
+	
+	var step_number = Label.new()
+	step_number.text = \"STEP \" + str(step_index + 1)
+	step_number.add_theme_font_size_override(\"font_size\", scaled_font_size(20))
+	step_number.add_theme_color_override(\"font_color\", Color.ORANGE)
+	step_number.custom_minimum_size = Vector2(120, 0)
+	title_container.add_child(step_number)
+	
+	var title_label = Label.new()
+	title_label.text = step.title
+	title_label.add_theme_font_size_override(\"font_size\", scaled_font_size(28))
+	title_label.add_theme_color_override(\"font_color\", Color.WHITE)
+	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_container.add_child(title_label)
+	
+	# Content area with video and description side by side
+	var content_area = HBoxContainer.new()
+	content_area.position = Vector2(40, 100)
+	content_area.size = Vector2(get_viewport().size.x - 80, 480)
+	step_container.add_child(content_area)
+	
+	# Video placeholder (left side)
+	var video_container = Panel.new()
+	video_container.custom_minimum_size = Vector2(600, 400)
+	video_container.add_theme_color_override(\"bg_color\", Color(0.2, 0.2, 0.2, 1.0))
+	content_area.add_child(video_container)
+	
+	var video_label = Label.new()
+	video_label.text = \"VIDEO PLACEHOLDER\\n\" + step.video_path
+	video_label.position = Vector2(20, 20)
+	video_label.size = Vector2(560, 360)
+	video_label.add_theme_font_size_override(\"font_size\", scaled_font_size(16))
+	video_label.add_theme_color_override(\"font_color\", Color.GRAY)
+	video_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	video_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	video_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	video_container.add_child(video_label)
+	
+	# Add spacer between video and description
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(40, 0)
+	content_area.add_child(spacer)
+	
+	# Description (right side)
+	var description_container = Panel.new()
+	description_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	description_container.add_theme_color_override(\"bg_color\", Color(0.15, 0.15, 0.25, 0.8))
+	content_area.add_child(description_container)
+	
+	var description_scroll = ScrollContainer.new()
+	description_scroll.position = Vector2(20, 20)
+	description_scroll.size = Vector2(description_container.size.x - 40, 440)
+	description_scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	description_scroll.offset_left = 20
+	description_scroll.offset_right = -20
+	description_scroll.offset_top = 20
+	description_scroll.offset_bottom = -20
+	description_container.add_child(description_scroll)
+	
+	var description_label = RichTextLabel.new()
+	description_label.bbcode_enabled = true
+	description_label.text = format_description(step.description)
+	description_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	description_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	description_label.add_theme_font_size_override(\"normal_font_size\", scaled_font_size(18))
+	description_label.add_theme_color_override(\"default_color\", Color.WHITE)
+	description_scroll.add_child(description_label)
+	
+	# Add separator
+	if step_index < tutorial_steps.size() - 1:
+		var separator = HSeparator.new()
+		separator.add_theme_constant_override(\"separation\", 40)
+		content_container.add_child(separator)
+
+func format_description(text: String) -> String:
+	# Add basic BBCode formatting
+	var formatted = text
+	
+	# Make headers bold and larger
+	formatted = formatted.replace(\"How to Win:\", \"[size=24][b]How to Win:[/b][/size]\")
+	formatted = formatted.replace(\"Your Goal:\", \"[size=24][b]Your Goal:[/b][/size]\")
+	formatted = formatted.replace(\"Board Components:\", \"[size=24][b]Board Components:[/b][/size]\")
+	formatted = formatted.replace(\"Player Areas:\", \"[size=24][b]Player Areas:[/b][/size]\")
+	formatted = formatted.replace(\"Movement Rules:\", \"[size=24][b]Movement Rules:[/b][/size]\")
+	formatted = formatted.replace(\"Extra Turn Trigger:\", \"[size=24][b]Extra Turn Trigger:[/b][/size]\")
+	formatted = formatted.replace(\"Strategy:\", \"[size=24][b]Strategy:[/b][/size]\")
+	formatted = formatted.replace(\"Capture Conditions:\", \"[size=24][b]Capture Conditions:[/b][/size]\")
+	formatted = formatted.replace(\"Strategy Tips:\", \"[size=24][b]Strategy Tips:[/b][/size]\")
+	formatted = formatted.replace(\"Special Shell Mechanics:\", \"[size=24][b]Special Shell Mechanics:[/b][/size]\")
+	formatted = formatted.replace(\"Shell Categories:\", \"[size=24][b]Shell Categories:[/b][/size]\")
+	formatted = formatted.replace(\"Selection Process:\", \"[size=24][b]Selection Process:[/b][/size]\")
+	formatted = formatted.replace(\"Strategic Considerations:\", \"[size=24][b]Strategic Considerations:[/b][/size]\")
+	formatted = formatted.replace(\"Key Strategies:\", \"[size=24][b]Key Strategies:[/b][/size]\")
+	formatted = formatted.replace(\"Pro Tips:\", \"[size=24][b]Pro Tips:[/b][/size]\")
+	
+	# Color code different shell types
+	formatted = formatted.replace(\"Type 1 - Normal Shell:\", \"[color=lightblue]Type 1 - Normal Shell:[/color]\")
+	formatted = formatted.replace(\"Type 2 - Aggressive Shell:\", \"[color=red]Type 2 - Aggressive Shell:[/color]\")
+	formatted = formatted.replace(\"Type 3 - Explosive Shell:\", \"[color=orange]Type 3 - Explosive Shell:[/color]\")
+	formatted = formatted.replace(\"Type 4 - Chain Shell:\", \"[color=purple]Type 4 - Chain Shell:[/color]\")
+	formatted = formatted.replace(\"Type 5 - Shield Shell:\", \"[color=cyan]Type 5 - Shield Shell:[/color]\")
+	formatted = formatted.replace(\"Type 6 - Barrier Shell:\", \"[color=blue]Type 6 - Barrier Shell:[/color]\")
+	formatted = formatted.replace(\"Type 7 - Healing Shell:\", \"[color=green]Type 7 - Healing Shell:[/color]\")
+	formatted = formatted.replace(\"Type 8 - Reflection Shell:\", \"[color=silver]Type 8 - Reflection Shell:[/color]\")
+	formatted = formatted.replace(\"Type 9 - Multiplier Shell:\", \"[color=gold]Type 9 - Multiplier Shell:[/color]\")
+	formatted = formatted.replace(\"Type 10 - Teleport Shell:\", \"[color=magenta]Type 10 - Teleport Shell:[/color]\")
+	formatted = formatted.replace(\"Type 11 - Freeze Shell:\", \"[color=lightcyan]Type 11 - Freeze Shell:[/color]\")
+	formatted = formatted.replace(\"Type 12 - Transform Shell:\", \"[color=yellow]Type 12 - Transform Shell:[/color]\")
+	
+	# Make important words stand out
+	formatted = formatted.replace(\"Important:\", \"[color=yellow][b]Important:[/b][/color]\")
+	
+	return formatted
+
+func create_footer():
+	var footer = Panel.new()
+	footer.position = Vector2(0, get_viewport().size.y - 100)
+	footer.size = Vector2(get_viewport().size.x, 100)
+	footer.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	footer.offset_top = -100
+	footer.add_theme_color_override(\"bg_color\", Color(0.1, 0.1, 0.2, 0.95))
+	add_child(footer)
+	
+	# Start game button
+	start_game_button = Button.new()
+	start_game_button.text = \"START GAME →\"
+	start_game_button.position = Vector2(get_viewport().size.x - 200, 25)
+	start_game_button.size = Vector2(150, 50)
+	start_game_button.add_theme_font_size_override(\"font_size\", scaled_font_size(18))
+	start_game_button.add_theme_color_override(\"font_color\", Color.LIME)
+	start_game_button.pressed.connect(_on_start_game)
+	footer.add_child(start_game_button)
+	
+	# Tutorial completion indicator
+	var completion_label = Label.new()
+	completion_label.text = \"Scroll through all sections to master Shell Masters!\"
+	completion_label.position = Vector2(50, 35)
+	completion_label.add_theme_font_size_override(\"font_size\", scaled_font_size(16))
+	completion_label.add_theme_color_override(\"font_color\", Color.WHITE)
+	footer.add_child(completion_label)
+
+func _on_back_to_menu():
+	print(\"Returning to main menu...\")
+	# Add your scene transition logic here
+	# get_tree().change_scene_to_file(\"res://scenes/MainMenu.tscn\")
+
+func _on_start_game():
+	print(\"Starting Shell Masters game...\")
+	# Add your game start logic here
+	# get_tree().change_scene_to_file(\"res://scenes/GamePlay.tscn\")
+
+# Optional: Add smooth scrolling to specific sections
+func scroll_to_step(step_index: int):
+	if step_index >= 0 and step_index < tutorial_steps.size():
+		var step_position = step_index * 640  # Approximate height per step
+		scroll_container.scroll_vertical = step_position
+
+# Optional: Track scroll progress
+func _on_scroll_changed():
+	var scroll_progress = float(scroll_container.scroll_vertical) / float(scroll_container.get_v_scroll_bar().max_value)
+	print(\"Tutorial scroll progress: \", scroll_progress * 100, \"%\")
+"
 
 [node name="Tutorial" type="Node2D"]
 script = ExtResource("1_288ch")
@@ -51,9 +398,6 @@ position = Vector2(1145, 750)
 [node name="Pit14" parent="." instance=ExtResource("2_twv1b")]
 position = Vector2(1286, 750)
 
-[node name="GameManager" type="Node" parent="."]
-script = ExtResource("3_y0w3d")
-
 [node name="MainHouse1" parent="." instance=ExtResource("4_u5f0c")]
 position = Vector2(250, 675)
 
@@ -69,3 +413,6 @@ offset_left = 869.929
 offset_top = 345.571
 offset_right = 869.929
 offset_bottom = 345.571
+
+[node name="tutorialmanager" type="Node" parent="."]
+script = SubResource("GDScript_ebau5")
