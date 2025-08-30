@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cyxxqawc5a0vf"
+path="res://.godot/imported/Magical Adventure 8 Bit Game Music - Mana Trail By HeatleyBros.mp3-3caae4d3cc01961698700dc3ede7c402.mp3str"
+
+[deps]
+
+source_file="res://assets/music/Magical Adventure 8 Bit Game Music - Mana Trail By HeatleyBros.mp3"
+dest_files=["res://.godot/imported/Magical Adventure 8 Bit Game Music - Mana Trail By HeatleyBros.mp3-3caae4d3cc01961698700dc3ede7c402.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
