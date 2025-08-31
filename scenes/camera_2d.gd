@@ -11,9 +11,9 @@ func move_to_position(Move: String):
 	var target_position: Vector2
 	
 	if Move == "Top":
-		target_position = Vector2(880, 570)  # Adjust these values as needed
+		target_position = Vector2(1000, 575)  # Adjust these values as needed
 	elif Move == "Center":
-		target_position = Vector2(880, 670)     # Adjust these values as needed
+		target_position = Vector2(1000, 675)     # Adjust these values as needed
 	else:
 		print("Unknown camera position: " + Move)
 		return
@@ -25,9 +25,9 @@ func move_to_position(Move: String):
 # Alternative function for instant movement
 func move_to_position_instant(Move: String):
 	if Move == "Top":
-		position = Vector2(880, 570)
+		position = Vector2(1000, 575)
 	elif Move == "Center":
-		position = Vector2(880, 670)
+		position = Vector2(1000, 675)
 	else:
 		print("Unknown camera position: " + Move)
 

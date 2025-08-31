@@ -1,7 +1,78 @@
-[gd_scene load_steps=2 format=3 uid="uid://dsowvbb74dtk4"]
+[gd_scene load_steps=3 format=3 uid="uid://dsowvbb74dtk4"]
 
 [ext_resource type="Texture2D" uid="uid://b40ulx0hhqbfu" path="res://assets/Sprites/BoardSprites.png" id="1_646yn"]
+[ext_resource type="Texture2D" uid="uid://b0abi43kbe275" path="res://assets/Boards/PvpBoard.png" id="2_s2cr6"]
 
 [node name="Board" type="Sprite2D"]
+self_modulate = Color(1, 1, 0, 0)
+show_behind_parent = true
 texture = ExtResource("1_646yn")
+offset = Vector2(-10, -27.5)
 hframes = 2
+
+[node name="RedHouse" type="Sprite2D" parent="."]
+texture = ExtResource("2_s2cr6")
+offset = Vector2(540, -27)
+hframes = 7
+frame = 6
+
+[node name="BlueHouse" type="Sprite2D" parent="."]
+position = Vector2(1, 0)
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-544, -27)
+hframes = 6
+
+[node name="Top1" type="Sprite2D" parent="."]
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-10, -220)
+vframes = 2
+
+[node name="Top2" type="Sprite2D" parent="."]
+position = Vector2(0, 50)
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-10, -47.5)
+vframes = 12
+frame = 6
+
+[node name="MidL" type="Sprite2D" parent="."]
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-337, 6)
+hframes = 6
+vframes = 14
+frame = 43
+
+[node name="Mid1" type="Sprite2D" parent="."]
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-25, 6)
+hframes = 3
+vframes = 14
+frame = 22
+
+[node name="Mid2" type="Sprite2D" parent="."]
+texture = ExtResource("2_s2cr6")
+offset = Vector2(25, 6)
+hframes = 3
+vframes = 14
+frame = 22
+
+[node name="MidR" type="Sprite2D" parent="."]
+position = Vector2(-16, -1)
+texture = ExtResource("2_s2cr6")
+offset = Vector2(320, 6)
+hframes = 6
+vframes = 14
+frame = 46
+
+[node name="Bot1" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-10, 45)
+vframes = 11
+frame = 6
+
+[node name="Bot2" type="Sprite2D" parent="."]
+position = Vector2(0, -3)
+texture = ExtResource("2_s2cr6")
+offset = Vector2(-10, 115)
+vframes = 11
+frame = 7

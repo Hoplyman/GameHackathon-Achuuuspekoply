@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://crgh76dqr0wvu" path="res://objects/Pit.tscn" id="2_jfxgp"]
 [ext_resource type="Script" uid="uid://codaoqvgc6kf3" path="res://scenes/GameManager.gd" id="3_gnmmn"]
 [ext_resource type="PackedScene" uid="uid://c6sjqtnwnp0gx" path="res://objects/MainHouse.tscn" id="4_4rwr5"]
-[ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4j5yk"]
+[ext_resource type="Script" uid="uid://1evp0w3dbbu7" path="res://scenes/camera_2d.gd" id="5_4j5yk"]
 [ext_resource type="PackedScene" uid="uid://dni16xmjr8sb5" path="res://objects/SpecialShellSelector.tscn" id="5_jfxgp"]
 [ext_resource type="PackedScene" uid="uid://dsowvbb74dtk4" path="res://objects/board.tscn" id="6_gnmmn"]
 [ext_resource type="FontFile" uid="uid://b06lhvgfl4ti0" path="res://Main Menu/assets/Sprout Lands - UI Pack - Basic pack/fonts/pixelFont-7-8x14-sproutLands.ttf" id="7_4rwr5"]
@@ -17,83 +17,103 @@ texture = ExtResource("9_hsn8a")
 [node name="Gameplay" type="Node2D"]
 script = ExtResource("1_a8mty")
 
+[node name="TableInitial" type="Sprite2D" parent="."]
+z_index = -2
+position = Vector2(1050, 696)
+scale = Vector2(2, 2)
+texture = ExtResource("9_hsn8a")
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+z_index = -14
+offset_left = -282.0
+offset_top = -21.0
+offset_right = 2429.0
+offset_bottom = 1472.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_4j5yk")
+
+[node name="Board" parent="." instance=ExtResource("6_gnmmn")]
+light_mask = 0
+z_index = -1
+position = Vector2(1000, 675)
+scale = Vector2(1.5, 1.5)
+frame = 1
+
 [node name="Pit1" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(1285, 600)
+position = Vector2(1500, 575)
 
 [node name="Pit2" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(1145, 600)
+position = Vector2(1333, 575)
 
 [node name="Pit3" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(1007, 600)
+position = Vector2(1166, 575)
 
 [node name="Pit4" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(868, 600)
+position = Vector2(1000, 575)
 
 [node name="Pit5" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(732, 600)
+position = Vector2(833, 575)
 
 [node name="Pit6" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(594, 600)
+position = Vector2(666, 575)
 
 [node name="Pit7" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(454, 600)
+position = Vector2(500, 575)
 
 [node name="Pit8" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(453, 750)
+position = Vector2(500, 760)
 
 [node name="Pit9" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(596, 750)
+position = Vector2(666, 760)
 
 [node name="Pit10" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(730, 750)
+position = Vector2(833, 760)
 
 [node name="Pit11" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(867, 750)
+position = Vector2(1000, 760)
 
 [node name="Pit12" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(1004, 750)
+position = Vector2(1166, 760)
 
 [node name="Pit13" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(1145, 750)
+position = Vector2(1333, 760)
 
 [node name="Pit14" parent="." instance=ExtResource("2_jfxgp")]
-position = Vector2(1286, 750)
+position = Vector2(1500, 760)
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("3_gnmmn")
 
 [node name="MainHouse1" parent="." instance=ExtResource("4_4rwr5")]
-position = Vector2(250, 675)
+position = Vector2(275, 675)
+scale = Vector2(1.25, 1.25)
 
 [node name="MainHouse2" parent="." instance=ExtResource("4_4rwr5")]
-position = Vector2(1500, 675)
+position = Vector2(1725, 675)
+scale = Vector2(1.25, 1.25)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(880, 670)
-zoom = Vector2(0.8, 0.8)
+position = Vector2(1000, 675)
+zoom = Vector2(0.6, 0.6)
 script = ExtResource("5_4j5yk")
 
 [node name="SpecialShellSelector" parent="." instance=ExtResource("5_jfxgp")]
-offset_left = 870.0
-offset_top = 350.0
-offset_right = 870.0
-offset_bottom = 350.0
-
-[node name="Board" parent="." instance=ExtResource("6_gnmmn")]
-light_mask = 0
-z_index = -1
-position = Vector2(860, 640)
+offset_left = 1000.0
+offset_top = 200.0
+offset_right = 1000.0
+offset_bottom = 200.0
 scale = Vector2(1.3, 1.3)
-frame = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="RoundsLabel" type="Label" parent="."]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 769.5
+offset_left = 900.0
 offset_top = 893.0
-offset_right = 964.5
+offset_right = 1095.0
 offset_bottom = 935.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -105,17 +125,9 @@ theme_override_font_sizes/font_size = 50
 text = "Round: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="BackgroundMusic" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("8_xbw1n")
 volume_db = 1.0
 autoplay = true
-
-[node name="Panel" type="Panel" parent="."]
-z_index = -14
-offset_left = -282.0
-offset_top = -21.0
-offset_right = 2101.0
-offset_bottom = 1327.0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_4j5yk")
