@@ -64,15 +64,6 @@ A roguelike strategy game inspired by the traditional Filipino game Sungka where
 - **RAM**: 4 GB or more for optimal performance
 - **Graphics**: Dedicated graphics card for better visual effects
 
-## 🚀 Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Hoplyman/GameHackathon-Achuuuspekoply.git
-   ```
-2. Open the project in Godot 4.0+
-3. Run the project from the Godot editor
-
 ## 🛣️ Development Status & Roadmap
 
 ### ✅ Completed Features
