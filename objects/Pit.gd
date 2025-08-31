@@ -1,6 +1,7 @@
 extends Node2D
 
 var shells: int = 0
+var movingshells = 0
 var PitType: int = 0
 var PitSprite: Sprite2D # the sprite of Shell
 var use_timer_counting: bool = true
@@ -143,7 +144,10 @@ func add_shells(amount):
 	spawn_shells(oldshell, shells)
 	update_label()
 	print("Pit: Added ", amount, " shells. Total: ", shells)
-	
+
+func extra_distributing_shells():
+	pass
+
 func move_shells(player: int):
 	pit_click()
 	var gamemode: String = ""
@@ -172,6 +176,7 @@ func move_shells(player: int):
 
 	elif gamemode == "Pvp":
 		var totalmove = 1
+		movingshells = 1
 		var shells_to_remove = []
 		
 		for child in pvp.get_children():
@@ -192,7 +197,15 @@ func move_shells(player: int):
 				child.add_to_group("MoveShells")
 				child.assign_move(totalmove, player)
 				totalmove += 1
-		
+				movingshells += 1
+				var tween = create_tween()
+				tween.tween_interval(0.01)
+				await tween.finished
+		var moving_shells = get_tree().get_nodes_in_group("MoveShells")
+		if moving_shells.size() == 0:
+			var gamemanager = pvp.get_node_or_null("GameManager")
+			gamemanager.is_distributing = false
+			gamemanager.end_turn()
 		print("Pit ", name, " - Started moving ", shells_to_remove.size(), " shells")
 		
 		return 0
@@ -267,6 +280,7 @@ func clear_existing_shells_in_area():
 		print("Removed existing shell during initialization")
 
 func _on_timer_timeout():
+	pit_startround()
 	# Only count if timer counting is enabled AND initialization is complete
 	if not use_timer_counting or not initialization_complete:
 		return
@@ -588,9 +602,8 @@ func effect_shells_in_area(Effect: String):
 							Shell1 = child
 							for movingshells in pvp.get_children():
 								if movingshells.is_in_group("MoveShells") and not movingshells.is_in_group("Shells"):
-									if child in overlapping_bodies:
-										movingshells.assign_move(1, Player)
-										child.assign_move(1,Player)
+									movingshells.assign_move(1, Player)
+									child.assign_move(1,Player)
 								elif child.is_in_group("MoveShells"):
 									child.assign_move(1,Player)
 						elif Effect == "EXPLOSIVE":

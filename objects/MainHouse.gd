@@ -9,10 +9,17 @@ var use_visual_spawning: bool = false  # Flag to control visual shell spawning
 @onready var timer := $Timer  # Access the Timer node
 @onready var label = $StoneLabel
 @onready var score_label = $ScoreLabel  # NEW: Score label for winning calculation
+@onready var player_label = $PlayerLabel
 
 func _ready():
 	add_to_group("main_houses")
 	setup_click_area()  # Setup click area for tooltip
+	if self.name == "MainHouse1":
+		player_label.text = "Player 1"
+		player_label.add_theme_color_override("font_color", Color.CYAN)
+	elif self.name == "MainHouse2":
+		player_label.text = "Player 2"
+		player_label.add_theme_color_override("font_color", Color.RED)
 	# Only connect timer if we're using timer-based counting
 	if use_timer_counting:
 		timer.connect("timeout", Callable(self, "_on_timer_timeout"))
@@ -62,7 +69,7 @@ func get_total_score() -> int:
 # NEW: Calculate and update total score
 func calculate_total_score():
 	var old_total = total_score
-	total_score = shells * scores
+	total_score = (1 + (0.2 * shells)) * scores
 	print("MainHouse total score calculated: ", shells, " shells × ", scores, " points = ", total_score)
 	
 	# NEW: Check for instant win condition when score reaches 100

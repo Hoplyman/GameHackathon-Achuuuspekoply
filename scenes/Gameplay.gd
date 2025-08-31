@@ -14,8 +14,12 @@ func _ready():
 	else:
 		print("BackgroundMusic node not found")
 
-func updateRoundlabel(TotalRounds: int):
+func updateRoundlabel(TotalRounds: int, Player: int):
 	Roundslabel.text = "Round: " + str(TotalRounds)
+	if Player == 0:
+		Roundslabel.add_theme_color_override("font_color", Color.CYAN)
+	elif Player == 1:
+		Roundslabel.add_theme_color_override("font_color", Color.RED)
 
 func spawn_shell(type: int, pit: int):
 	var game_manager = get_tree().get_nodes_in_group("game_manager")
@@ -85,7 +89,7 @@ func set_shells(Shells: int, NewShells: int, x: int, y: int):
 		for j in range(AddShells):
 			var shell_instance = shell_scene.instantiate()
 			shell_instance.position = Vector2(x, y)
-			shell_instance.Type = randi_range(1,12)
+			shell_instance.Type = 1 #randi_range(1,12)
 			Pvp.add_child(shell_instance)
 			print("Created shell ", j + 1, " of ", AddShells)
 			

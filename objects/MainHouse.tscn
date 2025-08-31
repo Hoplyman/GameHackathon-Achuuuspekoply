@@ -17,11 +17,12 @@ hframes = 11
 
 [node name="StoneLabel" type="Label" parent="."]
 offset_left = -113.5
-offset_top = -210.0
+offset_top = -200.0
 offset_right = 113.5
-offset_bottom = -175.0
+offset_bottom = -165.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("3_14ewc")
 theme_override_font_sizes/font_size = 25
 text = "Shells: 0 Points: 0"
@@ -30,12 +31,13 @@ vertical_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="."]
 offset_left = -103.0
-offset_top = -240.0
+offset_top = -230.0
 offset_right = 103.0
-offset_bottom = -205.0
+offset_bottom = -195.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_constants/outline_size = 3
 theme_override_fonts/font = ExtResource("3_14ewc")
 theme_override_font_sizes/font_size = 30
 text = "TOTAL SCORE: 0"
@@ -68,3 +70,17 @@ autostart = true
 scale = Vector2(1.6, 1.6)
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="PlayerLabel" type="Label" parent="."]
+offset_left = -113.5
+offset_top = -170.0
+offset_right = 113.5
+offset_bottom = -135.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("3_14ewc")
+theme_override_font_sizes/font_size = 25
+text = "Player"
+horizontal_alignment = 1
+vertical_alignment = 1

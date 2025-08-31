@@ -10,8 +10,8 @@ func _ready():
 func move_to_position(Move: String):
 	var target_position: Vector2
 	
-	if Move == "Top":
-		target_position = Vector2(1000, 575)  # Adjust these values as needed
+	if Move == "Bottom":
+		target_position = Vector2(1000, 875)  # Adjust these values as needed
 	elif Move == "Center":
 		target_position = Vector2(1000, 675)     # Adjust these values as needed
 	else:
@@ -24,8 +24,8 @@ func move_to_position(Move: String):
 
 # Alternative function for instant movement
 func move_to_position_instant(Move: String):
-	if Move == "Top":
-		position = Vector2(1000, 575)
+	if Move == "Bottom":
+		position = Vector2(1000, 875)
 	elif Move == "Center":
 		position = Vector2(1000, 675)
 	else:

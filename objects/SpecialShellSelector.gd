@@ -226,7 +226,7 @@ func create_complete_card(option_id: int, option_type: String) -> Control:
 	
 	name_label.text = name_text
 	name_label.add_theme_color_override("font_color", Color.WHITE)
-	name_label.add_theme_font_size_override("font_size", 16)
+	name_label.add_theme_font_size_override("font_size", 20)
 	name_label.add_theme_font_override("font", pixel_font)
 	# Add outline for better readability
 	name_label.add_theme_color_override("font_outline_color", Color.BLACK)
@@ -235,7 +235,7 @@ func create_complete_card(option_id: int, option_type: String) -> Control:
 	# Create description label - positioned in bottom area and properly contained
 	var desc_label = Label.new()
 	desc_label.size = Vector2(160, 70)
-	desc_label.position = Vector2(30, 150)  # Centered within the visual card area (17+20, 200+10)
+	desc_label.position = Vector2(30, 135)  # Centered within the visual card area (17+20, 200+10)
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	desc_label.vertical_alignment = VERTICAL_ALIGNMENT_TOP
 	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER  # Center align description
@@ -250,7 +250,7 @@ func create_complete_card(option_id: int, option_type: String) -> Control:
 	
 	desc_label.text = description_text
 	desc_label.add_theme_color_override("font_color", Color.WHITE)
-	desc_label.add_theme_font_size_override("font_size", 15)  # Slightly smaller font
+	desc_label.add_theme_font_size_override("font_size", 18)  # Slightly smaller font
 	desc_label.add_theme_font_override("font", pixel_font)
 	# Add outline for better readability
 	desc_label.add_theme_color_override("font_outline_color", Color.BLACK)

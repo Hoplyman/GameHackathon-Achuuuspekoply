@@ -5,15 +5,11 @@ var total_turns: int = 0
 var pits: Array
 var main_houses: Array
 var game_active: bool = true
-var is_distributing: bool = false
 var awaiting_special_shell_selection: bool = false
-
-var timer: Timer
+var is_distributing: bool = false
 
 # UI Elements
 var turn_indicator: Label
-var player1_label: Label
-var player2_label: Label
 var special_shell_selector: Control
 
 
@@ -24,7 +20,7 @@ var winner_label: Label
 var final_scores_label: Label
 var play_again_button: Button
 var quit_button: Button
-var WINNING_SCORE: int = 100
+var WINNING_SCORE: int = 500
 
 # Resolution scaling
 var base_resolution = Vector2(1920, 1080)
@@ -34,11 +30,6 @@ func _ready():
 	add_to_group("game_manager")
 	pits = get_tree().get_nodes_in_group("pits")
 	main_houses = get_tree().get_nodes_in_group("main_houses")
-	timer = Timer.new()
-	add_child(timer)
-	timer.wait_time = 0.5
-	# Connect timer timeout to our check function
-	timer.timeout.connect(_on_timer_timeout)
 	
 	calculate_ui_scale()
 	call_deferred("create_ui_elements")
@@ -151,30 +142,10 @@ func create_ui_elements():
 	turn_indicator.add_theme_constant_override("shadow_offset_y", 2)
 	get_parent().add_child(turn_indicator)
 	
-	player1_label = Label.new()
-	player1_label.text = "PLAYER 1 (BLUE)"
-	player1_label.position = Vector2(150, 500)
-	player1_label.add_theme_font_size_override("font_size", scaled_font_size(30))
-	player1_label.add_theme_color_override("font_color", Color.CYAN)
-	player1_label.add_theme_color_override("font_shadow_color", Color.BLACK)
-	player1_label.add_theme_constant_override("shadow_offset_x", 2)
-	player1_label.add_theme_constant_override("shadow_offset_y", 2)
-	get_parent().add_child(player1_label)
-	
-	player2_label = Label.new()
-	player2_label.text = "PLAYER 2 (RED)"
-	player2_label.position = Vector2(1440, 500)
-	player2_label.add_theme_font_size_override("font_size", scaled_font_size(30))
-	player2_label.add_theme_color_override("font_color", Color.LIGHT_CORAL)
-	player2_label.add_theme_color_override("font_shadow_color", Color.BLACK)
-	player2_label.add_theme_constant_override("shadow_offset_x", 2)
-	player2_label.add_theme_constant_override("shadow_offset_y", 2)
-	get_parent().add_child(player2_label)
-	
 	await get_tree().process_frame
 	total_turns = 1
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
-	pvp.updateRoundlabel(total_turns)
+	pvp.updateRoundlabel(total_turns, current_turn)
 	update_turn_display()
 	print("UI Elements created successfully!")
 
@@ -264,41 +235,50 @@ func distribute_shells(start_pit_index: int, player: int):
 	var estimated_duration = shells_to_distribute * 0.15
 	await get_tree().create_timer(estimated_duration).timeout
 	
+	print("FOUNDD STARTING POSITION " + str(start_pit_index + 1))
+	
 	# Calculate the final position properly
 	var final_position = calculate_final_position(start_pit_index, shells_to_distribute)
 	
-	is_distributing = false
-	check_end_turn_rules(final_position)
+	print("FOUNDD FINAL POSITION " + str(final_position + 1))
 
 func calculate_final_position(start_pit: int, shell_count: int) -> int:
 	var current_pos = start_pit
-	
+	print("FOUNDD SHELLS COUNT " + str(shell_count))
 	for i in range(shell_count):
 		current_pos = get_next_position(current_pos)
 	
 	return current_pos
 
 func get_next_position(current_pos: int) -> int:
-	if current_pos < 6:
-		return current_pos + 1
-	elif current_pos == 6:
+	var next_pos = current_pos + 1
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	
+	# Handle special transitions first
+	if current_pos == 6:
 		if current_turn == 0:
-			return 14  # Player 1 main house
+			next_pos = 14  # Player 1 main house
 		else:
-			return 7  # Skip to player 2's first pit
-	elif current_pos < 13:
-		return current_pos + 1
+			next_pos = 7   # Skip to player 2's first pit
 	elif current_pos == 13:
 		if current_turn == 1:
-			return 15  # Player 2 main house
+			next_pos = 15  # Player 2 main house
 		else:
-			return 0  # Skip to player 1's first pit
+			next_pos = 0   # Skip to player 1's first pit
 	elif current_pos == 14:  # From player 1 main house
-		return 7  # To player 2's first pit
+		next_pos = 7   # To player 2's first pit
 	elif current_pos == 15:  # From player 2 main house
-		return 0  # To player 1's first pit
-	else:
-		return 0
+		next_pos = 0   # To player 1's first pit
+	# For all other positions (0-5, 7-12), just increment by 1
+	
+	# Handle void pit logic AFTER determining next position
+	if next_pos != 14 and next_pos != 15:
+		var NextPit: Node2D = pvp.get_node_or_null("Pit" + str(next_pos + 1))
+		if NextPit and NextPit.PitType == 9:
+			print("FOUND VOIDDDDD PITTTT")
+			# Skip the void pit by getting the next position recursively
+			return get_next_position(next_pos)
+	return next_pos
 
 func get_position_node(position: int) -> Node2D:
 	if position < 14:
@@ -309,40 +289,13 @@ func get_position_node(position: int) -> Node2D:
 		return get_main_house(1)
 	return null
 
-func _on_timer_timeout():
-	
-	var moving_shells = get_tree().get_nodes_in_group("MoveShells")
-	
-	if moving_shells.size() == 0:
-		var pvp = get_tree().root.get_node_or_null("Gameplay")
-		var camera = pvp.get_node_or_null("Camera2D")
-		camera.move_to_position("Top")
-		is_distributing = false
-		Pit_Order()
-		show_special_shell_selection()
-		timer.stop()
-	else:
-		timer.start()
-
-func check_end_turn_rules(last_position: int):
-	print("Checking end turn rules. Last position: ", last_position)
-	
-	# Rule: Extra turn for landing in own main house
-	if (current_turn == 0 and last_position == 14) or (current_turn == 1 and last_position == 15):
-		print("Player ", current_turn + 1, " gets another turn!")
-		return
-	
-	# Rule: Capture for landing in own empty pit
-	if last_position < 14:
-		var pit = get_pit(last_position)
-		if pit and pit.shells == 1:  # Was empty before the shell
-			var player_range = get_player_pit_range(current_turn)
-			if last_position >= player_range[0] and last_position <= player_range[1]:
-				capture_opposite_pit(last_position)
-	
-	# Show special shell selection before switching turns
-	timer.start()
-	is_distributing = true
+func end_turn():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var camera = pvp.get_node_or_null("Camera2D")
+	camera.move_to_position("Bottom")
+	is_distributing = false
+	Pit_Order()
+	show_special_shell_selection()
 
 func show_special_shell_selection():
 	awaiting_special_shell_selection = true
@@ -473,7 +426,7 @@ func get_pit(pit_index: int) -> Node2D:
 		return pits[pit_index]
 	return null
 
-func Pit_Heal():
+func Pit_Order2():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
 		if is_instance_valid(child):
@@ -515,61 +468,54 @@ func Shell_Order():
 	var pvp = get_tree().root.get_node_or_null("Gameplay")
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 3 or child.Type == 5 or child.Type == 8:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.05)
-					await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and (child.Type == 3 or child.Type == 5 or child.Type == 8):
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 1 or child.Type == 2:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.05)
-					await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and (child.Type == 1 or child.Type == 2):
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 7:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.2)
-					await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and child.Type == 7:
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.1)
+				await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 4:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.2)
-					await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and child.Type == 4:
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.1)
+				await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 6:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.2)
-					await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and child.Type == 6:
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.1)
+				await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 9:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.1)
-					await tween.finished
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and child.Type == 9:
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
 	for child in pvp.get_children():
 		if is_instance_valid(child):
-			if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
-				if child.Type == 12:
-					child.shell_endround()
-					var tween = create_tween()
-					tween.tween_interval(0.1)
-					await tween.finished
-	Pit_Heal()
+			if child.is_in_group("Shells") and not child.is_in_group("MoveShells") and child.Type == 12:
+				child.shell_endround()
+				var tween = create_tween()
+				tween.tween_interval(0.05)
+				await tween.finished
+	Pit_Order2()
 
 func switch_turn():
 	current_turn = 1 - current_turn
@@ -578,7 +524,7 @@ func switch_turn():
 	camera.move_to_position("Center")
 	print("Turn switched to player ", current_turn + 1)
 	total_turns += 1
-	pvp.updateRoundlabel(total_turns)
+	pvp.updateRoundlabel(total_turns, current_turn)
 	update_turn_display()
 
 # ENHANCED: Better game over checking with multiple win conditions

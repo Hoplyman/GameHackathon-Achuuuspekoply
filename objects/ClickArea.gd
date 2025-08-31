@@ -88,7 +88,6 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int):
 				print("Left click on MainHouse ", pit_index, " (", associated_pit.name, ") - left click disabled for MainHouse")
 				# Do nothing - don't call GameManager for MainHouses
 				return
-			
 			# Handle left click for regular pits - notify GameManager
 			var game_manager = get_tree().get_first_node_in_group("game_manager")
 			if game_manager and pit_index >= 0:

@@ -554,33 +554,25 @@ func _finalize_movement():
 	print("Shell movement complete at pit ", Pit)
 
 func calculate_next_position(current_pit: int, player: int) -> int:
-	# Use the exact same logic as GameManager.get_next_position()
-	# Convert shell numbering (1-14, 15-16) to GameManager numbering (0-13, 14-15)
-	var gm_position = current_pit - 1 if current_pit <= 14 else current_pit - 1
+	var next_pos = current_pit + 1
 	
-	# Get GameManager reference
-	var game_manager = get_tree().get_nodes_in_group("game_manager")
-	if game_manager.size() == 0:
-		print("ERROR: No GameManager found!")
-		return current_pit
-	
-	var gm = game_manager[0]
-	
-	# Set the current_turn in GameManager to match our player (convert 1,2 to 0,1)
-	var original_turn = gm.current_turn
-	gm.current_turn = player - 1
-	
-	# Use GameManager's get_next_position logic
-	var next_gm_position = gm.get_next_position(gm_position)
-	
-	# Restore original turn
-	gm.current_turn = original_turn
-	
-	# Convert back to shell numbering (0-13, 14-15) to (1-14, 15-16)
-	var next_shell_position = next_gm_position + 1 if next_gm_position <= 13 else next_gm_position + 1
-	
-	print("Shell path: pit ", current_pit, " -> pit ", next_shell_position, " (via GameManager logic)")
-	return next_shell_position
+	if current_pit == 7:
+		if player == 1:
+			next_pos = 15  # Player 1 main house
+		else:
+			next_pos = 8   # Skip to player 2's first pit
+	elif current_pit == 14:
+		if player == 2:
+			next_pos = 16  # Player 2 main house
+		else:
+			next_pos = 1   # Skip to player 1's first pit
+	elif current_pit == 15:  # From player 1 main house
+		next_pos = 8   # To player 2's first pit
+	elif current_pit == 16:  # From player 2 main house
+		next_pos = 1
+
+	print("Shell path: pit ", current_pit, " -> pit ", next_pos, " (via GameManager logic)")
+	return next_pos
 
 func _physics_process(delta):
 	if Moving and Move >= 0:
@@ -676,6 +668,9 @@ func _physics_process(delta):
 				call_deferred("_complete_all_movements")
 
 func _complete_all_movements():
+	var pvp = get_tree().root.get_node_or_null("Gameplay")
+	var gamemanager = pvp.get_node_or_null("GameManager")
+	var moving_shells = get_tree().get_nodes_in_group("MoveShells")
 	collision_layer = 2
 	collision_mask = 2 | 3
 	gravity_scale = 1
@@ -683,17 +678,94 @@ func _complete_all_movements():
 	linear_velocity = Vector2.ZERO
 	if PitNode != null and PitNode.PitType == 9 and get_tree().get_nodes_in_group("MoveShells").size() == 1:
 		assign_move(1,Player)
-		var pvp = get_tree().root.get_node_or_null("Gameplay")
 		var PitEffect = pvp.get_node_or_null("Pit"+ str(Pit))
 		if PitEffect != null:
 			PitEffect.effect_text("Skiped Pit", Color(0.0, 0.0, 0.0, 0.0))
 	else:
-		remove_from_group("MoveShells")
-		add_to_group("Shells")
-		shell_drop()
+		if moving_shells.size() == 1:
+			if gamemanager.is_distributing == true:
+				if PitNode.shells != 0 and (Player == 1 and Pit >= 1 and Pit <= 7) or (Player == 2 and Pit >= 8 and Pit <= 14):
+					remove_from_group("MoveShells")
+					add_to_group("Shells")
+					shell_drop()
+					var tween = create_tween()
+					tween.tween_interval(0.05)
+					await tween.finished
+					PitNode.move_shells(Player)
+				elif (Player == 1 and Pit == 15) or (Player == 2 and Pit == 16):
+					remove_from_group("MoveShells")
+					add_to_group("Shells")
+					shell_drop()
+					gamemanager.is_distributing = false
+				elif PitNode.shells == 0 and (Player == 1 and Pit >= 1 and Pit <= 7) or (Player == 2 and Pit >= 8 and Pit <= 14):
+					var OppositePit: int = getoppositepit()
+					var EmptyPit: int = Pit
+					remove_from_group("MoveShells")
+					add_to_group("Shells")
+					shell_drop()
+					var OppositePitNode: Node2D = pvp.get_node_or_null("Pit" + str(OppositePit))
+					var shell_area = OppositePitNode.get_node("ShellArea")
+					var overlapping_bodies = shell_area.get_overlapping_bodies()
+					for child in pvp.get_children():
+						if is_instance_valid(child):
+							if child.is_in_group("Shells") and not child.is_in_group("MoveShells"):
+								if child in overlapping_bodies:
+									if EmptyPit == 1:
+										EmptyPit = 14
+									child.Pit = EmptyPit - 1 # Convert to 0-based for shell logic
+									child.assign_move(1, 0) 
+					gamemanager.is_distributing = false
+					gamemanager.end_turn()
+				else:
+					remove_from_group("MoveShells")
+					add_to_group("Shells")
+					shell_drop()
+					gamemanager.is_distributing = false
+					gamemanager.end_turn()
+			else:
+				remove_from_group("MoveShells")
+				add_to_group("Shells")
+				shell_drop()
+				gamemanager.is_distributing = false
+		else:
+			remove_from_group("MoveShells")
+			add_to_group("Shells")
+			shell_drop()
 	if PitNode != null:
 		PitNode.pit_drop()
 	print("All movements complete - final position: pit ", Pit)
+
+func getoppositepit() -> int:
+	if Pit == 1:
+		return 14
+	elif Pit == 2:
+		return 13
+	elif Pit == 3:
+		return 12
+	elif Pit == 4:
+		return 11
+	elif Pit == 5:
+		return 10
+	elif Pit == 6:
+		return 9
+	elif Pit == 7:
+		return 8
+	elif Pit == 8:
+		return 7
+	if Pit == 9:
+		return 6
+	elif Pit == 10:
+		return 5
+	elif Pit == 11:
+		return 4
+	elif Pit == 12:
+		return 3
+	elif Pit == 13:
+		return 2
+	elif Pit == 14:
+		return 1
+	else:
+		return 0
 
 func _on_move_timer_timeout() -> void:
 	movetimer.stop()  # Stop the timer
