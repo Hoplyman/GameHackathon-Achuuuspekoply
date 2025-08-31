@@ -33,7 +33,7 @@ A roguelike strategy game inspired by the traditional Filipino game Sungka where
 - **Special Pit Types**: 11 different pit effects that modify gameplay
 - **Status Effects**: Multiplier stacks, burn, freeze, luck, curse, and more
 - **Dynamic Scoring**: Complex point calculations with stack interactions
-- **Win Conditions**: First to 100 total points OR traditional Sungka rules
+- **Win Conditions**: First to 100 total score OR traditional Sungka rules
 - **Turn-based Strategy**: Plan your moves carefully for maximum impact
 
 ### Presentation
